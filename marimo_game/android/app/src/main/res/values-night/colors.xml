@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#C41E20</color>
+    <color name="colorPrimaryDark">#C41E20</color>
+    <color name="colorAccent">#C41E20</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="intro_bg">#242424</color>
+    <color name="color_white">#ffffff</color>
+    <color name="color_popup_bg">#ffffff</color>
+    <color name="color_popup_msg">#333333</color>
+    <color name="color_popup_btn_cancel">#666666</color>
+    <color name="color_info_bg">#ededed</color>
+    <color name="color_autoLogin_text">#f36f35</color>
+    <color name="color_info_text">#666666</color>
+    <color name="more_bg">#70000000</color>
+
+    <color name="color_list_select">#ebeced</color>
+
+    <color name="color_line_1">#132447</color>
+    <color name="color_line_2">#dddddd</color>
+    <color name="color_sett_bg">#ededed</color>
+    <color name="color_vertical_line">#d1d1d1</color>
+    <color name="color_txt_logn">#242424</color>
+    <color name="color_title_disable">#ededed</color>
+    <color name="color_disable">#999999</color>
+    <color name="color_enable">#242424</color>
+
+    <color name="color_loading_bg">#ededed</color>
+</resources>

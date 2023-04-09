@@ -1,0 +1,40 @@
+name: marimo_game
+description: A new Flutter project.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.5 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+
+  flame: ^1.7.0
+  permission_handler: 10.2.0
+  flutter_secure_storage: 8.0.0
+  connectivity: 3.0.6
+  http: 0.13.5
+  geolocator: ^8.2.0
+  flutter_native_splash: ^2.2.19
+  flame_bloc: ^1.8.3
+  flutter_bloc: ^8.0.1
+  equatable: ^2.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/
