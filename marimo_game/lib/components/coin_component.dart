@@ -3,22 +3,24 @@ import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/animation.dart';
+
 import '../marimo_game_world.dart';
 
-class Coin extends SpriteComponent
-    with HasGameRef<MarimoWorldGame> {
+
+class CoinComponent extends SpriteComponent
+    with HasGameRef<MarimoWorldGame>, CollisionCallbacks {
   late Vector2 _worldSize;
   final Vector2 velocity = Vector2.zero();
   late Vector2 _pos;
 
-  Coin(Vector2 worldSize) : super(size: Vector2.all(64), anchor: Anchor.center){
+  CoinComponent(Vector2 worldSize) : super(size: Vector2.all(64), anchor: Anchor.center){
     _worldSize = worldSize;
   }
 
   @override
   Future<void> onLoad() async {
-    final coinImage = game.images.fromCache('coin.png');
+    final coinImage = await game.images.load('coin.png');
     sprite = Sprite(coinImage);
 
     add(RectangleHitbox()..collisionType = CollisionType.passive);

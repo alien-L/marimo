@@ -7,7 +7,7 @@ class World extends SpriteComponent with HasGameRef {
   Future<void>? onLoad() async {
 
     sprite = await gameRef.loadSprite('background.jpg');
-    size = gameRef.size;
+    size = sprite!.originalSize;
         //Vector2(393, 852);
         //gameRef.size;
         //sprite!.originalSize;

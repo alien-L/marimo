@@ -1,40 +1,37 @@
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
-import 'package:flame_bloc/flame_bloc.dart';
-import 'package:marimo_game/marimo_game_world.dart';
-import '../app_manage/local_repository.dart';
-import '../bloc/game_stats/bloc/game_stats_bloc.dart';
-import '../const/constant.dart';
-import '../helpers/direction.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_bloc/flame_bloc.dart';
+import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
+import '../app_manage/local_repository.dart';
+import '../helpers/direction.dart';
+import '../marimo_game_world.dart';
+import 'coin_component.dart';
 
-import 'coin.dart';
-
-class PlayerController extends Component
+class MarimoController extends Component
     with
         HasGameRef<MarimoWorldGame>,
-        FlameBlocListenable<GameStatsBloc, GameStatsState> {
+        FlameBlocListenable<MarimoBloc, MarimoState> {
   @override
-  bool listenWhen(GameStatsState previousState, GameStatsState newState) {
-    return true;
+  bool listenWhen(MarimoState previousState, MarimoState newState) {
+    return previousState.marimoLevel!= newState.marimoLevel;
   }
 
   @override
-  void onNewState(GameStatsState state) {
-    print("state ==> $state");
-    // if (state.status == GameStatus.respawn ||
-    //     state.status == GameStatus.initial) {
-    // gameRef.statsBloc.add(const PlayerRespawned());
-      parent?.add(gameRef.marimo =Marimo());
- //   }
+  void onNewState(MarimoState state) {
+    print("🦄 state ===> $state");
+       parent?.add(gameRef.marimoComponent = MarimoComponent(name:state.marimoLevel.name));
   }
 }
 
+class MarimoComponent extends SpriteAnimationComponent
+    with
+        HasGameRef<MarimoWorldGame>,
+        CollisionCallbacks,
+        KeyboardHandler,
+        FlameBlocListenable<MarimoBloc, MarimoState> {
+  bool destroyed = false;
 
-class Marimo extends SpriteAnimationComponent
-    with HasGameRef<MarimoWorldGame>, CollisionCallbacks, FlameBlocListenable<GameStatsBloc, GameStatsState>{
   final double _playerSpeed = 300.0;
   final double _animationSpeed = 0.15;
 
@@ -45,79 +42,24 @@ class Marimo extends SpriteAnimationComponent
   late final SpriteAnimation _standingAnimation;
 
   Direction direction = Direction.none;
-  Direction _collisionDirection = Direction.none;
-  bool _hasCollided = false;
+  final Direction _collisionDirection = Direction.none;
+  final bool _hasCollided = false;
+  final String name;
   LocalRepository localRepository = LocalRepository();
 
-  Marimo()
-      : super(
-          size: Vector2.all(64.0), position: Vector2(100, 500)
-        ) {
+
+  MarimoComponent({required this.name})
+      : super( size: Vector2.all(64.0), position: Vector2(100, 500)) {
     add(RectangleComponent());
+    add(RectangleHitbox());
   }
-
-  // @override
-  // void onNewState(InventoryState state) {
-  //   this.state = state;
-  // }
-
   @override
   Future<void> onLoad() async {
-    super.onLoad();
-    add(CircleHitbox(),);
-    String fileName = await getMarimoLevleImage();
-     _loadAnimations(fileName).then((_) => {animation = _standingAnimation});
-  }
-
-  @override
-  void update(double delta) {
-    super.update(delta);
-    movePlayer(delta);
-  }
-
-  @override
-  Future<void> onCollision(Set<Vector2> intersectionPoints, PositionComponent other) async {
-  //  print("충돌 !! $intersectionPoints , $other");
-    final marimoLevel = await localRepository.getValue(key: "MarimoLevel");
-
-    if (other is Coin) {
-    //  other.removeFromParent();
-     // game.coinsCollected++;
-    }
-
-    if( game.coinsCollected == 10 && marimoLevel == MarimoLevel.baby.name){
-      print("충돌 !! $intersectionPoints , $other");
-     // removeFromParent();
-     // gameRef.statsBloc.add(const PlayerDied());
-      // final spriteSheet = SpriteSheet(
-      //   image: await game.images.fromCache('marimo_child.png'),
-      //   srcSize: Vector2(64.0, 64.0),
-      // );
-      // _standingAnimation = spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed, to: 1);
-      // // 마리모 상태 변경
-    }
-
-    super.onCollision(intersectionPoints, other);
-  }
-
-
-  getMarimoLevleImage() async {
-    final marimoLevel = await localRepository.getValue(key: "MarimoLevel");
-    print("marimoLevel $marimoLevel");
-    String marimoImageFileName = 'marimo_$marimoLevel.png';
-
-    return marimoImageFileName;
-  }
-
-
-// String fileName = await getMarimoLevleImage();
-  Future<void> _loadAnimations(String fileName) async {
-
+    await super.onLoad();
     final spriteSheet = SpriteSheet(
-      image: await game.images.fromCache(fileName),
+      image: await game.images.load( 'marimo_${name}.png'),
       srcSize: Vector2(64.0, 64.0),
     );
-
 
     _runDownAnimation =
         spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed, to: 4);
@@ -134,6 +76,32 @@ class Marimo extends SpriteAnimationComponent
     _standingAnimation =
         spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed, to: 1);
   }
+
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    movePlayer(dt);
+  }
+
+
+  @override
+  Future<void> onCollision(Set<Vector2> points, PositionComponent other) async {
+    super.onCollision(points, other);
+    if (other is CoinComponent) {
+      other.removeFromParent();
+      game.coinsCollected++;
+      final localValue = await localRepository.getValue(key: "MarimoLevel");
+
+      if(localValue == "baby" && game.coinsCollected == 3){
+        // 탄생했다는 팝업창 넣기
+        removeFromParent();
+        gameRef.marimoBloc.add(const MarimoEquipped(MarimoLevel.child));
+        localRepository.setKeyValue(key: "MarimoLevel", value:MarimoLevel.child.name );
+      }
+    }
+  }
+
 
   void movePlayer(double delta) {
     switch (direction) {
@@ -166,6 +134,7 @@ class Marimo extends SpriteAnimationComponent
         break;
     }
   }
+
 
   bool canPlayerMoveUp() {
     if (_hasCollided && _collisionDirection == Direction.up) {

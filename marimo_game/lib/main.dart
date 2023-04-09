@@ -40,7 +40,7 @@ import 'app_manage/language.dart';
 import 'app_manage/local_repository.dart';
 import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
-import 'bloc/game_stats/bloc/game_stats_bloc.dart';
+import 'bloc/marimo_bloc/marimo_bloc.dart';
 import 'page/main_game_page.dart';
 import 'main_view.dart';
 //앱 시작 타입      : 강제 업데이트 , 운영 , 정기점검
@@ -81,7 +81,7 @@ Future<void> main() async {
 
   MultiBlocProvider(
     providers: [
-      BlocProvider<GameStatsBloc>(create: (_) => GameStatsBloc()),
+      BlocProvider<MarimoBloc>(create: (_) => MarimoBloc()),
     ],
       child: App(initRoute: initRoute,))
 
