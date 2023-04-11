@@ -40,12 +40,13 @@ class JoypadState extends State<Joypad> {
                 child: SizedBox(
                   height: 60,
                   width: 60,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xccffffff),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
+                  child: Image.asset("assets/images/marimo_joypad.png"),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //     color: const Color(0xccffffff),
+                  //     borderRadius: BorderRadius.circular(30),
+                  //   ),
+                  // ),
                 ),
               ),
             ),

@@ -31,6 +31,7 @@ class MarimoWorldGame extends FlameGame
   void onJoypadDirectionChanged(Direction direction) {
     print("🦄🦄 ${marimoComponent.position}");
     marimoComponent.direction = direction;
+    marimoComponent.direction;
   }
 
   @override

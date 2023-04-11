@@ -1,0 +1,197 @@
+{
+  "data": [
+    {
+      "name": "풀",
+      "price": "2000",
+      "state_score": "2",
+      "enabled": "true",
+      "bought": "false",
+      "category": "deco",
+      "image_name": ""
+    },
+    {
+      "name": "돌",
+      "price": "5000",
+      "state_score": "2",
+      "enabled": "true",
+      "bought": "false",
+      "category": "deco",
+      "image_name": ""
+    },
+    {
+      "name": "나무",
+      "price": "10000",
+      "state_score": "5",
+      "enabled": "true",
+      "bought": "false",
+      "category": "deco",
+      "image_name": ""
+    },
+    {
+      "name": "마리모 놀이터",
+      "price": "20000",
+      "state_score": "10",
+      "enabled": "true",
+      "bought": "false",
+      "category": "deco",
+      "image_name": ""
+    },
+    {
+      "name": "마리모 밥",
+      "price": "200",
+      "state_score": "1",
+      "enabled": "true",
+      "bought": "false",
+      "category": "deco",
+      "image_name": ""
+    },
+    {
+      "name": "마리모 도감",
+      "price": "30000",
+      "state_score": "20",
+      "enabled": "true",
+      "bought": "false",
+      "category": "deco",
+      "image_name": ""
+    },
+    {
+      "name": "마리모 앨범",
+      "price": "35000",
+      "state_score": "25",
+      "enabled": "true",
+      "bought": "false",
+      "category": "deco",
+      "image_name": ""
+    },
+    {
+      "name": "츄르",
+      "price": "1000",
+      "state_score": "0",
+      "enabled": "true",
+      "bought": "false",
+      "category": "villain",
+      "image_name": ""
+    },
+    {
+      "name": "새우깡",
+      "price": "2000",
+      "state_score": "0",
+      "enabled": "true",
+      "bought": "false",
+      "category": "villain",
+      "image_name": ""
+    },
+    {
+      "name": "상추",
+      "price": "3000",
+      "state_score": "0",
+      "enabled": "true",
+      "bought": "false",
+      "category": "villain",
+      "image_name": ""
+    },
+    {
+      "name": "인어공주",
+      "price": "4000",
+      "state_score": "0",
+      "enabled": "true",
+      "bought": "false",
+      "category": "villain",
+      "image_name": ""
+    },
+    {
+      "name": "공",
+      "price": "5000",
+      "state_score": "0",
+      "enabled": "true",
+      "bought": "false",
+      "category": "villain",
+      "image_name": ""
+    },
+    {
+      "name": "낚시대",
+      "price": "6000",
+      "state_score": "0",
+      "enabled": "true",
+      "bought": "false",
+      "category": "villain",
+      "image_name": ""
+    },
+    {
+      "name": "밝은 마리모 친구",
+      "price": "7000",
+      "state_score": "0",
+      "enabled": "true",
+      "bought": "false",
+      "category": "villain",
+      "image_name": "e_marimo.png"
+    },
+    {
+      "name": "물 갈아주기",
+      "price": "1000",
+      "state_score": "1",
+      "enabled": "true",
+      "bought": "false",
+      "category": "environment",
+      "\benvironment_category": "water",
+      "image_name": ""
+    },
+    {
+      "name": "얼음",
+      "price": "1000",
+      "state_score": "1",
+      "enabled": "true",
+      "bought": "false",
+      "category": "environment",
+      "\benvironment_category": "temperature",
+      "image_name": ""
+    },
+    {
+      "name": "습기제거제",
+      "price": "3000",
+      "state_score": "3",
+      "enabled": "true",
+      "bought": "false",
+      "category": "environment",
+      "\benvironment_category": "humidity",
+      "image_name": ""
+    },
+    {
+      "name": "어항 청소기",
+      "price": "5000",
+      "state_score": "5",
+      "enabled": "true",
+      "bought": "false",
+      "category": "environment",
+      "\benvironment_category": "food",
+      "image_name": ""
+    },
+    {
+      "name": "배경",
+      "price": "10000",
+      "state_score": "10",
+      "enabled": "false",
+      "bought": "false",
+      "category": "etc",
+      "image_name": ""
+    },
+    {
+      "name": "마리모 이름 바꾸기",
+      "price": "10000",
+      "state_score": "10",
+      "enabled": "true",
+      "bought": "false",
+      "category": "etc",
+      "image_name": ""
+    },
+    {
+      "name": "마리모 꾸미기",
+      "price": "10000",
+      "state_score": "10",
+      "enabled": "false",
+      "bought": "false",
+      "category": "marimo_deco",
+      "image_name": ""
+    }
+  ]
+}

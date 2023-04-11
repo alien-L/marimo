@@ -56,7 +56,14 @@ class MainGamePage extends StatelessWidget {
     void onJoypadDirectionChanged(Direction direction) {
       game.onJoypadDirectionChanged(direction);
     }
-
+    TextButton(
+        onPressed: () {
+          localRepository.getSecureStorage().deleteAll();
+        },
+        child: Container(
+            height: 50,
+            color: Colors.green,
+            child: Text('reset')));
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SafeArea(
@@ -67,19 +74,7 @@ class MainGamePage extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: Padding(
                 padding: const EdgeInsets.all(32.0),
-                child: Column(
-                  children: [
-                    TextButton(
-                        onPressed: () {
-                          localRepository.getSecureStorage().deleteAll();
-                        },
-                        child: Container(
-                            height: 50,
-                            color: Colors.green,
-                            child: Text('reset'))),
-                    Joypad(onDirectionChanged: onJoypadDirectionChanged),
-                  ],
-                ),
+                child: Joypad(onDirectionChanged: onJoypadDirectionChanged),
               ),
             ),
             Positioned(
