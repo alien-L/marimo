@@ -9,12 +9,12 @@ enum FishBowlState {good , bad}
 
 //enum MarimoLevel{baby,child,child2,teenager,adult,oldMan}
 
-enum MarimoState{dangerous,good,bad,normal,die}
+//enum MarimoState{dangerous,good,bad,normal,die}
 
 abstract class Constant {
   String hello = '';
   List<String> assetsList = [
-    'background.jpg',
+    'background.png',
     'coin.png',
     'e_marimo.png',
     'marimo.png',

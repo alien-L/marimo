@@ -4,17 +4,19 @@ abstract class MarimoEvent extends Equatable {
   const MarimoEvent();
 }
 
-class MarimoEquipped extends MarimoEvent {
+class MarimoLevelUpEvent extends MarimoEvent {
   final MarimoLevel marimoLevel;
 
-  const MarimoEquipped(this.marimoLevel);
+  const MarimoLevelUpEvent(this.marimoLevel);
 
   @override
   List<Object?> get props => [marimoLevel];
 }
 
-class NextMarimoEquipped extends MarimoEvent {
-  const NextMarimoEquipped();
+class MarimoStateChangedEvent extends MarimoEvent {
+  final int stateScore;
+
+  const MarimoStateChangedEvent(this.stateScore);
 
   @override
   List<Object?> get props => [];

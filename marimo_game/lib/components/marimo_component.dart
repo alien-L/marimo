@@ -11,14 +11,14 @@ import 'coin_component.dart';
 class MarimoController extends Component
     with
         HasGameRef<MarimoWorldGame>,
-        FlameBlocListenable<MarimoBloc, MarimoState> {
+        FlameBlocListenable<MarimoBloc, MarimoLevelState> {
   @override
-  bool listenWhen(MarimoState previousState, MarimoState newState) {
+  bool listenWhen(MarimoLevelState previousState, MarimoLevelState newState) {
     return previousState.marimoLevel!= newState.marimoLevel;
   }
 
   @override
-  void onNewState(MarimoState state) {
+  void onNewState(MarimoLevelState state) {
     print("🦄 state ===> $state");
        parent?.add(gameRef.marimoComponent = MarimoComponent(name:state.marimoLevel.name));
   }
@@ -29,7 +29,7 @@ class MarimoComponent extends SpriteAnimationComponent
         HasGameRef<MarimoWorldGame>,
         CollisionCallbacks,
         KeyboardHandler,
-        FlameBlocListenable<MarimoBloc, MarimoState> {
+        FlameBlocListenable<MarimoBloc, MarimoLevelState> {
   bool destroyed = false;
 
   final double _playerSpeed = 300.0;
@@ -96,7 +96,7 @@ class MarimoComponent extends SpriteAnimationComponent
       if(localValue == "baby" && game.coinsCollected == 3){
         // 탄생했다는 팝업창 넣기
         removeFromParent();
-        gameRef.marimoBloc.add(const MarimoEquipped(MarimoLevel.child));
+        gameRef.marimoBloc.add(const MarimoLevelUpEvent(MarimoLevel.child));
         localRepository.setKeyValue(key: "MarimoLevel", value:MarimoLevel.child.name );
       }
     }

@@ -2,21 +2,28 @@ part of 'marimo_bloc.dart';
 
 enum MarimoLevel{baby,child,child2,teenager,adult,oldMan}
 
-class MarimoState extends Equatable {
-  final MarimoLevel marimoLevel;
+enum MarimoLifeCycle{dangerous,good,bad,normal,die,lucky}
 
-  const MarimoState({
+class MarimoLevelState extends Equatable {
+  final MarimoLevel marimoLevel;
+  final MarimoLifeCycle marimoLifeCycle;
+
+  const MarimoLevelState( {
+    required this.marimoLifeCycle,
     required this.marimoLevel,
   });
 
-  const MarimoState.empty() : this(marimoLevel: MarimoLevel.baby);
+  const MarimoLevelState.empty() : this(marimoLifeCycle:MarimoLifeCycle.normal,marimoLevel: MarimoLevel.baby);
 
-  MarimoState copyWith({
+  MarimoLevelState copyWith({
     MarimoLevel? marimoLevel,
+    required MarimoLifeCycle marimoLifeCycle,
   }) {
-    return MarimoState(marimoLevel: marimoLevel ?? this.marimoLevel);
+    return MarimoLevelState(marimoLevel: marimoLevel ?? this.marimoLevel, marimoLifeCycle: this.marimoLifeCycle);
   }
 
   @override
-  List<Object?> get props => [marimoLevel];
+  List<Object?> get props => [marimoLevel,marimoLifeCycle];
 }
+
+
