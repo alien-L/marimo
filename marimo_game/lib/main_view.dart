@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'app_manage/local_repository.dart';
 import 'package:http/http.dart' as http;
+
+import 'bloc/environment_bloc/environment_bloc.dart';
 ///
 /// Created by ahhyun [ah2yun@gmail.com] on 2023. 03. 30
 ///
@@ -67,18 +70,22 @@ class _MainViewState extends State<MainView> {
   }
 
   Future<WeatherInfo> getWeatherByCurrentLocation(lat, lon) async {
-    // &units=metric => 섭씨 사용
-    var url =
-        'https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=658d847ef1d28e72e047ab0c5a476d54&units=metric';
-    // url에 데이터를 가져올 때까지 기다려 주세요
-    //var response = await fetch(url);
-    //var data = await response.json();
-    //console.log(data);
+    var url = 'https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=658d847ef1d28e72e047ab0c5a476d54&units=metric';
     Uri myUri = Uri.parse(url);
     final response = await http.get(myUri);
     final responseJson = json.decode(utf8.decode(response.bodyBytes));
     print("url ===> 🦄 $responseJson");
     return WeatherInfo.fromJson(responseJson);
+  }
+
+  checkEnvironment(Map<String, dynamic> data) {
+    print("여기 날씨 ");
+    final temp = data["temp"];
+    final humidity = data["humidity"];
+    final envriomentBloc = context.read<EnvironmentBloc>();
+
+    envriomentBloc.add(HumidityChangedEvent(humidity));
+    envriomentBloc.add(TemperatureChangedEvent(temp)); // bad 인경우 temp값 가져와서  35 이면 죽이게 만들기
   }
 
   @override
@@ -88,19 +95,11 @@ class _MainViewState extends State<MainView> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (Platform.isIOS) {
         final position = await  _getCurrentPosition();
-       // print("ios 디바이스 ! 🦄🦄🦄🦄🦄🦄${position?.latitude},${position?.longitude},");
         var lat = position?.latitude;
         var lon = position?.longitude;
         final _weatherInfo = await  getWeatherByCurrentLocation(lat,lon);
         final detailedWeatherInfo = _weatherInfo.main;
-      //  final detailedWeatherInfo = _weatherInfo.weather;
-        print("temp => ${detailedWeatherInfo["temp"]}");
-        print("temp_min => ${detailedWeatherInfo["temp_min"]}");
-        print("temp_max => ${detailedWeatherInfo["temp_max"]}");
-        print("humidity => ${detailedWeatherInfo["humidity"]}");
-       // print("${detailedWeatherInfo["main"]}");
-     //   print("${detailedWeatherInfo["description"]}");
-          //_weatherInfo.
+        checkEnvironment(detailedWeatherInfo);
       } else {
         checkPermissionForAos();
       }

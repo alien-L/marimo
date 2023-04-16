@@ -1,10 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
-import '../marimo_game_world.dart';
+import '../../marimo_game_world.dart';
 
-class Hud extends PositionComponent with HasGameRef<MarimoWorldGame> {
-  Hud({
+class MarimoStateBar extends PositionComponent with HasGameRef<MarimoWorldGame> {
+  MarimoStateBar({
     super.position,
     super.size,
     super.scale,
@@ -21,35 +21,36 @@ class Hud extends PositionComponent with HasGameRef<MarimoWorldGame> {
   @override
   Future<void>? onLoad() async {
 
+
     _scoreTextComponent = TextComponent(
-      text: '${game.coinsCollected}',
+      text: ' ${game.marimoStateScore}',
       textRenderer: TextPaint(
         style: const TextStyle(
-          fontSize: 10,
-          color: Color.fromRGBO(10, 10, 10, 1),
+          fontSize: 20,
+          color: Colors.white,
         ),
       ),
       anchor: Anchor.center,
-      position: Vector2(game.size.x - (60), 20),
+      position: Vector2(20, 65), //game.size.x - (60)
     );
     add(_scoreTextComponent);
 
-    final coinSprite = await game.loadSprite('coin.png');
-    add(
-      SpriteComponent(
-        sprite: coinSprite,
-        position: Vector2(game.size.x - 100, 20),
-        size: Vector2.all(32),
-        anchor: Anchor.center,
-      ),
-    );
+    // final coinSprite = await game.loadSprite('coin.png');
+    // add(
+    //   SpriteComponent(
+    //     sprite: coinSprite,
+    //     position: Vector2(game.size.x - 100, 20),
+    //     size: Vector2.all(32),
+    //     anchor: Anchor.center,
+    //   ),
+    // );
 
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
-    _scoreTextComponent.text = '${game.coinsCollected}';
+    _scoreTextComponent.text = '${game.marimoStateScore}';
     super.update(dt);
   }
 }

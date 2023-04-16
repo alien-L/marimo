@@ -31,6 +31,7 @@ import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:marimo_game/bloc/environment_bloc/environment_bloc.dart';
 import 'package:marimo_game/page/game_setting_page.dart';
 import 'package:marimo_game/page/init_setting_page.dart';
 import 'package:marimo_game/page/shop_page.dart';
@@ -78,10 +79,10 @@ Future<void> main() async {
   final bool isMainPage =  await getInitRoute();
   String initRoute = isMainPage?'/main_scene':'/init_setting';
   runApp(RestartWidget(child:
-
   MultiBlocProvider(
     providers: [
       BlocProvider<MarimoBloc>(create: (_) => MarimoBloc()),
+      BlocProvider<EnvironmentBloc>(create: (_) => EnvironmentBloc(const EnvironmentState.empty())),
     ],
       child: App(initRoute: initRoute,))
 
@@ -120,6 +121,7 @@ class App extends StatelessWidget {
       initialRoute: initRoute,
       routes:{
         '/main_scene' : (context) => initWidget(MainGamePage()),
+        '/main_scene' : (context) => MainGamePage(),
         '/init_setting' : (context) => InitSettingPage(),
         '/game_setting' : (context) => GameSettingPage(),
         '/shop_page' : (context) => ShopPage(),

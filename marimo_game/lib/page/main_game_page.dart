@@ -29,6 +29,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marimo_game/bloc/environment_bloc/environment_bloc.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
 import 'package:marimo_game/style/color.dart';
 import '../app_manage/local_repository.dart';
@@ -52,10 +53,13 @@ class MainGamePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final game = MarimoWorldGame(
       marimoBloc: context.read<MarimoBloc>(),
+      environmentBloc: context.read<EnvironmentBloc>(),
     );
+
     void onJoypadDirectionChanged(Direction direction) {
       game.onJoypadDirectionChanged(direction);
     }
+
     TextButton(
         onPressed: () {
           localRepository.getSecureStorage().deleteAll();
@@ -64,6 +68,7 @@ class MainGamePage extends StatelessWidget {
             height: 50,
             color: Colors.green,
             child: Text('reset')));
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SafeArea(
@@ -157,27 +162,27 @@ class MainGamePage extends StatelessWidget {
                     ],
                   ),
                 )),
-            Positioned(
-                top: 50,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 30,
-                  color: Colors.amber,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: 30,
-                        child: Text("마리모 상태바 "),
-                      ),
-                      Container(
-                        height: 30,
-                        child: Text(
-                            "물 : good , 온도 : good , 습도 : good , 먹이 : good"),
-                      ),
-                    ],
-                  ),
-                ))
+            // Positioned(
+            //     top: 50,
+            //     child: Container(
+            //       width: MediaQuery.of(context).size.width,
+            //       height: 30,
+            //       color: Colors.amber,
+            //       child: Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           Container(
+            //             height: 30,
+            //             child: Text("마리모 상태바 "),
+            //           ),
+            //           Container(
+            //             height: 30,
+            //             child: Text(
+            //                 "물 : good , 온도 : good , 습도 : good , 먹이 : good"),
+            //           ),
+            //         ],
+            //       ),
+            //     ))
           ],
         ),
       ),

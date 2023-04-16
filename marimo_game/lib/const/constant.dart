@@ -5,11 +5,6 @@
 
 enum Villain {cat,shrimp,snail,fish,dog,shark,marooMarimo}
 
-enum FishBowlState {good , bad}
-
-//enum MarimoLevel{baby,child,child2,teenager,adult,oldMan}
-
-//enum MarimoState{dangerous,good,bad,normal,die}
 
 abstract class Constant {
   String hello = '';
