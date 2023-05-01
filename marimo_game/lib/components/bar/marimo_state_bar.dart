@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
+import '../../app_manage/local_repository.dart';
 import '../../marimo_game_world.dart';
 
 class MarimoStateBar extends PositionComponent with HasGameRef<MarimoWorldGame> {
@@ -20,10 +21,11 @@ class MarimoStateBar extends PositionComponent with HasGameRef<MarimoWorldGame> 
 
   @override
   Future<void>? onLoad() async {
-
+    String? marimoStateScoreLocalValue = await LocalRepository().getValue(
+        key: "marimoStateScore");
 
     _scoreTextComponent = TextComponent(
-      text: ' ${game.marimoStateScore}',
+      text: ' ${marimoStateScoreLocalValue}',
       textRenderer: TextPaint(
         style: const TextStyle(
           fontSize: 20,
@@ -49,8 +51,11 @@ class MarimoStateBar extends PositionComponent with HasGameRef<MarimoWorldGame> 
   }
 
   @override
-  void update(double dt) {
-    _scoreTextComponent.text = '${game.marimoStateScore}';
+  Future<void> update(double dt) async {
+    String? marimoStateScoreLocalValue = await LocalRepository().getValue(
+        key: "marimoStateScore");
+    _scoreTextComponent.text = '${marimoStateScoreLocalValue}';
+
     super.update(dt);
   }
 }

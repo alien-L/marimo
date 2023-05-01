@@ -1,10 +1,14 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/style/color.dart';
 
+import '../marimo_game_world.dart';
+
 
 class GameSettingPage extends StatefulWidget {
-  const GameSettingPage({Key? key}) : super(key: key);
+  const GameSettingPage({Key? key, required this.game}) : super(key: key);
+  final MarimoWorldGame game;
 
   @override
   State<GameSettingPage> createState() => _GameSettingPageState();
@@ -13,19 +17,24 @@ class GameSettingPage extends StatefulWidget {
 class _GameSettingPageState extends State<GameSettingPage> {
 bool isSwitched = false;
 
-  Widget toggleWidget({required String txt}) => Padding(
+Future<ValueChanged<bool>?> onOffSound(value) async {
+  setState(() {
+    isSwitched = value;
+    if(isSwitched){
+    }else{
+    }
+    print(isSwitched);
+  });
+}
+
+  Widget toggleWidget({required String txt,required ValueChanged<bool>? onChanged}) => Padding(
     padding: const EdgeInsets.all(10.0),
     child: Row(
       children: [
         Text(txt),
         Switch(
           value: isSwitched,
-          onChanged: (value) {
-            setState(() {
-              isSwitched = value;
-              print(isSwitched);
-            });
-          },
+          onChanged:onChanged,
           activeTrackColor: CommonColor.green,
           activeColor: CommonColor.green,
         ),
@@ -44,8 +53,14 @@ bool isSwitched = false;
         child: Center(
           child:Column(
             children: [
-              toggleWidget(txt: "음악 on/off"),
-              toggleWidget(txt: "푸시설정 on/off"),
+              TextButton(onPressed: (){
+                widget.game.soundBloc.offBgmSound();
+              }, child: Text("off")),
+              TextButton(onPressed: (){
+                widget.game.soundBloc.onBgmSound();
+              }, child: Text("on")),
+              toggleWidget(txt: "음악 on/off",onChanged: onOffSound),
+              toggleWidget(txt: "푸시설정 on/off",onChanged: onOffSound),
              // Text("언어설정"),
             ],
           ),

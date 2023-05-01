@@ -1,24 +1,31 @@
 part of 'environment_bloc.dart';
 
-enum MarimoEnvironmentState { good, bad }
-
-class EnvironmentState extends Equatable {
-  final MarimoEnvironmentState? marimoEnvironmentState;
-
-  const EnvironmentState({this.marimoEnvironmentState});
-
-  const EnvironmentState.empty() : this();
-
-  EnvironmentState copyWith({
-    MarimoEnvironmentState? marimoEnvironmentState,
-  }) {
-    return EnvironmentState(marimoEnvironmentState: this.marimoEnvironmentState);
-  }
-
-  @override
-  List<Object?> get props => [
-        marimoEnvironmentState,
-      ];
+abstract class EnvironmentState extends Equatable {
+  const EnvironmentState();
 }
 
+class Empty extends EnvironmentState {
+  @override
+  List<Object?> get props => [];
+}
 
+class Loaded extends EnvironmentState {
+  final bool? isWaterChanged;
+  final double? temperature;
+  final int? humidity;
+  final bool? isFoodTrashChanged;
+
+  Loaded(
+      {this.isWaterChanged,
+      this.temperature,
+      this.humidity,
+      this.isFoodTrashChanged});
+
+  @override
+  List<Object?> get props => [];
+}
+
+class Error extends EnvironmentState {
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}

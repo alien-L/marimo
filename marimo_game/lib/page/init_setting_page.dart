@@ -43,7 +43,7 @@ class InitSettingPage extends StatelessWidget {
             decoration: const InputDecoration(
               labelStyle: TextStyle(color: CommonColor.green),
               hintText: 'please input your marimo name.',
-              labelText: 'Name',
+              labelText: 'NAME',
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: CommonColor.green, width: 2.0),
               ),

@@ -8,6 +8,7 @@ import 'app_manage/local_repository.dart';
 import 'package:http/http.dart' as http;
 
 import 'bloc/environment_bloc/environment_bloc.dart';
+
 ///
 /// Created by ahhyun [ah2yun@gmail.com] on 2023. 03. 30
 ///
@@ -24,6 +25,7 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   late PermissionStatus statusTest;
+  LocalRepository localRepository = LocalRepository();
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
@@ -32,7 +34,8 @@ class _MainViewState extends State<MainView> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Location services are disabled. Please enable the services')));
+          content: Text(
+              'Location services are disabled. Please enable the services')));
       return false;
     }
     permission = await Geolocator.checkPermission();
@@ -46,20 +49,20 @@ class _MainViewState extends State<MainView> {
     }
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Location permissions are permanently denied, we cannot request permissions.')));
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
       return false;
     }
     return true;
   }
 
   Future<Position?> _getCurrentPosition() async {
-   // Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-   late Position? _currentPosition;
+    // Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    late Position? _currentPosition;
 
     final hasPermission = await _handleLocationPermission();
     if (!hasPermission) return null;
-    await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high)
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position? position) {
       setState(() => _currentPosition = position);
     }).catchError((e) {
@@ -70,22 +73,62 @@ class _MainViewState extends State<MainView> {
   }
 
   Future<WeatherInfo> getWeatherByCurrentLocation(lat, lon) async {
-    var url = 'https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=658d847ef1d28e72e047ab0c5a476d54&units=metric';
+    var url =
+        'https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=658d847ef1d28e72e047ab0c5a476d54&units=metric';
     Uri myUri = Uri.parse(url);
     final response = await http.get(myUri);
     final responseJson = json.decode(utf8.decode(response.bodyBytes));
     print("url ===> 🦄 $responseJson");
+    // local에 저장
     return WeatherInfo.fromJson(responseJson);
   }
 
-  checkEnvironment(Map<String, dynamic> data) {
+  checkEnvironment(Map<String, dynamic> data) async {
     print("여기 날씨 ");
-    final temp = data["temp"];
+    final temperature = data["temp"];
     final humidity = data["humidity"];
     final envriomentBloc = context.read<EnvironmentBloc>();
 
-    envriomentBloc.add(HumidityChangedEvent(humidity));
-    envriomentBloc.add(TemperatureChangedEvent(temp)); // bad 인경우 temp값 가져와서  35 이면 죽이게 만들기
+    // late var isWaterChanged;// set , get 설정 해 주기
+    // late var isFoodTrashChanged;
+    // late var humidityLocalValue;
+    // late var temperatureLocalValue;
+    var isWaterChanged = await localRepository.getValue(
+        key: "isWaterChanged"); // set , get 설정 해 주기
+    var isFoodTrashChanged =
+        await localRepository.getValue(key: "isFoodTrashChanged");
+    var humidityLocalValue =
+        await localRepository.getValue(key: "humidity");
+    var temperatureLocalValue =
+        await localRepository.getValue(key: "temperature");
+
+    if (isWaterChanged == null ||
+        isFoodTrashChanged == null ||
+        humidityLocalValue == null ||
+        temperatureLocalValue == null) {
+
+       await localRepository.setKeyValue(key: "isWaterChanged", value: "0");
+       await localRepository.setKeyValue(key: "isFoodTrashChanged", value: "0");
+       await localRepository.setKeyValue(key: "humidity", value: humidity.toString());
+       await localRepository.setKeyValue(key: "temperature", value: temperature.toString());
+
+    }
+
+    print("event 발생!!!!");
+    envriomentBloc.add(EnvironmentChangeEvent(
+        isWaterChanged: isWaterChanged == "0",
+        humidity: humidity,
+        temperature: temperature,
+        isFoodTrashChanged: isFoodTrashChanged == "0")); // bad 인경우 temp값 가져와서  35 이면 죽이게 만들기
+  }
+
+  getMyEnvironment() async {
+    final position = await _getCurrentPosition();
+    var lat = position?.latitude;
+    var lon = position?.longitude;
+    final _weatherInfo = await getWeatherByCurrentLocation(lat, lon);
+    final detailedWeatherInfo = _weatherInfo.main;
+    checkEnvironment(detailedWeatherInfo);
   }
 
   @override
@@ -94,18 +137,15 @@ class _MainViewState extends State<MainView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (Platform.isIOS) {
-        final position = await  _getCurrentPosition();
-        var lat = position?.latitude;
-        var lon = position?.longitude;
-        final _weatherInfo = await  getWeatherByCurrentLocation(lat,lon);
-        final detailedWeatherInfo = _weatherInfo.main;
-        checkEnvironment(detailedWeatherInfo);
+        getMyEnvironment();
       } else {
         checkPermissionForAos();
       }
       final isFirstInstallApp = await _getFirstInstallStatus();
       if (!mounted) return;
       if (isFirstInstallApp) {
+        getMyEnvironment();
+        await localRepository.setKeyValue(key: "marimoStateScore", value: "50");
         // 첫 앱 설치
       }
     });
@@ -123,7 +163,7 @@ class _MainViewState extends State<MainView> {
     LocalRepository localRepository = LocalRepository(); // 로컬 저장소
     final isFirst = await localRepository.getValue(key: "firstInstall");
     if (isFirst == null) {
-      await localRepository.setKeyValue(key: 'firstInstall',value: '1');
+      await localRepository.setKeyValue(key: 'firstInstall', value: '1');
       print("첫 앱 설치 ");
       return true;
     } else {
@@ -177,7 +217,9 @@ class _MainViewState extends State<MainView> {
   // 권한 팝업 실행 여부 체크
   Future<bool> runPermission(Permission permission) async {
     PermissionStatus status = await permission.request();
-    if (status == PermissionStatus.granted || status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied) {
+    if (status == PermissionStatus.granted ||
+        status == PermissionStatus.denied ||
+        status == PermissionStatus.permanentlyDenied) {
       return true;
     }
     return false;
@@ -206,45 +248,44 @@ class WeatherInfo {
 
   WeatherInfo(
       {this.coord,
-        this.weather,
-        this.base,
-        this.main,
-        this.visibility,
-        this.wind,
-        this.clouds,
-        this.dt,
-        this.sys,
-        this.timezone,
-        this.id,
-        this.name,
-        this.cod
-      });
+      this.weather,
+      this.base,
+      this.main,
+      this.visibility,
+      this.wind,
+      this.clouds,
+      this.dt,
+      this.sys,
+      this.timezone,
+      this.id,
+      this.name,
+      this.cod});
 
   factory WeatherInfo.fromJson(Map<String, dynamic> json) => WeatherInfo(
-    coord: json['coord'] as dynamic,
-    weather: json['weather'] as dynamic,
-    base: json['base'] as dynamic,
-    main: json['main'] as dynamic,
-    visibility: json['visibility'] as dynamic,
-    wind  : json['wind'] as dynamic,
-    clouds  : json['clouds'] as dynamic,
-    dt  : json['dt'] as dynamic,
-    sys  : json['sys'] as dynamic,
-    timezone  : json['timezone'] as dynamic,
-    id  : json['id'] as dynamic,
-  );
+        coord: json['coord'] as dynamic,
+        weather: json['weather'] as dynamic,
+        base: json['base'] as dynamic,
+        main: json['main'] as dynamic,
+        visibility: json['visibility'] as dynamic,
+        wind: json['wind'] as dynamic,
+        clouds: json['clouds'] as dynamic,
+        dt: json['dt'] as dynamic,
+        sys: json['sys'] as dynamic,
+        timezone: json['timezone'] as dynamic,
+        id: json['id'] as dynamic,
+      );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'coord': coord,
-    'weather':weather,
-    'base':base,
-    'main':main,
-    'visibility':visibility,
-    'wind':wind,
-    'clouds':clouds,
-    'dt':dt,
-    'sys ':sys ,
-    'timezone':timezone,
-    'id':id,
-  };
+        'coord': coord,
+        'weather': weather,
+        'base': base,
+        'main': main,
+        'visibility': visibility,
+        'wind': wind,
+        'clouds': clouds,
+        'dt': dt,
+        'sys ': sys,
+        'timezone': timezone,
+        'id': id,
+      };
 }

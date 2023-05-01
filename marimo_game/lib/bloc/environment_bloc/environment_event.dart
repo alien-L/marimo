@@ -4,34 +4,18 @@ abstract class EnvironmentEvent extends Equatable {
   const EnvironmentEvent();
 }
 
-class WaterChangedEvent extends EnvironmentEvent{
- final bool  isWaterChanged;
-  WaterChangedEvent(this.isWaterChanged);
+class EnvironmentChangeEvent extends EnvironmentEvent {
+  final bool? isWaterChanged;
+  final double? temperature;
+  final int? humidity;
+  final bool? isFoodTrashChanged;
+
+  EnvironmentChangeEvent(
+      {this.isWaterChanged,
+      this.temperature,
+      this.humidity,
+      this.isFoodTrashChanged});
 
   @override
-  List<Object?> get props => [isWaterChanged];
-}
-
-class TemperatureChangedEvent extends EnvironmentEvent{
- final double temperature;
-  TemperatureChangedEvent(this.temperature);
-
-  @override
-  List<Object?> get props => [temperature];
-}
-
-class HumidityChangedEvent extends EnvironmentEvent{
-  final int humidity;
-  HumidityChangedEvent(this.humidity);
-
-  @override
-  List<Object?> get props => [humidity];
-}
-
-class FoodTrashChangedEvent extends EnvironmentEvent{
-  FoodTrashChangedEvent(this. isFoodTrashChanged);
-  final bool  isFoodTrashChanged;
-
-  @override
-  List<Object?> get props => [ isFoodTrashChanged];
+  List<Object?> get props => [];
 }

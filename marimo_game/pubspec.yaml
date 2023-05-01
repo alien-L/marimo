@@ -24,6 +24,7 @@ dependencies:
   flame_bloc: ^1.8.3
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
+  flame_audio: ^2.0.2
 
 dev_dependencies:
   flutter_test:
@@ -37,4 +38,22 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/marimo/
+    - assets/images/shop/
     - assets/
+    - assets/font/
+    - assets/audio/music/
+
+  fonts:
+        - family: KimjungchulGothic
+          fonts:
+            - asset: assets/font/KimjungchulGothic/KimjungchulGothic-Light.ttf
+              weight: 200
+            - asset: assets/font/KimjungchulGothic/KimjungchulGothic-Regular.ttf
+              weight: 300
+            - asset: assets/font/KimjungchulGothic/KimjungchulGothic-Bold.ttf
+              weight: 400
+        - family: NeoDunggeunmoPro
+          fonts:
+            - asset: assets/font/NeoDunggeunmoPro-Regular.ttf
+              weight: 200

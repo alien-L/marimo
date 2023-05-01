@@ -4,15 +4,7 @@ import 'package:flutter/material.dart';
 import '../../marimo_game_world.dart';
 
 class CoinCollector extends PositionComponent with HasGameRef<MarimoWorldGame> {
-  CoinCollector({
-    super.position,
-    super.size,
-    super.scale,
-    super.angle,
-    super.anchor,
-    super.children,
-    super.priority = 5,
-  }) {
+  CoinCollector() {
     positionType = PositionType.viewport;
   }
 

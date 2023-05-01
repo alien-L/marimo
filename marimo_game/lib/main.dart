@@ -30,7 +30,6 @@ import 'dart:io';
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:marimo_game/bloc/environment_bloc/environment_bloc.dart';
 import 'package:marimo_game/page/game_setting_page.dart';
 import 'package:marimo_game/page/init_setting_page.dart';
@@ -42,6 +41,8 @@ import 'app_manage/local_repository.dart';
 import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
 import 'bloc/marimo_bloc/marimo_bloc.dart';
+import 'bloc/sound_bloc.dart';
+import 'marimo_game_world.dart';
 import 'page/main_game_page.dart';
 import 'main_view.dart';
 //앱 시작 타입      : 강제 업데이트 , 운영 , 정기점검
@@ -81,10 +82,13 @@ Future<void> main() async {
   runApp(RestartWidget(child:
   MultiBlocProvider(
     providers: [
+      BlocProvider<SoundBloc>(create: (_) => SoundBloc()),
       BlocProvider<MarimoBloc>(create: (_) => MarimoBloc()),
-      BlocProvider<EnvironmentBloc>(create: (_) => EnvironmentBloc(const EnvironmentState.empty())),
+      BlocProvider<EnvironmentBloc>(create: (_) => EnvironmentBloc()),
     ],
-      child: App(initRoute: initRoute,))
+      child:
+      App(initRoute: initRoute,)
+  )
 
   ));
  // FlutterNativeSplash.remove();
@@ -114,19 +118,29 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'RayWorld',
-      initialRoute: initRoute,
-      routes:{
-        '/main_scene' : (context) => initWidget(MainGamePage()),
-        '/main_scene' : (context) => MainGamePage(),
-        '/init_setting' : (context) => InitSettingPage(),
-        '/game_setting' : (context) => GameSettingPage(),
-        '/shop_page' : (context) => ShopPage(),
-      },
-      home: initWidget(MainGamePage()),
+    
+    final game = MarimoWorldGame(
+        marimoBloc: context.read<MarimoBloc>(),
+        environmentBloc: context.read<EnvironmentBloc>(),
+        context: context, soundBloc: context.read<SoundBloc>(),
+    );
+    
+    return initWidget( MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'RayWorld',
+        theme: ThemeData(
+          fontFamily: 'NeoDunggeunmoPro',//'NeoDunggeunmoPro',
+        ),
+        initialRoute: initRoute,
+        routes:{
+          '/main_scene' : (context) => MainGamePage(game: game,),
+        //  '/main_scene' : (context) => MainGamePage(game: game,),
+          '/init_setting' : (context) => InitSettingPage(),
+          '/game_setting' : (context) => GameSettingPage(game: game,),
+          '/shop_page' : (context) => ShopPage(game: game,),
+        },
+        home: initWidget(MainGamePage(game: game,)),
+      ),
     );
   }
 }

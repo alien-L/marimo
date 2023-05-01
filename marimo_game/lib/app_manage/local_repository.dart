@@ -22,6 +22,11 @@ class LocalRepository {
   // key:"firstInstall", value: "1"
   // "marimoName"
   // "marimoState"
+  // temperature
+  // humidity
+  // isWaterChanged = value "0" :true , "1":false
+  // isFoodTrashChanged = value "0" :true , "1":false
+  //coin
   Future<String?> getValue({required String key}) async {
     final secureStorage = getSecureStorage();
     return   await secureStorage.read(key:key);

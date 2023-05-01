@@ -26,11 +26,13 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
     THE SOFTWARE. **/
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/bloc/environment_bloc/environment_bloc.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
+import 'package:marimo_game/components/game_alert.dart';
 import 'package:marimo_game/style/color.dart';
 import '../app_manage/local_repository.dart';
 import '../helpers/direction.dart';
@@ -39,9 +41,10 @@ import '../marimo_game_world.dart';
 
 class MainGamePage extends StatelessWidget {
   MainGamePage({
-    Key? key,
+    Key? key, required this.game,
   }) : super(key: key);
   LocalRepository localRepository = LocalRepository();
+  final MarimoWorldGame game;
 
   Future<String?> getMarimoName() async {
     final String? name = await localRepository.getValue(key: "marimoName");
@@ -51,23 +54,51 @@ class MainGamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final game = MarimoWorldGame(
-      marimoBloc: context.read<MarimoBloc>(),
-      environmentBloc: context.read<EnvironmentBloc>(),
-    );
+
 
     void onJoypadDirectionChanged(Direction direction) {
       game.onJoypadDirectionChanged(direction);
     }
 
-    TextButton(
+   Widget resetWidget()=> TextButton(
         onPressed: () {
           localRepository.getSecureStorage().deleteAll();
         },
         child: Container(
-            height: 50,
+            height: 20,
             color: Colors.green,
             child: Text('reset')));
+
+    Widget coinWidget()=> TextButton(
+        onPressed: () {
+        },
+        child: Container(
+            height: 20,
+            color: Colors.green,
+            child: Text('coin')));
+
+    Widget btnWidget()=> TextButton(
+        onPressed: () async {
+     //  await   GameAlert(context).showMyDialog(text: '');
+        },
+        child: Container(
+            height: 20,
+            color: Colors.green,
+            child: Text('btn')));
+
+
+    Widget topButtonWidget(String route,String imagePath,double height)=>
+    InkWell(
+      onTap: (){
+        Navigator.pushNamed(
+            context, route);
+      },
+      child: SizedBox(
+        //width: 40,
+        height: height,
+        child: Image.asset(imagePath),
+      ),
+    );
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -85,7 +116,7 @@ class MainGamePage extends StatelessWidget {
             Positioned(
                 top: 0,
                 child: Container(
-                  width: MediaQuery.of(context).size.width, height: 50,
+                  width: MediaQuery.of(context).size.width, height: 70,
                   //  color: Colors.amber,
                   child: Column(
                     children: [
@@ -96,67 +127,53 @@ class MainGamePage extends StatelessWidget {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(left: 5.0),
-                                child: SizedBox(
-                                  width: 45,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, "/shop_page");
-                                    },
-                                    child: Icon(
-                                      Icons.shopping_cart_sharp,
-                                      size: 15,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: CommonColor.green),
-                                  ),
-                                ),
+                                child: topButtonWidget("/shop_page","assets/images/shop.png",70),
                               ),
-                              FutureBuilder<String?>(
-                                  future: getMarimoName(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasError ||
-                                        !snapshot.hasData) {
-                                      return Container();
-                                    } else {
-                                      return Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 5.0),
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                                width: 50,
-                                                height: 50,
-                                                child: Image.asset(
-                                                  'assets/images/mymarimo_btn.png',
-                                                )),
-                                            Text("${snapshot.requireData}"),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  }),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5.0),
+                                child: resetWidget(),
+
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15.0),
+                                child: btnWidget(),
+
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child:  coinWidget(),
+
+                              ),
+                              // FutureBuilder<String?>(
+                              //     future: getMarimoName(),
+                              //     builder: (context, snapshot) {
+                              //       if (snapshot.hasError ||
+                              //           !snapshot.hasData) {
+                              //         return Container();
+                              //       } else {
+                              //         return Padding(
+                              //           padding:
+                              //               const EdgeInsets.only(left: 5.0),
+                              //           child: Row(
+                              //             children: [
+                              //               SizedBox(
+                              //                   width: 50,
+                              //                   height: 50,
+                              //                   child: Image.asset(
+                              //                     'assets/images/mymarimo_btn.png',
+                              //                   )),
+                              //               Text("${snapshot.requireData}"),
+                              //             ],
+                              //           ),
+                              //         );
+                              //       }
+                              //     }),
                             ],
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 5.0),
-                            child: SizedBox(
-                              width: 45,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, "/game_setting");
-                                },
-                                child: Icon(
-                                  Icons.settings,
-                                  size: 15,
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: CommonColor.green),
-                              ),
-                            ),
+                            child: topButtonWidget("/game_setting","assets/images/setting.png",40),
                           ),
-                          //   ],
-                          // ),
                         ],
                       ),
                     ],

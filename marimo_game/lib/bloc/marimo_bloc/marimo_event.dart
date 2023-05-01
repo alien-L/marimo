@@ -21,3 +21,12 @@ class MarimoStateChangedEvent extends MarimoEvent {
   @override
   List<Object?> get props => [];
 }
+
+class MarimoStateScoreCalculatedEvent extends MarimoEvent{
+  final bool isPlus;
+  final int score;
+  MarimoStateScoreCalculatedEvent({required this.isPlus, required this.score});
+
+  @override
+  List<Object?> get props => [];
+}
