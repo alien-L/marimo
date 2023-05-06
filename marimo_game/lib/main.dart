@@ -154,6 +154,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final game = MarimoWorldGame(
       marimoBloc: context.read<MarimoBloc>(),
       environmentBloc: context.read<EnvironmentBloc>(),

@@ -11,17 +11,22 @@ class MarimoStateBar extends PositionComponent
     positionType = PositionType.viewport;
   }
 
+
   @override
   Future<void>? onLoad() async {
+    final marimobloc =  game.marimoBloc;
+    // if(marimobloc.state is MarimoStateEmpty){
+    //  // add(Mar);
+    // }
+   final marimoLevelState =  game.marimoBloc.state as MarimoLevelState;
+    MarimoLifeCycle? _marimoLifeCycleValue = marimoLevelState.marimoLifeCycle;
 
-    MarimoLifeCycle _marimoLifeCycleValue =
-        game.marimoBloc.state.marimoLifeCycle;
-    print("_ ==> ${_marimoLifeCycleValue.name}");
-    print("_ ==> ${game.marimoBloc.state.stateScore}");
+    print("_ ==> ${_marimoLifeCycleValue?.name}");
+    print("_ ==> ${marimoLevelState.stateScore}");
     final lifeBarSprite =
-        await game.loadSprite('life_bar_${_marimoLifeCycleValue.name}.png');
+        await game.loadSprite('life_bar_${_marimoLifeCycleValue?.name}.png');
     add(TextComponent(
-      text: "${game.marimoBloc.state.stateScore}",
+      text: "${marimoLevelState.stateScore}",
       textRenderer: TextPaint(
         style: const TextStyle(
             fontFamily: 'NeoDunggeunmoPro',

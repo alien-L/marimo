@@ -24,7 +24,7 @@ class MarimoWorldGame extends FlameGame
   late MarimoComponent marimoComponent;
   late EnvironmentStateBar environmentStateBar;
 
-  int marimoStateScore = 50;
+ // int marimoStateScore = 50;
 
   final MarimoBloc marimoBloc;
   final EnvironmentBloc environmentBloc;
@@ -61,6 +61,17 @@ class MarimoWorldGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    //final marimobloc =  game.marimoBloc;
+    if(marimoBloc.state is MarimoStateEmpty){
+      marimoBloc.add(
+        MarimoGetInitStateEvent(
+          MarimoLevel.baby,
+          MarimoLifeCycle.normal,
+          50
+        )
+      );
+    }
+
     await add(_world);
 
     final marimoLevel = await localRepository.getValue(key: "MarimoLevel");
@@ -68,7 +79,7 @@ class MarimoWorldGame extends FlameGame
     await add(
       FlameMultiBlocProvider(
         providers: [
-          FlameBlocProvider<MarimoBloc, MarimoLevelState>.value(
+          FlameBlocProvider<MarimoBloc, MarimoBlocState>.value(
             value: marimoBloc,
           ),
           FlameBlocProvider<EnvironmentBloc, EnvironmentState>.value(
@@ -86,6 +97,8 @@ class MarimoWorldGame extends FlameGame
         ],
       ),
     );
+    // 로컬저장소에 값이 있나 없나 체크
+
 
     add(_coinCollector);
 
@@ -95,6 +108,7 @@ class MarimoWorldGame extends FlameGame
       _coinList.add(tempCoin);
       add(tempCoin);
     }
+
     // 동전 남아있게 만들기
 
     add(_marimoStateBar); // 마리모 상태바

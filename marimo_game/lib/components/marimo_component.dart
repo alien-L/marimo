@@ -14,21 +14,27 @@ import 'game_alert.dart';
 class MarimoController extends Component
     with
         HasGameRef<MarimoWorldGame>,
-        FlameBlocListenable<MarimoBloc, MarimoLevelState> {
+        FlameBlocListenable<MarimoBloc, MarimoBlocState> {
   final BuildContext context;
 
   MarimoController(this.context);
 
   @override
-  bool listenWhen(MarimoLevelState previousState, MarimoLevelState newState) {
-    return previousState.marimoLevel != newState.marimoLevel;
+  bool listenWhen(MarimoBlocState previousState, MarimoBlocState newState) {
+    if(newState is MarimoLevelState && previousState is MarimoLevelState){
+      return previousState.marimoLevel != newState.marimoLevel;
+    }else{
+      return true;
+    }
   }
 
   @override
-  void onNewState(MarimoLevelState state) {
+  void onNewState(MarimoBlocState state) {
     print("marimo 🦄 state ===> $state");
-    parent?.add(gameRef.marimoComponent =
-        MarimoComponent(name: state.marimoLevel.name, context: context));
+    if(state is MarimoLevelState){
+      parent?.add(gameRef.marimoComponent =
+          MarimoComponent(name: state.marimoLevel?.name, context: context));
+    }
   }
 }
 
@@ -37,7 +43,7 @@ class MarimoComponent extends SpriteAnimationComponent
         HasGameRef<MarimoWorldGame>,
         CollisionCallbacks,
         KeyboardHandler,
-        FlameBlocListenable<MarimoBloc, MarimoLevelState> {
+        FlameBlocListenable<MarimoBloc, MarimoBlocState> {
   bool destroyed = false;
   final BuildContext context;
   final double _playerSpeed = 300.0;
@@ -53,7 +59,7 @@ class MarimoComponent extends SpriteAnimationComponent
   Direction direction = Direction.none;
   final Direction _collisionDirection = Direction.none;
   final bool _hasCollided = false;
-  final String name;
+  final String? name;
   LocalRepository localRepository = LocalRepository();
 
   MarimoComponent({required this.name, required this.context})

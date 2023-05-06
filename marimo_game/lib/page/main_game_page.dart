@@ -55,40 +55,32 @@ class MainGamePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     void onJoypadDirectionChanged(Direction direction) {
       game.onJoypadDirectionChanged(direction);
     }
 
-   // Widget resetWidget()=> TextButton(
-   //      onPressed: () {
-   //        localRepository.getSecureStorage().deleteAll();
-   //      },
-   //      child: Container(
-   //          height: 20,
-   //          color: Colors.green,
-   //          child: Text('reset')));
-
-  //  Widget coinWidget()=> Image.asset("assets/images/life_bar_100.png");
-        // TextButton(
-        // onPressed: () {
-        // },
-        // child: Container(
-        //     height: 20,
-        //     color: Colors.green,
-        //     child: Text('coin')));
-
-    // Widget btnWidget()=> TextButton(
-    //     onPressed: () async {
-    //  //  await   GameAlert(context).showMyDialog(text: '');
-    //       await  LocalRepository().setKeyValue(
-    //           key: "coin", value: "1000000");
-    //       game.coinBloc.emit(1000000);
-    //     },
-    //     child: Container(
-    //         height: 20,
-    //         color: Colors.green,
-    //         child: Text('btn')));
+    Widget developerManagerWidget()=> Row(
+      children: [
+        TextButton(
+            onPressed: () async {
+              await  LocalRepository().setKeyValue(
+                  key: "coin", value: "1000000");
+              game.coinBloc.emit(1000000);
+            },
+            child: Container(
+                height: 20,
+                color: Colors.green,
+                child: Text('코인 ++ '))),
+        TextButton(
+            onPressed: () {
+              localRepository.getSecureStorage().deleteAll();
+            },
+            child: Container(
+                height: 20,
+                color: Colors.green,
+                child: Text('reset')))
+      ],
+    );
 
 
     Widget topButtonWidget(String route,String imagePath,double height)=>
@@ -117,6 +109,10 @@ class MainGamePage extends StatelessWidget {
                 child: Joypad(onDirectionChanged: onJoypadDirectionChanged),
               ),
             ),
+            Positioned(
+                top: 0,
+                left: 120,
+                child: developerManagerWidget()),
             Positioned(
               top: 0,
               child: Padding(
