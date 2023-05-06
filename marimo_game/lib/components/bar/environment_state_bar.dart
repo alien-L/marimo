@@ -19,7 +19,7 @@ class EnvironmentStatController extends Component
   @override
   void onNewState(EnvironmentState state) {
     if(state is Loaded){
-      if(state.isWaterChanged!){
+      if(state.isWaterChanged){
         print("마리모 환경 이벤트 발생이요 ");
         game.marimoBloc.add(MarimoStateScoreCalculatedEvent(isPlus: true,score: 5));
       }
@@ -46,30 +46,58 @@ class EnvironmentStateBar extends PositionComponent
 
   late TextComponent _humidityTextComponent;
   late TextComponent _temperatureTextComponent;
-  late TextComponent _waterChangedTextComponent;
-  late TextComponent _foodTrashChangedTextComponent;
+ // late TextComponent _waterChangedTextComponent;
+//  late TextComponent _foodTrashChangedTextComponent;
   LocalRepository localRepository  = LocalRepository();
 
   @override
   Future<void>? onLoad() async {
-    String? humidity = await localRepository .getValue(key: "humidity");
-    String? temperature = await localRepository .getValue(key: "temperature");
-    String? isWaterChanged =  await localRepository .getValue(key: "isWaterChanged");
-    String? isFoodTrashChanged =  await localRepository .getValue(key: "isFoodTrashChanged");
+    final environmentBlocState = game.environmentBloc.state as Loaded;
+    String foodTrashState = environmentBlocState.isFoodTrashChanged?"clean":"dirty";
+    String isWaterChanged = environmentBlocState.isWaterChanged?"good":"bad";
+    String humidity = environmentBlocState.humidity.toString();
+    String temperature = environmentBlocState.temperature.toString();
 
-    _humidityTextComponent =
-        _textComponent("$humidity", Vector2(game.size.x - (20), 65));
-     _temperatureTextComponent =
-    _textComponent("$temperature", Vector2(game.size.x - (60), 65));
-    _waterChangedTextComponent =
-        _textComponent("${isWaterChanged=="0"?true:false}", Vector2(game.size.x - (90), 65));
-    _foodTrashChangedTextComponent =
-        _textComponent("${isFoodTrashChanged=="0"?true:false}", Vector2(game.size.x - (130), 65));
+    //String? humidity = await localRepository .getValue(key: "humidity");
+   //String? temperature = await localRepository .getValue(key: "temperature");
+   // String? isWaterChanged =  await localRepository .getValue(key: "isWaterChanged");
+   // String? isFoodTrashChanged =  await localRepository .getValue(key: "isFoodTrashChanged");
 
+   _humidityTextComponent =
+       _textComponent('$humidity%', Vector2(100, 40));
     add(_humidityTextComponent);
+
+    final waterDropSprite = await game.loadSprite('water_dop_$isWaterChanged.png');
+    add(
+      SpriteComponent(
+        sprite: waterDropSprite,
+        position:  Vector2(290, 40),
+        size: Vector2(20,20),
+        anchor: Anchor.center,
+      ),
+    );
+    _temperatureTextComponent =
+   _textComponent("$temperature°C", Vector2(180, 40));
     add(_temperatureTextComponent);
-    add(_waterChangedTextComponent);
-    add(_foodTrashChangedTextComponent);
+
+    final foodTrashSprite = await game.loadSprite('$foodTrashState.png');
+    add(
+      SpriteComponent(
+        sprite: foodTrashSprite,
+        position:  Vector2(250, 40),
+        size: Vector2(30,30),
+        anchor: Anchor.center,
+      ),
+    );
+
+  //  _waterChangedTextComponent =
+   //     _textComponent("${isWaterChanged=="0"?true:false}", Vector2(game.size.x - (90), 65));
+   // _foodTrashChangedTextComponent =
+     //   _textComponent("${isFoodTrashChanged=="0"?true:false}", Vector2(game.size.x - (130), 65));
+
+
+ //   add(_waterChangedTextComponent);
+  //  add(_foodTrashChangedTextComponent);
 
     return super.onLoad();
   }
@@ -79,8 +107,10 @@ class EnvironmentStateBar extends PositionComponent
       text: txt,
       textRenderer: TextPaint(
         style: const TextStyle(
-          fontSize: 15,
+          fontFamily: 'NeoDunggeunmoPro',
+          fontSize: 12,
           color: Colors.black,
+          locale: Locale('ko', 'KO')
         ),
       ),
       anchor: Anchor.center,
@@ -92,12 +122,12 @@ class EnvironmentStateBar extends PositionComponent
   void update(double dt) {
     final environmentBloc = game.environmentBloc.state;
 
-    if (environmentBloc is Loaded) {
-      _humidityTextComponent.text = '${environmentBloc.humidity}';
-      _temperatureTextComponent.text = '${environmentBloc.temperature}';
-      _waterChangedTextComponent.text = '${environmentBloc.isWaterChanged}';
-      _foodTrashChangedTextComponent.text = '${environmentBloc.isFoodTrashChanged}';
-    }
+   // if (environmentBloc is Loaded) {
+  //    _humidityTextComponent.text = '${environmentBloc.humidity}';
+   //   _temperatureTextComponent.text = '${environmentBloc.temperature}';
+    // _waterChangedTextComponent.text = '${environmentBloc.isWaterChanged}';
+    //  _foodTrashChangedTextComponent.text = '${environmentBloc.isFoodTrashChanged}';
+   // }
 
     super.update(dt);
   }

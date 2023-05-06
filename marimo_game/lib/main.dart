@@ -25,7 +25,10 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
     THE SOFTWARE. **/
+import 'dart:convert';
 
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +43,15 @@ import 'app_manage/language.dart';
 import 'app_manage/local_repository.dart';
 import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
+import 'bloc/coin_bloc.dart';
 import 'bloc/marimo_bloc/marimo_bloc.dart';
 import 'bloc/sound_bloc.dart';
 import 'marimo_game_world.dart';
 import 'page/main_game_page.dart';
 import 'main_view.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
+
 //앱 시작 타입      : 강제 업데이트 , 운영 , 정기점검
 enum AppStartType { forceUpdate, myapp, shutdown }
 
@@ -67,80 +74,224 @@ void checkSystemMaintenance() {} // 앱 정기점검
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
- // final binding = WidgetsFlutterBinding.ensureInitialized();
- // FlutterNativeSplash.preserve(widgetsBinding: binding);
+  // final binding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: binding);
   // main 진입하기전에 작업 할 항목들 !!
   //스플래시
   //언어 환경 세팅
   //앱 start api -> 버전 체크 , 앱 타입 체크
   // 로컬 저장소 세팅
   // 체크 스토어
- // WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   Environment().initConfig(Language.ko); // 언어 환경 세팅
-  final bool isMainPage =  await getInitRoute();
-  String initRoute = isMainPage?'/main_scene':'/init_setting';
-  runApp(RestartWidget(child:
-  MultiBlocProvider(
-    providers: [
-      BlocProvider<SoundBloc>(create: (_) => SoundBloc()),
-      BlocProvider<MarimoBloc>(create: (_) => MarimoBloc()),
-      BlocProvider<EnvironmentBloc>(create: (_) => EnvironmentBloc()),
-    ],
-      child:
-      App(initRoute: initRoute,)
-  )
+  final bool isMainPage = await getInitRoute();
+  String initRoute = isMainPage ? '/main_scene' : '/init_setting';
+  String? value = await LocalRepository().getValue(key: "coin");
 
-  ));
- // FlutterNativeSplash.remove();
+ // WidgetsBinding.instance.addPostFrameCallback((_) async {
+//    if (Platform.isIOS) {
+  await getMyEnvironment();
+ //   } else {
+      //  checkPermissionForAos();
+  //  }
+    // final isFirstInstallApp = await _getFirstInstallStatus();
+    // if (!mounted) return;
+    //  if (isFirstInstallApp) {
+    //    getMyEnvironment();
+    //    await localRepository.setKeyValue(key: "marimoStateScore", value: "50");
+    //    // 첫 앱 설치
+    //  }
+//  });
+  var isWaterChanged = await LocalRepository()
+      .getValue(key: "isWaterChanged"); // set , get 설정 해 주기
+  var isFoodTrashChanged =
+      await LocalRepository().getValue(key: "isFoodTrashChanged");
+  var humidityLocalValue = await LocalRepository().getValue(key: "humidity");
+  var temperatureLocalValue =
+      await LocalRepository().getValue(key: "temperature");
+
+  EnvironmentState environmentState = Loaded(
+      isWaterChanged: isWaterChanged == "0"?true:false,
+      temperature: double.parse(temperatureLocalValue??"0"),
+      humidity: int.parse(humidityLocalValue??"0"),
+      isFoodTrashChanged: isFoodTrashChanged == "0"?true:false, );
+
+  runApp(RestartWidget(
+      child: MultiBlocProvider(
+          providers: [
+        BlocProvider<CoinBloc>(
+            create: (_) => CoinBloc(int.parse(value ?? "0"))),
+        BlocProvider<SoundBloc>(create: (_) => SoundBloc()),
+        BlocProvider<MarimoBloc>(create: (_) => MarimoBloc()),
+        BlocProvider<EnvironmentBloc>(
+            create: (_) => EnvironmentBloc(environmentState)),
+      ],
+          child: App(
+            initRoute: initRoute,
+          ))));
+  // FlutterNativeSplash.remove();
 }
 
 Future<bool> getInitRoute() async {
   LocalRepository localRepository = LocalRepository(); // 로컬 저장소
   final marimoName = await localRepository.getValue(key: "marimoName");
-  final isMainPage = marimoName != null?true:false;
+  final isMainPage = marimoName != null ? true : false;
   return isMainPage;
 }
 
-
 class App extends StatelessWidget {
-   App({Key? key, required this.initRoute}) : super(key: key);
+  App({Key? key, required this.initRoute}) : super(key: key);
   final String initRoute;
 
   Widget initWidget(Widget child) => AppStatusObserver(
-    // 앱 백그라운드 , 포그라운드 상태 체크
-      child: NetWorkCheckWidget(
+          // 앱 백그라운드 , 포그라운드 상태 체크
+          child: NetWorkCheckWidget(
         //네트워크 상태 체크
-         MainView(
+        MainView(
           child: child,
         ),
       ));
 
-
   @override
   Widget build(BuildContext context) {
-    
     final game = MarimoWorldGame(
-        marimoBloc: context.read<MarimoBloc>(),
-        environmentBloc: context.read<EnvironmentBloc>(),
-        context: context, soundBloc: context.read<SoundBloc>(),
+      marimoBloc: context.read<MarimoBloc>(),
+      environmentBloc: context.read<EnvironmentBloc>(),
+      context: context,
+      soundBloc: context.read<SoundBloc>(),
+      coinBloc: context.read<CoinBloc>(),
     );
-    
-    return initWidget( MaterialApp(
+
+    return initWidget(
+      MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'RayWorld',
         theme: ThemeData(
-          fontFamily: 'NeoDunggeunmoPro',//'NeoDunggeunmoPro',
+          fontFamily: 'NeoDunggeunmoPro', //'NeoDunggeunmoPro',
         ),
         initialRoute: initRoute,
-        routes:{
-          '/main_scene' : (context) => MainGamePage(game: game,),
-        //  '/main_scene' : (context) => MainGamePage(game: game,),
-          '/init_setting' : (context) => InitSettingPage(),
-          '/game_setting' : (context) => GameSettingPage(game: game,),
-          '/shop_page' : (context) => ShopPage(game: game,),
+        routes: {
+          '/main_scene': (context) => MainGamePage(
+                game: game,
+              ),
+          //  '/main_scene' : (context) => MainGamePage(game: game,),
+          '/init_setting': (context) => InitSettingPage(),
+          '/game_setting': (context) => GameSettingPage(
+                game: game,
+              ),
+          '/shop_page': (context) => ShopPage(
+                game: game,
+              ),
         },
-        home: initWidget(MainGamePage(game: game,)),
+        home: initWidget(MainGamePage(
+          game: game,
+        )),
+        navigatorKey: navigatorKey,
       ),
     );
   }
+}
+
+getMyEnvironment() async {
+  final position = await _getCurrentPosition();
+  var lat = position?.latitude;
+  var lon = position?.longitude;
+  final _weatherInfo = await getWeatherByCurrentLocation(lat, lon);
+  final detailedWeatherInfo = _weatherInfo.main;
+  checkEnvironment(detailedWeatherInfo);
+}
+
+Future<Position?> _getCurrentPosition() async {
+  // Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  late Position? _currentPosition;
+
+  final hasPermission = await _handleLocationPermission();
+  if (!hasPermission) return null;
+  await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+      .then((Position? position) {
+    _currentPosition = position;
+  }).catchError((e) {
+    debugPrint(e);
+  });
+
+  return _currentPosition;
+}
+
+Future<WeatherInfo> getWeatherByCurrentLocation(lat, lon) async {
+  var url =
+      'https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=658d847ef1d28e72e047ab0c5a476d54&units=metric';
+  Uri myUri = Uri.parse(url);
+  final response = await http.get(myUri);
+  final responseJson = json.decode(utf8.decode(response.bodyBytes));
+  print("url ===> 🦄 $responseJson");
+  // local에 저장
+  return WeatherInfo.fromJson(responseJson);
+}
+
+Future<bool> _handleLocationPermission() async {
+  bool serviceEnabled;
+  LocationPermission permission;
+
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Text(
+    //         'Location services are disabled. Please enable the services')));
+    return false;
+  }
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(content: Text('Location permissions are denied')));
+      return false;
+    }
+  }
+  if (permission == LocationPermission.deniedForever) {
+    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Text(
+    //         'Location permissions are permanently denied, we cannot request permissions.'))
+    // );
+    return false;
+  }
+  return true;
+}
+
+checkEnvironment(Map<String, dynamic> data) async {
+  print("여기 날씨 ");
+  final temperature = data["temp"];
+  final humidity = data["humidity"];
+  //final envriomentBloc = navigatorKey.currentContext.read<EnvironmentBloc>();
+
+  // late var isWaterChanged;// set , get 설정 해 주기
+  // late var isFoodTrashChanged;
+  // late var humidityLocalValue;
+  // late var temperatureLocalValue;
+  var isWaterChanged = await LocalRepository()
+      .getValue(key: "isWaterChanged"); // set , get 설정 해 주기
+  var isFoodTrashChanged =
+      await LocalRepository().getValue(key: "isFoodTrashChanged");
+  var humidityLocalValue = await LocalRepository().getValue(key: "humidity");
+  var temperatureLocalValue =
+      await LocalRepository().getValue(key: "temperature");
+
+  if (isWaterChanged == null ||
+      isFoodTrashChanged == null ||
+      humidityLocalValue == null ||
+      temperatureLocalValue == null) {
+    await LocalRepository().setKeyValue(key: "isWaterChanged", value: "0");
+    await LocalRepository().setKeyValue(key: "isFoodTrashChanged", value: "0");
+    await LocalRepository()
+        .setKeyValue(key: "humidity", value: humidity.toString());
+    await LocalRepository()
+        .setKeyValue(key: "temperature", value: temperature.toString());
+  }
+
+  print("event 발생!!!!");
+  // envriomentBloc.add(EnvironmentChangeEvent(
+  //     isWaterChanged: isWaterChanged == "0",
+  //     humidity: humidity,
+  //     temperature: temperature,
+  //     isFoodTrashChanged: isFoodTrashChanged == "0")); // bad 인경우 temp값 가져와서  35 이면 죽이게 만들기
 }

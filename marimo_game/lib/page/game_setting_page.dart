@@ -15,13 +15,16 @@ class GameSettingPage extends StatefulWidget {
 }
 
 class _GameSettingPageState extends State<GameSettingPage> {
-bool isSwitched = false;
+
+ // late bool isSwitched = true;
 
 Future<ValueChanged<bool>?> onOffSound(value) async {
   setState(() {
-    isSwitched = value;
+    bool isSwitched = widget.game.soundBloc.state;
     if(isSwitched){
+      widget.game.soundBloc.onBgmSound();
     }else{
+      widget.game.soundBloc.offBgmSound();
     }
     print(isSwitched);
   });
@@ -30,10 +33,11 @@ Future<ValueChanged<bool>?> onOffSound(value) async {
   Widget toggleWidget({required String txt,required ValueChanged<bool>? onChanged}) => Padding(
     padding: const EdgeInsets.all(10.0),
     child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(txt),
         Switch(
-          value: isSwitched,
+          value: !widget.game.soundBloc.state,
           onChanged:onChanged,
           activeTrackColor: CommonColor.green,
           activeColor: CommonColor.green,
@@ -53,14 +57,8 @@ Future<ValueChanged<bool>?> onOffSound(value) async {
         child: Center(
           child:Column(
             children: [
-              TextButton(onPressed: (){
-                widget.game.soundBloc.offBgmSound();
-              }, child: Text("off")),
-              TextButton(onPressed: (){
-                widget.game.soundBloc.onBgmSound();
-              }, child: Text("on")),
               toggleWidget(txt: "음악 on/off",onChanged: onOffSound),
-              toggleWidget(txt: "푸시설정 on/off",onChanged: onOffSound),
+              //toggleWidget(txt: "푸시설정 on/off",onChanged: onOffSound),
              // Text("언어설정"),
             ],
           ),

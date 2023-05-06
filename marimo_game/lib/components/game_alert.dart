@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
-class GameAlert {
-  GameAlert(this.context);
+import '../main.dart';
 
-  final BuildContext context;
+class GameAlert {
+  GameAlert();
+
+ // final BuildContext context;
 
   Future<void> showMyDialog({
     required String text,
+    required String assetsName,
   }) async {
     return showDialog<void>(
-      context: context,
+      context: navigatorKey.currentContext!,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
@@ -21,6 +24,7 @@ class GameAlert {
           actionsPadding: EdgeInsets.zero,
           buttonPadding: EdgeInsets.zero,
        //   title: Text(title),
+          //"assets/images/dialog.png"
           content: Stack(
             children: [
               Align(
@@ -38,7 +42,7 @@ class GameAlert {
                   child: Container(
                       width: 80,
                       height: 80,
-                      child: Image.asset("assets/images/one_marimo.png",)),
+                      child: Image.asset(assetsName)),
                 ),
               ),
               Align(

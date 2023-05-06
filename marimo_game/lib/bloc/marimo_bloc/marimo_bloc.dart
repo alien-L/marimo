@@ -22,11 +22,11 @@ class MarimoBloc extends Bloc<MarimoEvent, MarimoLevelState> {
       Emitter<MarimoLevelState> emit,) async {
     String? marimoStateScoreLocalValue = await LocalRepository().getValue(
         key: "marimoStateScore");
-    if(marimoStateScoreLocalValue == null){
-      LocalRepository().setKeyValue(key: "marimoStateScore", value: "50");
-    }
+    // if(marimoStateScoreLocalValue == null){
+    //   LocalRepository().setKeyValue(key: "marimoStateScore", value: "50");
+    // }
 
-    int stateScore = int.parse(marimoStateScoreLocalValue!);
+    int stateScore = int.parse(marimoStateScoreLocalValue??"50");
     late MarimoLifeCycle marimoLifeCycle;
 
     bool isPlus = event.isPlus;

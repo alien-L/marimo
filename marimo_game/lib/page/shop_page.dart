@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:marimo_game/app_manage/local_repository.dart';
 import 'package:marimo_game/components/bar/coin_collector_bar.dart';
+import 'package:marimo_game/components/game_alert.dart';
 
+import '../bloc/marimo_bloc/marimo_bloc.dart';
 import '../marimo_game_world.dart';
 import '../style/color.dart';
 
@@ -33,11 +35,11 @@ class ShopPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: TextButton(onPressed: () {
-          Navigator.pop(context);
-          //라우트 이동 시 argument 전달 해 주기
-         // Navigator.pushNamed(context, "/main_scene");
-        }, child: Text("이전으로"),),
+        // leading: IconButton(onPressed: () {
+        //   Navigator.pop(context);
+        //   //라우트 이동 시 argument 전달 해 주기
+        //  // Navigator.pushNamed(context, "/main_scene");
+        // }, icon: Icon(Icons.navigate_before),),
         backgroundColor: CommonColor.green,
         title: Text(
           "SHOP",
@@ -168,11 +170,12 @@ class ShopPage extends StatelessWidget {
                                               }),
                                             ),
                                             onPressed: () async {
-                                              final coin = await LocalRepository().getValue(key: "coin");
-                                            int _tempCoin=  int.parse(coin!) -int.parse(price) ;
-                                              LocalRepository().setKeyValue(key: "coin", value: _tempCoin.toString());
-
-                                            },
+                                              game.soundBloc.effectSoundPlay('/music/click.mp3');
+                                              game.coinBloc.subtractCoin(int.parse(price));
+                                              game.marimoBloc.add(MarimoStateScoreCalculatedEvent(isPlus: true, score: int.parse(stateScore)));
+                                              game.soundBloc.effectSoundPlay('/music/popup.mp3');
+                                              GameAlert().showMyDialog(text: "$name을 구매했어요 !! ",assetsName: "assets/images/shop/$image_name");
+                                              },
                                             child: Text(
                                               isEnabled ? '구매하기' : '곧 만나요',
                                               style: TextStyle(

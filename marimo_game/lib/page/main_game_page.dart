@@ -60,31 +60,35 @@ class MainGamePage extends StatelessWidget {
       game.onJoypadDirectionChanged(direction);
     }
 
-   Widget resetWidget()=> TextButton(
-        onPressed: () {
-          localRepository.getSecureStorage().deleteAll();
-        },
-        child: Container(
-            height: 20,
-            color: Colors.green,
-            child: Text('reset')));
+   // Widget resetWidget()=> TextButton(
+   //      onPressed: () {
+   //        localRepository.getSecureStorage().deleteAll();
+   //      },
+   //      child: Container(
+   //          height: 20,
+   //          color: Colors.green,
+   //          child: Text('reset')));
 
-    Widget coinWidget()=> TextButton(
-        onPressed: () {
-        },
-        child: Container(
-            height: 20,
-            color: Colors.green,
-            child: Text('coin')));
+  //  Widget coinWidget()=> Image.asset("assets/images/life_bar_100.png");
+        // TextButton(
+        // onPressed: () {
+        // },
+        // child: Container(
+        //     height: 20,
+        //     color: Colors.green,
+        //     child: Text('coin')));
 
-    Widget btnWidget()=> TextButton(
-        onPressed: () async {
-     //  await   GameAlert(context).showMyDialog(text: '');
-        },
-        child: Container(
-            height: 20,
-            color: Colors.green,
-            child: Text('btn')));
+    // Widget btnWidget()=> TextButton(
+    //     onPressed: () async {
+    //  //  await   GameAlert(context).showMyDialog(text: '');
+    //       await  LocalRepository().setKeyValue(
+    //           key: "coin", value: "1000000");
+    //       game.coinBloc.emit(1000000);
+    //     },
+    //     child: Container(
+    //         height: 20,
+    //         color: Colors.green,
+    //         child: Text('btn')));
 
 
     Widget topButtonWidget(String route,String imagePath,double height)=>
@@ -114,92 +118,20 @@ class MainGamePage extends StatelessWidget {
               ),
             ),
             Positioned(
-                top: 0,
-                child: Container(
-                  width: MediaQuery.of(context).size.width, height: 70,
-                  //  color: Colors.amber,
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5.0),
-                                child: topButtonWidget("/shop_page","assets/images/shop.png",70),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5.0),
-                                child: resetWidget(),
-
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15.0),
-                                child: btnWidget(),
-
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 20.0),
-                                child:  coinWidget(),
-
-                              ),
-                              // FutureBuilder<String?>(
-                              //     future: getMarimoName(),
-                              //     builder: (context, snapshot) {
-                              //       if (snapshot.hasError ||
-                              //           !snapshot.hasData) {
-                              //         return Container();
-                              //       } else {
-                              //         return Padding(
-                              //           padding:
-                              //               const EdgeInsets.only(left: 5.0),
-                              //           child: Row(
-                              //             children: [
-                              //               SizedBox(
-                              //                   width: 50,
-                              //                   height: 50,
-                              //                   child: Image.asset(
-                              //                     'assets/images/mymarimo_btn.png',
-                              //                   )),
-                              //               Text("${snapshot.requireData}"),
-                              //             ],
-                              //           ),
-                              //         );
-                              //       }
-                              //     }),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: topButtonWidget("/game_setting","assets/images/setting.png",40),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )),
-            // Positioned(
-            //     top: 50,
-            //     child: Container(
-            //       width: MediaQuery.of(context).size.width,
-            //       height: 30,
-            //       color: Colors.amber,
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //         children: [
-            //           Container(
-            //             height: 30,
-            //             child: Text("마리모 상태바 "),
-            //           ),
-            //           Container(
-            //             height: 30,
-            //             child: Text(
-            //                 "물 : good , 온도 : good , 습도 : good , 먹이 : good"),
-            //           ),
-            //         ],
-            //       ),
-            //     ))
+              top: 0,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5.0,),
+                child: topButtonWidget("/shop_page","assets/images/shop.png",50),
+              ),
+            ),
+            Positioned(
+              top: 10,
+              right: 5,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 3.0),
+                child: topButtonWidget("/game_setting","assets/images/setting.png",20),
+              ),
+            ),
           ],
         ),
       ),

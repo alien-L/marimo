@@ -135,20 +135,20 @@ class _MainViewState extends State<MainView> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (Platform.isIOS) {
-        getMyEnvironment();
-      } else {
-        checkPermissionForAos();
-      }
-      final isFirstInstallApp = await _getFirstInstallStatus();
-      if (!mounted) return;
-      if (isFirstInstallApp) {
-        getMyEnvironment();
-        await localRepository.setKeyValue(key: "marimoStateScore", value: "50");
-        // 첫 앱 설치
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   if (Platform.isIOS) {
+    //     getMyEnvironment();
+    //   } else {
+    //     checkPermissionForAos();
+    //   }
+    //   final isFirstInstallApp = await _getFirstInstallStatus();
+    //   if (!mounted) return;
+    //   if (isFirstInstallApp) {
+    //     getMyEnvironment();
+    //     await localRepository.setKeyValue(key: "marimoStateScore", value: "50");
+    //     // 첫 앱 설치
+    //   }
+    // });
   }
 
   @override

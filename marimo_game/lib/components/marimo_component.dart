@@ -98,25 +98,22 @@ class MarimoComponent extends SpriteAnimationComponent
     super.onCollision(points, other);
     if (other is CoinComponent) {
       other.removeFromParent();
-      game.coinsCollected++;
-      // 로컬 저장소에 저장하기
-      if(!game.soundBloc.state){
-        game.soundBloc.coinEffectSoundPlay();
-      }
+      game.coinBloc.addCoin();
+      tempCoin++;
+      game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
+
       final localValue = await localRepository.getValue(key: "MarimoLevel");
       //레벨 상태 넣어주기
 
-      if (localValue == "baby" && game.coinsCollected == 3) {
-        //3 바꿔주기
-        await GameAlert(context)
-            .showMyDialog(text: "MARIMO LEVEL UP !!!! \n이제는 어린이 마리모랍니다 ^0^v");
+      if (localValue == "baby" && tempCoin == 3) {
+          game.soundBloc.effectSoundPlay('/music/popup.mp3');
+
+        await GameAlert().showMyDialog(text: "MARIMO LEVEL UP !!!! \n이제는 어린이 마리모랍니다 ^0^v",assetsName: "assets/images/one_marimo.png",);
         removeFromParent();
         gameRef.marimoBloc.add(const MarimoLevelUpEvent(MarimoLevel.child));
        await localRepository.setKeyValue(
             key: "MarimoLevel", value: MarimoLevel.child.name);
       }
-      await localRepository.setKeyValue(
-          key: "coin", value: game.coinsCollected.toString() );
     }
   }
 

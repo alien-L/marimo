@@ -10,16 +10,16 @@ class Empty extends EnvironmentState {
 }
 
 class Loaded extends EnvironmentState {
-  final bool? isWaterChanged;
-  final double? temperature;
-  final int? humidity;
-  final bool? isFoodTrashChanged;
+  final bool isWaterChanged;
+  final double temperature;
+  final int humidity;
+  final bool isFoodTrashChanged;
 
   Loaded(
-      {this.isWaterChanged,
-      this.temperature,
-      this.humidity,
-      this.isFoodTrashChanged});
+      {required this.isWaterChanged,
+      required this.temperature,
+      required this.humidity,
+      required this.isFoodTrashChanged});
 
   @override
   List<Object?> get props => [];

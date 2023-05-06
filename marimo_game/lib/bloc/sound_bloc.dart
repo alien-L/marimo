@@ -3,18 +3,22 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SoundBloc extends Cubit<bool> {
-  SoundBloc() : super(false){
+  SoundBloc() : super(true){
     FlameAudio.bgm.initialize();
   }
 
   void isAllStopSound(bool value) => emit(value);
 
   void bgmPlay(){
+    if(!state){
       FlameAudio.bgm.play('/music/bg_3.mp3');
+    }
   }
 
-  void coinEffectSoundPlay(){
-    FlameAudio.play('/music/coin_1.mp3');
+  void effectSoundPlay(String mp3Name){
+    if(!state){
+      FlameAudio.play(mp3Name);
+    }
   }
 
   void offBgmSound(){

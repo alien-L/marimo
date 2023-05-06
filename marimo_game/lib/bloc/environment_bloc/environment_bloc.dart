@@ -6,7 +6,7 @@ part 'environment_event.dart';
 part 'environment_state.dart';
 
 class EnvironmentBloc extends Bloc<EnvironmentEvent, EnvironmentState> {
-  EnvironmentBloc() : super(Empty()) {
+  EnvironmentBloc(super.initialState) {
     on<EnvironmentChangeEvent>((event, emit) {
       return emit(Loaded(
         isWaterChanged: event.isWaterChanged,
