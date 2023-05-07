@@ -1,11 +1,10 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
 import '../app_manage/local_repository.dart';
+import '../bloc/marimo_bloc/marimo_level_bloc.dart';
 import '../helpers/direction.dart';
 import '../marimo_game_world.dart';
 import 'coin_component.dart';
@@ -14,27 +13,24 @@ import 'game_alert.dart';
 class MarimoController extends Component
     with
         HasGameRef<MarimoWorldGame>,
-        FlameBlocListenable<MarimoBloc, MarimoBlocState> {
+        FlameBlocListenable<MarimoLevelBloc, MarimoLevel>{
   final BuildContext context;
 
   MarimoController(this.context);
 
   @override
-  bool listenWhen(MarimoBlocState previousState, MarimoBlocState newState) {
-    if(newState is MarimoLevelState && previousState is MarimoLevelState){
-      return previousState.marimoLevel != newState.marimoLevel;
-    }else{
-      return true;
-    }
+  bool listenWhen(MarimoLevel previousState, MarimoLevel newState) {
+    print("상태");
+    return previousState != newState;
   }
 
   @override
-  void onNewState(MarimoBlocState state) {
-    print("marimo 🦄 state ===> $state");
-    if(state is MarimoLevelState){
-      parent?.add(gameRef.marimoComponent =
-          MarimoComponent(name: state.marimoLevel?.name, context: context));
-    }
+  void onNewState(MarimoLevel state) {
+    print("상태 ===> $state ");
+    //parent?.add(MarimoComponent(name: state.name, context: context));
+    //parent?.addToParent(MarimoComponent(name: state.name, context: context));
+    parent?.add(gameRef.marimoComponent =
+        MarimoComponent(name: state.name, context: context));
   }
 }
 
@@ -43,7 +39,7 @@ class MarimoComponent extends SpriteAnimationComponent
         HasGameRef<MarimoWorldGame>,
         CollisionCallbacks,
         KeyboardHandler,
-        FlameBlocListenable<MarimoBloc, MarimoBlocState> {
+        FlameBlocListenable<MarimoLevelBloc, MarimoLevel> {
   bool destroyed = false;
   final BuildContext context;
   final double _playerSpeed = 300.0;
@@ -62,7 +58,7 @@ class MarimoComponent extends SpriteAnimationComponent
   final String? name;
   LocalRepository localRepository = LocalRepository();
 
-  MarimoComponent({required this.name, required this.context})
+  MarimoComponent({required this.name,required this.context})
       : super(size: Vector2.all(64.0), position: Vector2(100, 500)) {
     add(RectangleComponent());
     add(RectangleHitbox());
@@ -98,7 +94,6 @@ class MarimoComponent extends SpriteAnimationComponent
     movePlayer(dt);
   }
 
-
   @override
   Future<void> onCollision(Set<Vector2> points, PositionComponent other) async {
     super.onCollision(points, other);
@@ -111,13 +106,16 @@ class MarimoComponent extends SpriteAnimationComponent
       final localValue = await localRepository.getValue(key: "MarimoLevel");
       //레벨 상태 넣어주기
 
-      if (localValue == "baby" && tempCoin == 3) {
-          game.soundBloc.effectSoundPlay('/music/popup.mp3');
-
-        await GameAlert().showMyDialog(text: "MARIMO LEVEL UP !!!! \n이제는 어린이 마리모랍니다 ^0^v",assetsName: "assets/images/one_marimo.png",);
+      if (name == "baby" && tempCoin == 3) {
+        print("여기입니다");
+        game.soundBloc.effectSoundPlay('/music/popup.mp3');
         removeFromParent();
-        gameRef.marimoBloc.add(const MarimoLevelUpEvent(MarimoLevel.child));
-       await localRepository.setKeyValue(
+        gameRef.marimoLevelBloc.levelUp(MarimoLevel.child);
+        await GameAlert().showMyDialog(
+          text: "MARIMO LEVEL UP !!!! \n이제는 어린이 마리모랍니다 ^0^v",
+          assetsName: "assets/images/one_marimo.png",
+        );
+        await localRepository.setKeyValue(
             key: "MarimoLevel", value: MarimoLevel.child.name);
       }
     }

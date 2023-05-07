@@ -1,14 +1,14 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:marimo_game/bloc/coin_bloc.dart';
 import 'package:marimo_game/bloc/environment_bloc/environment_bloc.dart';
 import 'app_manage/local_repository.dart';
-import 'bloc/marimo_bloc/marimo_bloc.dart';
+import 'bloc/marimo_bloc/marimo_level_bloc.dart';
+import 'bloc/marimo_bloc/marimo_lifecycle_bloc.dart';
+import 'bloc/marimo_bloc/marimo_score_bloc.dart';
 import 'bloc/sound_bloc.dart';
 import 'components/bar/coin_collector_bar.dart';
 import 'components/bar/environment_state_bar.dart';
@@ -24,16 +24,18 @@ class MarimoWorldGame extends FlameGame
   late MarimoComponent marimoComponent;
   late EnvironmentStateBar environmentStateBar;
 
- // int marimoStateScore = 50;
+  // int marimoStateScore = 50;
 
-  final MarimoBloc marimoBloc;
+  final MarimoLevelBloc marimoLevelBloc;
+  final MarimoScoreBloc marimoScoreBloc;
+  final MarimoLifeCycleBloc marimoLifeCycleBloc;
+
   final EnvironmentBloc environmentBloc;
   final SoundBloc soundBloc;
   final CoinBloc coinBloc;
 
   late Timer bulletCreator;
-  final List<CoinComponent> _coinList =
-      List<CoinComponent>.empty(growable: true);
+  final List<CoinComponent> _coinList = List<CoinComponent>.empty(growable: true);
   final World _world = World();
   final CoinCollector _coinCollector = CoinCollector();
   final MarimoStateBar _marimoStateBar = MarimoStateBar();
@@ -42,7 +44,10 @@ class MarimoWorldGame extends FlameGame
   final BuildContext context;
 
   MarimoWorldGame({
-    required this.marimoBloc,
+    required this.marimoScoreBloc,
+    required this.marimoLevelBloc,
+    required this.marimoLifeCycleBloc,
+
     required this.environmentBloc,
     required this.context,
     required this.soundBloc,
@@ -61,27 +66,24 @@ class MarimoWorldGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
-    //final marimobloc =  game.marimoBloc;
-    if(marimoBloc.state is MarimoStateEmpty){
-      marimoBloc.add(
-        MarimoGetInitStateEvent(
-          MarimoLevel.baby,
-          MarimoLifeCycle.normal,
-          50
-        )
-      );
-    }
+    final marimoLevel = await localRepository.getValue(key: "MarimoLevel");
 
     await add(_world);
 
-    final marimoLevel = await localRepository.getValue(key: "MarimoLevel");
 
     await add(
       FlameMultiBlocProvider(
         providers: [
-          FlameBlocProvider<MarimoBloc, MarimoBlocState>.value(
-            value: marimoBloc,
+          FlameBlocProvider<MarimoLifeCycleBloc,MarimoLifeCycle>.value(
+            value: marimoLifeCycleBloc,
           ),
+          FlameBlocProvider<MarimoLevelBloc,MarimoLevel>.value(
+            value: marimoLevelBloc,
+          ),
+          FlameBlocProvider<MarimoScoreBloc,int>.value(
+            value: marimoScoreBloc,
+          ),
+
           FlameBlocProvider<EnvironmentBloc, EnvironmentState>.value(
             value: environmentBloc,
           ),
@@ -90,7 +92,7 @@ class MarimoWorldGame extends FlameGame
         ],
         children: [
           marimoComponent =
-              MarimoComponent(name: marimoLevel!, context: context),
+              MarimoComponent(name:marimoLevel??"baby",context: context),
           environmentStateBar = EnvironmentStateBar(),
           MarimoController(context),
           EnvironmentStatController(),
@@ -98,7 +100,6 @@ class MarimoWorldGame extends FlameGame
       ),
     );
     // 로컬저장소에 값이 있나 없나 체크
-
 
     add(_coinCollector);
 

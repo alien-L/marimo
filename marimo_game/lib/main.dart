@@ -44,7 +44,9 @@ import 'app_manage/local_repository.dart';
 import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
 import 'bloc/coin_bloc.dart';
-import 'bloc/marimo_bloc/marimo_bloc.dart';
+import 'bloc/marimo_bloc/marimo_level_bloc.dart';
+import 'bloc/marimo_bloc/marimo_lifecycle_bloc.dart';
+import 'bloc/marimo_bloc/marimo_score_bloc.dart';
 import 'bloc/sound_bloc.dart';
 import 'marimo_game_world.dart';
 import 'page/main_game_page.dart';
@@ -86,7 +88,8 @@ Future<void> main() async {
   Environment().initConfig(Language.ko); // 언어 환경 세팅
   final bool isMainPage = await getInitRoute();
   String initRoute = isMainPage ? '/main_scene' : '/init_setting';
-  String? value = await LocalRepository().getValue(key: "coin");
+  String? coinLocalRepositoryValue = await LocalRepository().getValue(key: "coin");
+ // MarimoLevel marimoLocalRepositoryValue = await LocalRepository().getValue(key: "MarimoLevel")??MarimoLevel ;
 
  // WidgetsBinding.instance.addPostFrameCallback((_) async {
 //    if (Platform.isIOS) {
@@ -119,12 +122,12 @@ Future<void> main() async {
   runApp(RestartWidget(
       child: MultiBlocProvider(
           providers: [
-        BlocProvider<CoinBloc>(
-            create: (_) => CoinBloc(int.parse(value ?? "0"))),
+        BlocProvider<MarimoLevelBloc>(create: (_) => MarimoLevelBloc(MarimoLevel.baby)),
+        BlocProvider<MarimoScoreBloc>(create: (_) => MarimoScoreBloc(50)),
+        BlocProvider<MarimoLifeCycleBloc>(create: (_) => MarimoLifeCycleBloc(MarimoLifeCycle.normal)),
+        BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(coinLocalRepositoryValue ?? "0"))),
         BlocProvider<SoundBloc>(create: (_) => SoundBloc()),
-        BlocProvider<MarimoBloc>(create: (_) => MarimoBloc()),
-        BlocProvider<EnvironmentBloc>(
-            create: (_) => EnvironmentBloc(environmentState)),
+        BlocProvider<EnvironmentBloc>(create: (_) => EnvironmentBloc(environmentState)),
       ],
           child: App(
             initRoute: initRoute,
@@ -156,11 +159,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final game = MarimoWorldGame(
-      marimoBloc: context.read<MarimoBloc>(),
       environmentBloc: context.read<EnvironmentBloc>(),
       context: context,
       soundBloc: context.read<SoundBloc>(),
       coinBloc: context.read<CoinBloc>(),
+      marimoScoreBloc: context.read<MarimoScoreBloc>(),
+      marimoLevelBloc:context.read<MarimoLevelBloc>(),
+      marimoLifeCycleBloc: context.read<MarimoLifeCycleBloc>(),
     );
 
     return initWidget(

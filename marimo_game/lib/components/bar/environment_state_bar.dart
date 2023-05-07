@@ -3,8 +3,6 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/local_repository.dart';
 import 'package:marimo_game/bloc/environment_bloc/environment_bloc.dart';
-
-import '../../bloc/marimo_bloc/marimo_bloc.dart';
 import '../../marimo_game_world.dart';
 
 class EnvironmentStatController extends Component
@@ -21,7 +19,7 @@ class EnvironmentStatController extends Component
     if(state is Loaded){
       if(state.isWaterChanged){
         print("마리모 환경 이벤트 발생이요 ");
-        game.marimoBloc.add(MarimoStateScoreCalculatedEvent(isPlus: true,score: 5));
+     //   game.marimoBloc.add(MarimoStateScoreCalculatedEvent(isPlus: true,score: 5));
       }
     }
    // print("${state as Loaded}");
@@ -120,15 +118,6 @@ class EnvironmentStateBar extends PositionComponent
 
   @override
   void update(double dt) {
-    final environmentBloc = game.environmentBloc.state;
-
-   // if (environmentBloc is Loaded) {
-  //    _humidityTextComponent.text = '${environmentBloc.humidity}';
-   //   _temperatureTextComponent.text = '${environmentBloc.temperature}';
-    // _waterChangedTextComponent.text = '${environmentBloc.isWaterChanged}';
-    //  _foodTrashChangedTextComponent.text = '${environmentBloc.isFoodTrashChanged}';
-   // }
-
     super.update(dt);
   }
 }

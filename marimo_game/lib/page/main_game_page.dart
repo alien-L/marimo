@@ -26,14 +26,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
     THE SOFTWARE. **/
 import 'package:flame/game.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:marimo_game/bloc/environment_bloc/environment_bloc.dart';
-import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
-import 'package:marimo_game/components/game_alert.dart';
-import 'package:marimo_game/style/color.dart';
 import '../app_manage/local_repository.dart';
 import '../helpers/direction.dart';
 import '../helpers/joypad.dart';
@@ -59,26 +53,41 @@ class MainGamePage extends StatelessWidget {
       game.onJoypadDirectionChanged(direction);
     }
 
-    Widget developerManagerWidget()=> Row(
+    Widget developerManagerWidget()=> Column(
       children: [
+        Row(
+          children: [
+            TextButton(
+                onPressed: () async {
+                  await  LocalRepository().setKeyValue(
+                      key: "coin", value: "1000000");
+                  game.coinBloc.emit(1000000);
+                },
+                child: Container(
+                    height: 20,
+                    color: Colors.green,
+                    child: Text('코인 ++ '))),
+            TextButton(
+                onPressed: () {
+                  localRepository.getSecureStorage().deleteAll();
+                },
+                child: Container(
+                    height: 20,
+                    color: Colors.green,
+                    child: Text('reset'))),
+          ],
+        ),
         TextButton(
             onPressed: () async {
-              await  LocalRepository().setKeyValue(
-                  key: "coin", value: "1000000");
-              game.coinBloc.emit(1000000);
+              // await  LocalRepository().setKeyValue(
+              //     key: "marimoStateScore", value: "1000000");
+              game.marimoScoreBloc.subtractScore(10);
+              game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoScoreBloc.state);
             },
             child: Container(
                 height: 20,
                 color: Colors.green,
-                child: Text('코인 ++ '))),
-        TextButton(
-            onPressed: () {
-              localRepository.getSecureStorage().deleteAll();
-            },
-            child: Container(
-                height: 20,
-                color: Colors.green,
-                child: Text('reset')))
+                child: Text('코인 --'))),
       ],
     );
 

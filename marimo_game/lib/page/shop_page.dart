@@ -1,14 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:marimo_game/app_manage/local_repository.dart';
-import 'package:marimo_game/components/bar/coin_collector_bar.dart';
 import 'package:marimo_game/components/game_alert.dart';
 
-import '../bloc/marimo_bloc/marimo_bloc.dart';
 import '../marimo_game_world.dart';
 import '../style/color.dart';
 
@@ -172,7 +168,8 @@ class ShopPage extends StatelessWidget {
                                             onPressed: () async {
                                               game.soundBloc.effectSoundPlay('/music/click.mp3');
                                               game.coinBloc.subtractCoin(int.parse(price));
-                                              game.marimoBloc.add(MarimoStateScoreCalculatedEvent(isPlus: true, score: int.parse(stateScore)));
+                                              game.marimoScoreBloc.addScore(int.parse(stateScore));
+                                              game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoScoreBloc.state);
                                               game.soundBloc.effectSoundPlay('/music/popup.mp3');
                                               GameAlert().showMyDialog(text: "$name을 구매했어요 !! ",assetsName: "assets/images/shop/$image_name");
                                               },

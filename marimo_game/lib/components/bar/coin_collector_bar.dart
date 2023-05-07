@@ -8,12 +8,12 @@ class CoinCollector extends PositionComponent with HasGameRef<MarimoWorldGame> {
     positionType = PositionType.viewport;
   }
 
-  late TextComponent _scoreTextComponent;
+  late TextComponent _coinTextComponent;
 
   @override
   Future<void>? onLoad() async {
 
-    _scoreTextComponent = TextComponent(
+    _coinTextComponent = TextComponent(
       text: '${game.coinBloc.state}',
       textRenderer: TextPaint(
         style: const TextStyle(
@@ -25,7 +25,7 @@ class CoinCollector extends PositionComponent with HasGameRef<MarimoWorldGame> {
       anchor: Anchor.center,
       position: Vector2(95,20),
     );
-    add(_scoreTextComponent);
+    add(_coinTextComponent);
 
     final coinSprite = await game.loadSprite('coin.png');
     add(
@@ -42,7 +42,7 @@ class CoinCollector extends PositionComponent with HasGameRef<MarimoWorldGame> {
 
   @override
   void update(double dt) {
-    _scoreTextComponent.text = '${game.coinBloc.state}';
+    _coinTextComponent.text = '${game.coinBloc.state}';
     super.update(dt);
   }
 }
