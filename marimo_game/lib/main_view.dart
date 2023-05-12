@@ -7,7 +7,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'app_manage/local_repository.dart';
 import 'package:http/http.dart' as http;
 
-import 'bloc/environment_bloc/environment_bloc.dart';
+import 'bloc/environment_bloc/environment_humity_bloc.dart';
+import 'bloc/environment_bloc/environment_temperature_bloc.dart';
+import 'model/weather_info.dart';
 
 ///
 /// Created by ahhyun [ah2yun@gmail.com] on 2023. 03. 30
@@ -57,7 +59,6 @@ class _MainViewState extends State<MainView> {
   }
 
   Future<Position?> _getCurrentPosition() async {
-    // Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     late Position? _currentPosition;
 
     final hasPermission = await _handleLocationPermission();
@@ -87,39 +88,11 @@ class _MainViewState extends State<MainView> {
     print("여기 날씨 ");
     final temperature = data["temp"];
     final humidity = data["humidity"];
-    final envriomentBloc = context.read<EnvironmentBloc>();
+    final environmentTemperatureBloc = BlocProvider.of<EnvironmentTemperatureBloc>(context);
+    final environmentHumidityBloc = BlocProvider.of<EnvironmentHumidityBloc>(context);
 
-    // late var isWaterChanged;// set , get 설정 해 주기
-    // late var isFoodTrashChanged;
-    // late var humidityLocalValue;
-    // late var temperatureLocalValue;
-    var isWaterChanged = await localRepository.getValue(
-        key: "isWaterChanged"); // set , get 설정 해 주기
-    var isFoodTrashChanged =
-        await localRepository.getValue(key: "isFoodTrashChanged");
-    var humidityLocalValue =
-        await localRepository.getValue(key: "humidity");
-    var temperatureLocalValue =
-        await localRepository.getValue(key: "temperature");
-
-    if (isWaterChanged == null ||
-        isFoodTrashChanged == null ||
-        humidityLocalValue == null ||
-        temperatureLocalValue == null) {
-
-       await localRepository.setKeyValue(key: "isWaterChanged", value: "0");
-       await localRepository.setKeyValue(key: "isFoodTrashChanged", value: "0");
-       await localRepository.setKeyValue(key: "humidity", value: humidity.toString());
-       await localRepository.setKeyValue(key: "temperature", value: temperature.toString());
-
-    }
-
-    print("event 발생!!!!");
-    envriomentBloc.add(EnvironmentChangeEvent(
-        isWaterChanged: isWaterChanged == "0",
-        humidity: humidity,
-        temperature: temperature,
-        isFoodTrashChanged: isFoodTrashChanged == "0")); // bad 인경우 temp값 가져와서  35 이면 죽이게 만들기
+    environmentTemperatureBloc.updateState(temperature);
+    environmentHumidityBloc.updateState(humidity);
   }
 
   getMyEnvironment() async {
@@ -135,20 +108,20 @@ class _MainViewState extends State<MainView> {
   void initState() {
     super.initState();
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   if (Platform.isIOS) {
-    //     getMyEnvironment();
-    //   } else {
-    //     checkPermissionForAos();
-    //   }
-    //   final isFirstInstallApp = await _getFirstInstallStatus();
-    //   if (!mounted) return;
-    //   if (isFirstInstallApp) {
-    //     getMyEnvironment();
-    //     await localRepository.setKeyValue(key: "marimoStateScore", value: "50");
-    //     // 첫 앱 설치
-    //   }
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (Platform.isIOS) {
+        getMyEnvironment();
+      } else {
+        checkPermissionForAos();
+      }
+      final isFirstInstallApp = await _getFirstInstallStatus();
+      if (!mounted) return;
+      if (isFirstInstallApp) {
+        getMyEnvironment();
+        await localRepository.setKeyValue(key: "marimoScore", value: "50");
+        // 첫 앱 설치
+      }
+    });
   }
 
   @override
@@ -229,63 +202,4 @@ class _MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     return widget.child;
   }
-}
-
-class WeatherInfo {
-  dynamic coord;
-  dynamic weather;
-  dynamic base;
-  dynamic main;
-  dynamic visibility;
-  dynamic wind;
-  dynamic clouds;
-  dynamic dt;
-  dynamic sys;
-  dynamic timezone;
-  dynamic id;
-  dynamic name;
-  dynamic cod;
-
-  WeatherInfo(
-      {this.coord,
-      this.weather,
-      this.base,
-      this.main,
-      this.visibility,
-      this.wind,
-      this.clouds,
-      this.dt,
-      this.sys,
-      this.timezone,
-      this.id,
-      this.name,
-      this.cod});
-
-  factory WeatherInfo.fromJson(Map<String, dynamic> json) => WeatherInfo(
-        coord: json['coord'] as dynamic,
-        weather: json['weather'] as dynamic,
-        base: json['base'] as dynamic,
-        main: json['main'] as dynamic,
-        visibility: json['visibility'] as dynamic,
-        wind: json['wind'] as dynamic,
-        clouds: json['clouds'] as dynamic,
-        dt: json['dt'] as dynamic,
-        sys: json['sys'] as dynamic,
-        timezone: json['timezone'] as dynamic,
-        id: json['id'] as dynamic,
-      );
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'coord': coord,
-        'weather': weather,
-        'base': base,
-        'main': main,
-        'visibility': visibility,
-        'wind': wind,
-        'clouds': clouds,
-        'dt': dt,
-        'sys ': sys,
-        'timezone': timezone,
-        'id': id,
-      };
 }

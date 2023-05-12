@@ -3,7 +3,7 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SoundBloc extends Cubit<bool> {
-  SoundBloc() : super(true){
+  SoundBloc(super.initialState){
     FlameAudio.bgm.initialize();
   }
 

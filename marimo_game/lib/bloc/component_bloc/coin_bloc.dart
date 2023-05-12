@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../app_manage/local_repository.dart';
+import '../../app_manage/local_repository.dart';
 
 class CoinBloc extends Cubit<int>{
   CoinBloc(super.initialState);

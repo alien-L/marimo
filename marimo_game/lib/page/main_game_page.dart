@@ -77,17 +77,37 @@ class MainGamePage extends StatelessWidget {
                     child: Text('reset'))),
           ],
         ),
-        TextButton(
-            onPressed: () async {
-              // await  LocalRepository().setKeyValue(
-              //     key: "marimoStateScore", value: "1000000");
-              game.marimoScoreBloc.subtractScore(10);
-              game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoScoreBloc.state);
-            },
-            child: Container(
-                height: 20,
-                color: Colors.green,
-                child: Text('코인 --'))),
+        Row(
+          children: [
+            TextButton(
+                onPressed: () async {
+                  // await  LocalRepository().setKeyValue(
+                  //     key: "marimoStateScore", value: "1000000");
+                  game.marimoScoreBloc.subtractScore(10);
+                  game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoScoreBloc.state);
+                },
+                child: Container(
+                    height: 20,
+                    color: Colors.green,
+                    child: Text('코인 --'))),
+            TextButton(
+                onPressed: () async {
+                  game.environmentTemperatureBloc.updateState(25);
+                  },
+                child: Container(
+                    height: 20,
+                    color: Colors.green,
+                    child: Text('온도 올라감'))),
+            TextButton(
+                onPressed: () async {
+                  game.environmentTrashBloc.updateState(false);
+                },
+                child: Container(
+                    height: 20,
+                    color: Colors.green,
+                    child: Text('쓰레기 없애기'))),
+          ],
+        ),
       ],
     );
 
@@ -111,6 +131,14 @@ class MainGamePage extends StatelessWidget {
         child: Stack(
           children: [
             GameWidget(game: game),
+            // Positioned(
+            //   top: 0,
+            //   child: Container(
+            //     width: MediaQuery.of(context).size.width,
+            //     height: MediaQuery.of(context).size.height,
+            //     color: Colors.red.withOpacity(0.5),
+            //   ),
+            // ),
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
@@ -119,7 +147,7 @@ class MainGamePage extends StatelessWidget {
               ),
             ),
             Positioned(
-                top: 0,
+                bottom: 30,
                 left: 120,
                 child: developerManagerWidget()),
             Positioned(

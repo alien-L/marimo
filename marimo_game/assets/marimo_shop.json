@@ -142,7 +142,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "environment",
-      "\benvironment_category": "water",
+      "environment_category": "water",
       "image_name": "water.png"
     },
     {
@@ -152,7 +152,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "environment",
-      "\benvironment_category": "temperature",
+      "environment_category": "temperature",
       "image_name": "ice.png"
     },
     {
@@ -162,7 +162,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "environment",
-      "\benvironment_category": "humidity",
+      "environment_category": "humidity",
       "image_name": "humidity.png"
     },
     {
@@ -172,7 +172,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "environment",
-      "\benvironment_category": "food",
+      "environment_category": "food",
       "image_name": "cleaner.png"
     },
     {

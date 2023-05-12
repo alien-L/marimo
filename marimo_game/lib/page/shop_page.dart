@@ -64,6 +64,8 @@ class ShopPage extends StatelessWidget {
                       var bought = list[index]["bought"];
                       var category = list[index]["category"];
                       var image_name = list[index]["image_name"];
+                      var environment_category = list[index]["environment_category"];
+                      ////"environment_category"
 
                       return Container(
                         // padding: const EdgeInsets.all(3),
@@ -171,6 +173,13 @@ class ShopPage extends StatelessWidget {
                                               game.marimoScoreBloc.addScore(int.parse(stateScore));
                                               game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoScoreBloc.state);
                                               game.soundBloc.effectSoundPlay('/music/popup.mp3');
+                                              if(environment_category == "humidity"){
+                                                game.environmentHumidityBloc.updateState(40);
+                                                //곰팡이 유무 체크
+                                              }else if(environment_category == "temperature"){
+                                                game.environmentTemperatureBloc.updateState(15);
+                                              }
+
                                               GameAlert().showMyDialog(text: "$name을 구매했어요 !! ",assetsName: "assets/images/shop/$image_name");
                                               },
                                             child: Text(
