@@ -45,7 +45,6 @@ class EnvironmentStateBar extends PositionComponent
   late TextComponent _temperatureTextComponent;
   late SpriteComponent _waterChangedSpriteComponent;
   late SpriteComponent _trashChangedSpriteComponent;
-  LocalRepository localRepository = LocalRepository();
 
   @override
   Future<void>? onLoad() async {

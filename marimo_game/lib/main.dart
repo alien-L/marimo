@@ -74,7 +74,7 @@ Future<void> main() async {
         BlocProvider<MarimoLifeCycleBloc>(create: (_) => MarimoLifeCycleBloc(marimoItemsMap["marimoLifeCycle"]??MarimoLifeCycle.normal)),
 
         BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"]?? "0"))),
-        BlocProvider<SoundBloc>(create: (_) => SoundBloc(marimoItemsMap["isCheckedOnOffSound"]??true)),
+        BlocProvider<SoundBloc>(create: (_) => SoundBloc(marimoItemsMap["isCheckedOnOffSound"]??false)), // booleen 형 바꿔주기
 
         BlocProvider<EnvironmentTrashBloc>(create: (_) => EnvironmentTrashBloc(marimoItemsMap["isCleanTrash"] == null ||marimoItemsMap["isCleanTrash"] == "0")), // null 또는 0이면 true , 1이면 false
         BlocProvider<EnvironmentWaterBloc>(create: (_) => EnvironmentWaterBloc(marimoItemsMap["isCleanWater"] == null ||marimoItemsMap["isCleanWater"] == "0")),

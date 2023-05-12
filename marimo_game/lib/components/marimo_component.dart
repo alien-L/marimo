@@ -26,9 +26,6 @@ class MarimoController extends Component
 
   @override
   void onNewState(MarimoLevel state) {
-    print("상태 ===> $state ");
-    //parent?.add(MarimoComponent(name: state.name, context: context));
-    //parent?.addToParent(MarimoComponent(name: state.name, context: context));
     parent?.add(gameRef.marimoComponent =
         MarimoComponent(name: state.name, context: context));
   }
@@ -56,7 +53,6 @@ class MarimoComponent extends SpriteAnimationComponent
   final Direction _collisionDirection = Direction.none;
   final bool _hasCollided = false;
   final String? name;
-  LocalRepository localRepository = LocalRepository();
 
   MarimoComponent({required this.name,required this.context})
       : super(size: Vector2.all(64.0), position: Vector2(100, 500)) {
@@ -103,11 +99,7 @@ class MarimoComponent extends SpriteAnimationComponent
       tempCoin++;
       game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
 
-      final localValue = await localRepository.getValue(key: "MarimoLevel");
-      //레벨 상태 넣어주기
-
       if (name == "baby" && tempCoin == 3) {
-        print("여기입니다");
         game.soundBloc.effectSoundPlay('/music/popup.mp3');
         removeFromParent();
         gameRef.marimoLevelBloc.levelUp(MarimoLevel.child);
@@ -115,8 +107,6 @@ class MarimoComponent extends SpriteAnimationComponent
           text: "MARIMO LEVEL UP !!!! \n이제는 어린이 마리모랍니다 ^0^v",
           assetsName: "assets/images/one_marimo.png",
         );
-        await localRepository.setKeyValue(
-            key: "MarimoLevel", value: MarimoLevel.child.name);
       }
     }
   }

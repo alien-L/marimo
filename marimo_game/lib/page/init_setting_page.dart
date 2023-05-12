@@ -69,7 +69,6 @@ class InitSettingPage extends StatelessWidget {
                   // 이름 전송
                   LocalRepository localRepository = LocalRepository();
                   await localRepository.setKeyValue(key: 'marimoName', value: name);
-                  await localRepository.setKeyValue(key: 'MarimoLevel', value: "baby");
                   Navigator.pushNamed(context, "/main_scene");
 
                 }else{

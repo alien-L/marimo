@@ -2,6 +2,8 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../app_manage/local_repository.dart';
+
 class SoundBloc extends Cubit<bool> {
   SoundBloc(super.initialState){
     FlameAudio.bgm.initialize();
@@ -25,12 +27,18 @@ class SoundBloc extends Cubit<bool> {
     FlameAudio.bgm.pause();
     FlameAudio.audioCache.clearAll();
     emit(true);
+    updateLocalCoin();
   }
 
   void onBgmSound(){
     FlameAudio.bgm.resume();
     emit(false);
+    updateLocalCoin();
   }
 
+  Future<void> updateLocalCoin() async {
+    await LocalRepository().setKeyValue(
+        key: "isCheckedOnOffSound", value: state.toString());
+  }
 
 }

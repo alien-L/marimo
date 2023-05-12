@@ -54,7 +54,6 @@ class MarimoWorldGame extends FlameGame
   late World _world;
   final CoinCollector _coinCollector = CoinCollector();
   final MarimoStateBar _marimoStateBar = MarimoStateBar();
-  LocalRepository localRepository = LocalRepository();
   final BuildContext context;
 
   MarimoWorldGame({
@@ -83,7 +82,7 @@ class MarimoWorldGame extends FlameGame
   Future<void> onLoad() async {
     bool isHotWater = environmentTemperatureBloc.isHotWater();
     _world = World(isHotWater);
-    final marimoLevel = await localRepository.getValue(key: "MarimoLevel");
+    final marimoLevel = marimoLevelBloc.state;
     await add(_world);
     await add(
       FlameMultiBlocProvider(
@@ -114,7 +113,7 @@ class MarimoWorldGame extends FlameGame
         ],
         children: [
           marimoComponent =
-              MarimoComponent(name: marimoLevel ?? "baby", context: context),
+              MarimoComponent(name: marimoLevel.name, context: context),
           environmentStateBar = EnvironmentStateBar(),
           MarimoController(context),
           //EnvironmentStatController(),

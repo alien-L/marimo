@@ -118,7 +118,6 @@ class _MainViewState extends State<MainView> {
       if (!mounted) return;
       if (isFirstInstallApp) {
         getMyEnvironment();
-        await localRepository.setKeyValue(key: "marimoScore", value: "50");
         // 첫 앱 설치
       }
     });
