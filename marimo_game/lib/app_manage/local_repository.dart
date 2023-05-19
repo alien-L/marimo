@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as fss;
 ///
 //로컬 저장소
 // os별 저장소 optiona 설정
-// key:"firstInstall", value: "1"
+// key:"firstInstall", value: "0"
 // "marimoName"
 // "marimoState"
 // temperature

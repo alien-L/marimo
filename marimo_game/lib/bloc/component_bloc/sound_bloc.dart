@@ -27,16 +27,16 @@ class SoundBloc extends Cubit<bool> {
     FlameAudio.bgm.pause();
     FlameAudio.audioCache.clearAll();
     emit(true);
-    updateLocalCoin();
+    updateLocalsoundState();
   }
 
   void onBgmSound(){
     FlameAudio.bgm.resume();
     emit(false);
-    updateLocalCoin();
+    updateLocalsoundState();
   }
 
-  Future<void> updateLocalCoin() async {
+  Future<void> updateLocalsoundState() async {
     await LocalRepository().setKeyValue(
         key: "isCheckedOnOffSound", value: state.toString());
   }

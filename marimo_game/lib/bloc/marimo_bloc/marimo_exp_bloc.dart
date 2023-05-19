@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../app_manage/local_repository.dart';
+import '../../../app_manage/local_repository.dart';
 
-class MarimoScoreBloc extends Cubit<int>{
-  MarimoScoreBloc(super.initialState);
+class MarimoExpBloc extends Cubit<int>{
+  MarimoExpBloc(super.initialState);
 
 
   //  더하기
@@ -22,7 +22,7 @@ class MarimoScoreBloc extends Cubit<int>{
   // local 저장소에 갱신하기
   Future<void> updateLocalScore() async {
     await LocalRepository().setKeyValue(
-        key: "marimoScore", value: state.toString());
+        key: "marimoHp", value: state.toString());
 
   }
 

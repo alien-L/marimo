@@ -1,25 +1,25 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
+import '../bloc/component_bloc/background_bloc.dart';
+
 // 백그라운드 사이즈는 어떻게 정하지???
 class World extends SpriteComponent with HasGameRef {
-  World(this.isBackGroundChange);
-  final bool isBackGroundChange;
+  World(this.backgroundBloc);
+  final BackgroundBloc backgroundBloc;
 
   @override
   Future<void>? onLoad() async {
-    print("isBackGroundChange===> ${isBackGroundChange}");
-    sprite = await gameRef.loadSprite('background_01${isBackGroundChange?"_red":""}.png');
+    String backgroundTxt = backgroundBloc.getBackgroundName();
+    sprite = await gameRef.loadSprite('$backgroundTxt.png');
     size = gameRef.size;
-        //Vector2(393, 852);
-        //gameRef.size;
-        //sprite!.originalSize;
     return super.onLoad();
   }
 
   @override
   Future<void> update(double dt) async {
-    sprite = await gameRef.loadSprite('background_01${isBackGroundChange?"_red":""}.png');
+    String backgroundTxt = backgroundBloc.getBackgroundName();
+    sprite = await gameRef.loadSprite('$backgroundTxt.png');
 
     super.update(dt);
   }

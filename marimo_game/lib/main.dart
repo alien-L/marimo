@@ -29,6 +29,7 @@ import 'dart:io';
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marimo_game/app_manage/local_repository.dart';
 import 'package:marimo_game/page/game_setting_page.dart';
 import 'package:marimo_game/page/init_setting_page.dart';
 import 'package:marimo_game/page/shop_page.dart';
@@ -37,15 +38,18 @@ import 'app_manage/environment/environment.dart';
 import 'app_manage/language.dart';
 import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
+import 'bloc/component_bloc/background_bloc.dart';
 import 'bloc/component_bloc/coin_bloc.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
 import 'bloc/environment_bloc/environment_temperature_bloc.dart';
 import 'bloc/environment_bloc/environment_trash_bloc.dart';
-import 'bloc/environment_bloc/environment_water_bloc.dart';
+import 'bloc/language_manage_bloc.dart';
 import 'bloc/marimo_bloc/marimo_level_bloc.dart';
 import 'bloc/marimo_bloc/marimo_lifecycle_bloc.dart';
-import 'bloc/marimo_bloc/marimo_score_bloc.dart';
+import 'bloc/marimo_bloc/marimo_hp_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
+import 'bloc/time_check_bloc.dart';
+import 'const/constant.dart';
 import 'marimo_game_world.dart';
 import 'model/marimo_items.dart';
 import 'page/main_game_page.dart';
@@ -56,34 +60,35 @@ final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
-
-  Environment().initConfig(Language.ko); // 언어 환경 세팅
-
   final marimoItems =  await getInitLocalMarimoItems();
   final marimoItemsMap =  marimoItems.toJson();
-
-  String initRoute = marimoItemsMap["marimoName"]!= null ?'/main_scene' : '/init_setting';
+  String? isFirstInstall = await LocalRepository().getValue(key: "firstInstall");
+  String initRoute = isFirstInstall != null ?'/main_scene' : '/init_setting';
   print("marimoItems ===> ${marimoItems.toJson()}");
 
+  Environment().initConfig(Language.ko); // 언어 환경 세팅
   runApp(RestartWidget(
       child: MultiBlocProvider(
           providers: [
-        // BlocProvider<BackgroundBloc>(create: (_) => BackgroundBloc("background_01.png")),
+         BlocProvider<LanguageManageBloc>(create: (_) => LanguageManageBloc(Language.ko)),
+            // 배경 초기값 설정 해주기
+        BlocProvider<TimeCheckBloc>(create: (_) => TimeCheckBloc(true)), // 초기값 설정 고민 해보자
+        BlocProvider<BackgroundBloc>(create: (_) => BackgroundBloc(BackgroundState.normal)),
         BlocProvider<MarimoLevelBloc>(create: (_) => MarimoLevelBloc(marimoItemsMap["marimoLevel"]??MarimoLevel.baby)),
-        BlocProvider<MarimoScoreBloc>(create: (_) => MarimoScoreBloc(marimoItemsMap["marimoScore"]??50)),
+        BlocProvider<MarimoHpBloc>(create: (_) => MarimoHpBloc(marimoItemsMap["marimoHp"]??50)),
         BlocProvider<MarimoLifeCycleBloc>(create: (_) => MarimoLifeCycleBloc(marimoItemsMap["marimoLifeCycle"]??MarimoLifeCycle.normal)),
 
         BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"]?? "0"))),
-        BlocProvider<SoundBloc>(create: (_) => SoundBloc(marimoItemsMap["isCheckedOnOffSound"]??false)), // booleen 형 바꿔주기
+        BlocProvider<SoundBloc>(create: (_) => SoundBloc(false)), // booleen 형 바꿔주기 //marimoItemsMap["isCheckedOnOffSound"]??false
 
         BlocProvider<EnvironmentTrashBloc>(create: (_) => EnvironmentTrashBloc(marimoItemsMap["isCleanTrash"] == null ||marimoItemsMap["isCleanTrash"] == "0")), // null 또는 0이면 true , 1이면 false
-        BlocProvider<EnvironmentWaterBloc>(create: (_) => EnvironmentWaterBloc(marimoItemsMap["isCleanWater"] == null ||marimoItemsMap["isCleanWater"] == "0")),
         BlocProvider<EnvironmentHumidityBloc>(create: (_) => EnvironmentHumidityBloc(int.parse(marimoItemsMap["humidity"]??"50"))),
         BlocProvider<EnvironmentTemperatureBloc>(create: (_) => EnvironmentTemperatureBloc(double.parse(marimoItemsMap["temperature"]??"16"))),
       ],
           child: App(
             initRoute: initRoute,
           ))));
+
   // FlutterNativeSplash.remove();
 }
 
@@ -91,29 +96,33 @@ class App extends StatelessWidget {
   App({Key? key, required this.initRoute}) : super(key: key);
   final String initRoute;
 
-  Widget initWidget(Widget child) => AppStatusObserver(
-          // 앱 백그라운드 , 포그라운드 상태 체크
-          child: NetWorkCheckWidget(
-        //네트워크 상태 체크
-        MainView(
-          child: child,
-        ),
-      ));
 
   @override
   Widget build(BuildContext context) {
 
+    Widget initWidget(Widget child) => AppStatusObserver(
+        timeCheckBloc: context.read<TimeCheckBloc>() ,
+        // 앱 백그라운드 , 포그라운드 상태 체크
+        child: NetWorkCheckWidget(
+          //네트워크 상태 체크
+          MainView(
+            child: child,
+          ),
+        ));
+
     final game = MarimoWorldGame(
+      languageManageBloc: context.read<LanguageManageBloc>(),
+      backgroundBloc: context.read<BackgroundBloc>(),
       environmentHumidityBloc: context.read<EnvironmentHumidityBloc>(),
       environmentTemperatureBloc: context.read<EnvironmentTemperatureBloc>(),
       environmentTrashBloc: context.read<EnvironmentTrashBloc>(),
-      environmentWaterBloc: context.read<EnvironmentWaterBloc>(),
       context: context,
       soundBloc: context.read<SoundBloc>(),
       coinBloc: context.read<CoinBloc>(),
-      marimoScoreBloc: context.read<MarimoScoreBloc>(),
+      marimoHpBloc: context.read<MarimoHpBloc>(),
       marimoLevelBloc: context.read<MarimoLevelBloc>(),
       marimoLifeCycleBloc: context.read<MarimoLifeCycleBloc>(),
+      timeCheckBloc: context.read<TimeCheckBloc>(),
     );
 
     return initWidget(
@@ -130,7 +139,7 @@ class App extends StatelessWidget {
           '/game_setting': (context) => GameSettingPage(game: game,),
           '/shop_page': (context) => ShopPage(game: game,),
         },
-        home: initWidget(MainGamePage(game: game,)),
+        home: initWidget(MainGamePage(game: game,),),
         navigatorKey: navigatorKey,
       ),
     );

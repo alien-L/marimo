@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/components/game_alert.dart';
 
 import '../marimo_game_world.dart';
@@ -60,12 +61,14 @@ class ShopPage extends StatelessWidget {
                       var name = list[index]["name"];
                       var price = list[index]["price"];
                       var stateScore = list[index]["state_score"];
+                      var expScore = list[index]["exp_score"];
                       bool isEnabled = list[index]["enabled"] == "true";
                       var bought = list[index]["bought"];
                       var category = list[index]["category"];
                       var image_name = list[index]["image_name"];
-                      var environment_category = list[index]["environment_category"];
-                      ////"environment_category"
+                      var environment_category =
+                          list[index]["environment_category"];
+                      ////"environment_category" exp_score
 
                       return Container(
                         // padding: const EdgeInsets.all(3),
@@ -124,6 +127,15 @@ class ShopPage extends StatelessWidget {
                                                 color: Colors.red),
                                             //  textAlign: TextAlign.left,
                                           ),
+                                          Text(
+                                            "  +$expScore",
+                                            style: TextStyle(
+                                                fontFamily: 'NeoDunggeunmoPro',
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                                color: Colors.blueAccent),
+                                            //  textAlign: TextAlign.left,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -136,7 +148,9 @@ class ShopPage extends StatelessWidget {
                                         padding:
                                             const EdgeInsets.only(left: 10),
                                         child: Text(
-                                          "$price 원",
+                                          isEnabled
+                                              ? "$price ${Environment().config.constant.coinUnit}"
+                                              : "",
                                           style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 14,
@@ -168,22 +182,55 @@ class ShopPage extends StatelessWidget {
                                               }),
                                             ),
                                             onPressed: () async {
-                                              game.soundBloc.effectSoundPlay('/music/click.mp3');
-                                              game.coinBloc.subtractCoin(int.parse(price));
-                                              game.marimoScoreBloc.addScore(int.parse(stateScore));
-                                              game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoScoreBloc.state);
-                                              game.soundBloc.effectSoundPlay('/music/popup.mp3');
-                                              if(environment_category == "humidity"){
-                                                game.environmentHumidityBloc.updateState(40);
-                                                //곰팡이 유무 체크
-                                              }else if(environment_category == "temperature"){
-                                                game.environmentTemperatureBloc.updateState(15);
-                                              }
+                                              if (!game.coinBloc.canBuyCoinState(int.parse(price))) {
+                                                GameAlert().showErrorDialog(text: "돈이 없어용~~");
+                                              } else {
+                                                game.soundBloc.effectSoundPlay(
+                                                    '/music/click.mp3');
+                                                game.coinBloc.subtractCoin(
+                                                    int.parse(price));
+                                                game.marimoHpBloc.addScore(
+                                                    int.parse(stateScore));
+                                                game.marimoLifeCycleBloc
+                                                    .changeLifeCycleToScore(game
+                                                        .marimoHpBloc.state);
+                                                game.soundBloc.effectSoundPlay(
+                                                    '/music/popup.mp3');
+                                                if (environment_category ==
+                                                    "humidity") {
+                                                  game.environmentHumidityBloc
+                                                      .updateState(40);
+                                                  //곰팡이 유무 체크
+                                                } else if (environment_category ==
+                                                    "temperature") {
+                                                  game.environmentTemperatureBloc
+                                                      .updateState(15);
+                                                } else if (environment_category ==
+                                                    "food") {
+                                                  game.environmentTrashBloc
+                                                      .updateState(true);
+                                                }
 
-                                              GameAlert().showMyDialog(text: "$name을 구매했어요 !! ",assetsName: "assets/images/shop/$image_name");
-                                              },
+                                                GameAlert().showMyDialog(
+                                                    text: name +
+                                                        Environment()
+                                                            .config
+                                                            .constant
+                                                            .getItemMsg,
+                                                    assetsName:
+                                                        "assets/images/shop/$image_name");
+                                              }
+                                            },
                                             child: Text(
-                                              isEnabled ? '구매하기' : '곧 만나요',
+                                              isEnabled
+                                                  ? Environment()
+                                                      .config
+                                                      .constant
+                                                      .buyItem
+                                                  : Environment()
+                                                      .config
+                                                      .constant
+                                                      .comingSoon,
                                               style: TextStyle(
                                                   fontFamily:
                                                       'NeoDunggeunmoPro',

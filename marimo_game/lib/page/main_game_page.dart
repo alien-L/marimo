@@ -28,6 +28,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:marimo_game/components/game_alert.dart';
 import '../app_manage/local_repository.dart';
 import '../helpers/direction.dart';
 import '../helpers/joypad.dart';
@@ -40,17 +41,12 @@ class MainGamePage extends StatelessWidget {
   LocalRepository localRepository = LocalRepository();
   final MarimoWorldGame game;
 
-  Future<String?> getMarimoName() async {
-    final String? name = await localRepository.getValue(key: "marimoName");
-
-    return name;
-  }
-
   @override
   Widget build(BuildContext context) {
 
     void onJoypadDirectionChanged(Direction direction) {
       game.onJoypadDirectionChanged(direction);
+      game.soundBloc.effectSoundPlay('/music/bubble.mp3');
     }
 
     Widget developerManagerWidget()=> Column(
@@ -83,8 +79,8 @@ class MainGamePage extends StatelessWidget {
                 onPressed: () async {
                   // await  LocalRepository().setKeyValue(
                   //     key: "marimoStateScore", value: "1000000");
-                  game.marimoScoreBloc.subtractScore(10);
-                  game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoScoreBloc.state);
+                  game.marimoHpBloc.subtractScore(10);
+                  game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoHpBloc.state);
                 },
                 child: Container(
                     height: 20,
@@ -100,12 +96,20 @@ class MainGamePage extends StatelessWidget {
                     child: Text('온도 올라감'))),
             TextButton(
                 onPressed: () async {
+                GameAlert().showErrorDialog(text: "test");
+                },
+                child: Container(
+                    height: 20,
+                    color: Colors.green,
+                    child: Text('에러'))),
+            TextButton(
+                onPressed: () async {
                   game.environmentTrashBloc.updateState(false);
                 },
                 child: Container(
                     height: 20,
                     color: Colors.green,
-                    child: Text('쓰레기 없애기'))),
+                    child: Text('쓰레기 투척'))),
           ],
         ),
       ],
@@ -148,7 +152,7 @@ class MainGamePage extends StatelessWidget {
             ),
             Positioned(
                 bottom: 30,
-                left: 120,
+                left: 0,
                 child: developerManagerWidget()),
             Positioned(
               top: 0,

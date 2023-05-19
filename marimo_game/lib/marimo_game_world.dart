@@ -3,20 +3,24 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:marimo_game/app_manage/language.dart';
+import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/coin_bloc.dart';
+import 'package:marimo_game/bloc/time_check_bloc.dart';
+import 'package:marimo_game/components/bar/marimo_exp_bar.dart';
 import 'package:marimo_game/components/trash_component.dart';
 import 'app_manage/local_repository.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
 import 'bloc/environment_bloc/environment_temperature_bloc.dart';
 import 'bloc/environment_bloc/environment_trash_bloc.dart';
-import 'bloc/environment_bloc/environment_water_bloc.dart';
+import 'bloc/language_manage_bloc.dart';
 import 'bloc/marimo_bloc/marimo_level_bloc.dart';
 import 'bloc/marimo_bloc/marimo_lifecycle_bloc.dart';
-import 'bloc/marimo_bloc/marimo_score_bloc.dart';
+import 'bloc/marimo_bloc/marimo_hp_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
 import 'components/bar/coin_collector_bar.dart';
 import 'components/bar/environment_state_bar.dart';
-import 'components/bar/marimo_state_bar.dart';
+import 'components/bar/marimo_hp_bar.dart';
 import 'components/moldy_component.dart';
 import 'components/world.dart';
 import 'components/world_collidable.dart';
@@ -27,21 +31,27 @@ import 'components/marimo_component.dart';
 class MarimoWorldGame extends FlameGame
     with PanDetector, HasCollisionDetection {
   late MarimoComponent marimoComponent;
+
+  // TrashComponent trashComponent = TrashComponent();
   late EnvironmentStateBar environmentStateBar;
 
   // int marimoStateScore = 50;
 
   final MarimoLevelBloc marimoLevelBloc;
-  final MarimoScoreBloc marimoScoreBloc;
+  final MarimoHpBloc marimoHpBloc;
   final MarimoLifeCycleBloc marimoLifeCycleBloc;
-
+  final LanguageManageBloc languageManageBloc;
   final EnvironmentHumidityBloc environmentHumidityBloc;
   final EnvironmentTemperatureBloc environmentTemperatureBloc;
   final EnvironmentTrashBloc environmentTrashBloc;
-  final EnvironmentWaterBloc environmentWaterBloc;
+
+  // final EnvironmentWaterBloc environmentWaterBloc;
+
+  final BackgroundBloc backgroundBloc;
 
   final SoundBloc soundBloc;
   final CoinBloc coinBloc;
+  final TimeCheckBloc timeCheckBloc;
 
   late Timer bulletCreator;
   final List<CoinComponent> _coinList =
@@ -53,20 +63,25 @@ class MarimoWorldGame extends FlameGame
 
   late World _world;
   final CoinCollector _coinCollector = CoinCollector();
-  final MarimoStateBar _marimoStateBar = MarimoStateBar();
+  final MarimoHpBar _marimoHpBar = MarimoHpBar();
+  final MarimoExpBar _marimoExpBar = MarimoExpBar();
   final BuildContext context;
 
   MarimoWorldGame({
-    required this.marimoScoreBloc,
+    required this.languageManageBloc,
+    required this.marimoHpBloc,
     required this.marimoLevelBloc,
     required this.marimoLifeCycleBloc,
     required this.environmentHumidityBloc,
     required this.environmentTemperatureBloc,
     required this.environmentTrashBloc,
-    required this.environmentWaterBloc,
+    //  required this.environmentWaterBloc,
+
     required this.context,
     required this.soundBloc,
     required this.coinBloc,
+    required this.backgroundBloc,
+    required this.timeCheckBloc,
   });
 
   void onJoypadDirectionChanged(Direction direction) {
@@ -80,21 +95,23 @@ class MarimoWorldGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
-    bool isHotWater = environmentTemperatureBloc.isHotWater();
-    _world = World(isHotWater);
+    _world = World(backgroundBloc);
     final marimoLevel = marimoLevelBloc.state;
     await add(_world);
     await add(
       FlameMultiBlocProvider(
         providers: [
+          FlameBlocProvider<LanguageManageBloc, Language>.value(
+            value: languageManageBloc,
+          ),
           FlameBlocProvider<MarimoLifeCycleBloc, MarimoLifeCycle>.value(
             value: marimoLifeCycleBloc,
           ),
           FlameBlocProvider<MarimoLevelBloc, MarimoLevel>.value(
             value: marimoLevelBloc,
           ),
-          FlameBlocProvider<MarimoScoreBloc, int>.value(
-            value: marimoScoreBloc,
+          FlameBlocProvider<MarimoHpBloc, int>.value(
+            value: marimoHpBloc,
           ),
           FlameBlocProvider<EnvironmentTemperatureBloc, double>.value(
             value: environmentTemperatureBloc,
@@ -105,27 +122,35 @@ class MarimoWorldGame extends FlameGame
           FlameBlocProvider<EnvironmentTrashBloc, bool>.value(
             value: environmentTrashBloc,
           ),
-          FlameBlocProvider<EnvironmentWaterBloc, bool>.value(
-            value: environmentWaterBloc,
-          ),
+          // FlameBlocProvider<EnvironmentWaterBloc, bool>.value(
+          //   value: environmentWaterBloc,
+          // ),
           FlameBlocProvider<SoundBloc, bool>.value(value: soundBloc),
           FlameBlocProvider<CoinBloc, int>.value(value: coinBloc),
+          FlameBlocProvider<TimeCheckBloc, bool>.value(value: timeCheckBloc),
         ],
         children: [
           marimoComponent =
               MarimoComponent(name: marimoLevel.name, context: context),
           environmentStateBar = EnvironmentStateBar(),
           MarimoController(context),
+          // trashComponent = TrashComponent(),
           //EnvironmentStatController(),
         ],
       ),
     );
     // 로컬저장소에 값이 있나 없나 체크
 
+    // await timeCheckBloc.checkForTomorrow();
     add(_coinCollector);
 
+    // add(trashComponent);
+
     // 코인 조건 넣어주기
-    for (var i = 0; i < 10; i++) {
+    String? totalCoinCountLocalValue = await LocalRepository().getValue(key: "totalCoinCount");
+    int totalCoinCount = int.parse(totalCoinCountLocalValue ?? "20");
+    int num = !timeCheckBloc.state ? 20 : totalCoinCount;
+    for (var i = 0; i < num; i++) {
       final tempCoin = CoinComponent(size);
       _coinList.add(tempCoin);
       add(tempCoin);
@@ -142,17 +167,17 @@ class MarimoWorldGame extends FlameGame
       }
     }
 
-    if (!environmentTrashBloc.state) {
-      for (var i = 0; i < 10; i++) {
-        final tempTrash = TrashComponent(size);
-        trashList.add(tempTrash);
-        add(tempTrash);
-      }
-    }
+    // if (!environmentTrashBloc.state) {
+    //   for (var i = 0; i < 10; i++) {
+    //     final tempTrash = TrashComponent(size);
+    //     trashList.add(tempTrash);
+    //     add(tempTrash);
+    //   }
+    // }
 
     // 동전 남아있게 만들기
-    add(_marimoStateBar); // 마리모 상태바
-
+    add(_marimoHpBar); // 마리모 상태바
+    add(_marimoExpBar);
     marimoComponent.position = _world.size / 2;
 
     camera.followComponent(marimoComponent,

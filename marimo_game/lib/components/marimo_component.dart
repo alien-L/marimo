@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:marimo_game/app_manage/environment/environment.dart';
 import '../app_manage/local_repository.dart';
 import '../bloc/marimo_bloc/marimo_level_bloc.dart';
 import '../helpers/direction.dart';
@@ -13,14 +14,13 @@ import 'game_alert.dart';
 class MarimoController extends Component
     with
         HasGameRef<MarimoWorldGame>,
-        FlameBlocListenable<MarimoLevelBloc, MarimoLevel>{
+        FlameBlocListenable<MarimoLevelBloc, MarimoLevel> {
   final BuildContext context;
 
   MarimoController(this.context);
 
   @override
   bool listenWhen(MarimoLevel previousState, MarimoLevel newState) {
-    print("상태");
     return previousState != newState;
   }
 
@@ -54,7 +54,7 @@ class MarimoComponent extends SpriteAnimationComponent
   final bool _hasCollided = false;
   final String? name;
 
-  MarimoComponent({required this.name,required this.context})
+  MarimoComponent({required this.name, required this.context})
       : super(size: Vector2.all(64.0), position: Vector2(100, 500)) {
     add(RectangleComponent());
     add(RectangleHitbox());
@@ -96,15 +96,22 @@ class MarimoComponent extends SpriteAnimationComponent
     if (other is CoinComponent) {
       other.removeFromParent();
       game.coinBloc.addCoin();
+      String? totalCoinCountLocalValue =
+          await LocalRepository().getValue(key: "totalCoinCount");
+      int totalCoinCount = int.parse(totalCoinCountLocalValue ?? "20");
+      totalCoinCount --;
       tempCoin++;
+      await LocalRepository().setKeyValue(
+          key: "totalCoinCount", value: totalCoinCount.toString());
+
       game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
 
-      if (name == "baby" && tempCoin == 3) {
+      if (name == "baby" && tempCoin == 3) { // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
         game.soundBloc.effectSoundPlay('/music/popup.mp3');
         removeFromParent();
         gameRef.marimoLevelBloc.levelUp(MarimoLevel.child);
         await GameAlert().showMyDialog(
-          text: "MARIMO LEVEL UP !!!! \n이제는 어린이 마리모랍니다 ^0^v",
+          text: Environment().config.constant.levelUpMsg,
           assetsName: "assets/images/one_marimo.png",
         );
       }

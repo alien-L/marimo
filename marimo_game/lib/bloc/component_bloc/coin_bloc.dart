@@ -5,11 +5,19 @@ import '../../app_manage/local_repository.dart';
 class CoinBloc extends Cubit<int>{
   CoinBloc(super.initialState);
 
-  // 코인 ui 컨트롤?
+  // 코인 ui 컨트롤? 다이아몬드 ???
+
+  bool canBuyCoinState(int price){
+    if(price <= state){
+      return true;
+    }else{
+      return false;
+    }
+  }
 
   // 코인 더하기
   void addCoin(){
-    emit(state+1);
+    emit(state+10);
     updateLocalCoin();
   }
 

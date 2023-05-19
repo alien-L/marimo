@@ -31,7 +31,8 @@ class _MainViewState extends State<MainView> {
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
-    LocationPermission permission;
+   // final checkpermission = await Geolocator.checkPermission();
+    final requestPermission = await Geolocator.requestPermission();
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -40,38 +41,39 @@ class _MainViewState extends State<MainView> {
               'Location services are disabled. Please enable the services')));
       return false;
     }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
-        return false;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
+
+    // if (checkpermission == LocationPermission.denied) {
+    //   return false;
+    // }
+
+    if (requestPermission == LocationPermission.denied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are denied')));
       return false;
     }
+    // if (permission == LocationPermission.deniedForever) {
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //       content: Text(
+    //           'Location permissions are permanently denied, we cannot request permissions.')));
+    //   return false;
+    // }
     return true;
   }
 
-  Future<Position?> _getCurrentPosition() async {
-    late Position? _currentPosition;
-
-    final hasPermission = await _handleLocationPermission();
-    if (!hasPermission) return null;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position? position) {
-      setState(() => _currentPosition = position);
-    }).catchError((e) {
-      debugPrint(e);
-    });
-
-    return _currentPosition;
-  }
+  // Future<Position?> _getCurrentPosition() async {
+  //   // final hasPermission = await _handleLocationPermission();
+  //   // if (!hasPermission) return null;
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+  //       .then((Position? position) {
+  //         print("position ${position}");
+  //         //Latitude: 37.785834, Longitude: -122.406417
+  //     setState(() => _currentPosition = position);
+  //   }).catchError((e) {
+  //     debugPrint(e);
+  //   });
+  //
+  //   return _currentPosition;
+  // }
 
   Future<WeatherInfo> getWeatherByCurrentLocation(lat, lon) async {
     var url =
@@ -96,9 +98,9 @@ class _MainViewState extends State<MainView> {
   }
 
   getMyEnvironment() async {
-    final position = await _getCurrentPosition();
-    var lat = position?.latitude;
-    var lon = position?.longitude;
+    //final position = await _getCurrentPosition();
+    var lat = 37.785834;
+    var lon = -122.406417;
     final _weatherInfo = await getWeatherByCurrentLocation(lat, lon);
     final detailedWeatherInfo = _weatherInfo.main;
     checkEnvironment(detailedWeatherInfo);

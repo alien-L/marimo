@@ -19,36 +19,48 @@ class TrashComponent extends SpriteComponent with HasGameRef<MarimoWorldGame> {
 
   @override
   Future<void> onLoad() async {
-    final moldyImage = await game.images.load('trash.png');
-    sprite = Sprite(moldyImage);
-
-    add(RectangleHitbox()..collisionType = CollisionType.inactive);
-    add(
-        MoveAlongPathEffect(
-          Path()..quadraticBezierTo(100, 0, 50, -50),
-          EffectController(duration: 1.5),
-        ),
-      // RotateEffect.by(90,
-      //     EffectController(
-      //       duration: 40,
-      //       infinite: true,
-      //       curve: Curves.easeOutQuad,
-      //     ),),
-    );
-    final random = Random();
-    final posX = random.nextDouble() * _worldSize.x;
-    final posY = random.nextDouble() * _worldSize.y;
-    _pos = Vector2(posX, posY);
-    position = _pos;
+    final bool isCleanTrash = game.environmentTrashBloc.state;
+    if(isCleanTrash){
+      final moldyImage = await game.images.load('trash.png');
+      sprite = Sprite(moldyImage);
+      add(RectangleHitbox()..collisionType = CollisionType.inactive);
+      add(
+        RotateEffect.by(90,
+          EffectController(
+            duration: 40,
+            infinite: true,
+            curve: Curves.easeOutQuad,
+          ),),
+      );
+      final random = Random();
+      final posX = random.nextDouble() * _worldSize.x;
+      final posY = random.nextDouble() * _worldSize.y;
+      _pos = Vector2(posX, posY);
+      position = _pos;
+    }
   }
 
   @override
-  void update(double dt) {
-    if (game.environmentTrashBloc.state){
-      removeFromParent();
-    }else{}
-    // parent?.add(gameRef.marimoComponent =
-    //     MarimoComponent(name: state.name, context: context));
+  Future<void> update(double dt) async {
+    final bool isCleanTrash = game.environmentTrashBloc.state;
+    if(isCleanTrash){
+      final moldyImage = await game.images.load('trash.png');
+      sprite = Sprite(moldyImage);
+      add(RectangleHitbox()..collisionType = CollisionType.inactive);
+      add(
+        RotateEffect.by(90,
+          EffectController(
+            duration: 40,
+            infinite: true,
+            curve: Curves.easeOutQuad,
+          ),),
+      );
+      final random = Random();
+      final posX = random.nextDouble() * _worldSize.x;
+      final posY = random.nextDouble() * _worldSize.y;
+      _pos = Vector2(posX, posY);
+      position = _pos;
+    }
     super.update(dt);
   }
 }

@@ -1,8 +1,12 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/style/color.dart';
 
+import '../app_manage/language.dart';
+import '../app_manage/restart_widget.dart';
+import '../main.dart';
 import '../marimo_game_world.dart';
 
 
@@ -46,18 +50,47 @@ Future<ValueChanged<bool>?> onOffSound(value) async {
     ),
   );
 
-  @override
+Widget dropDownButton() => DropdownButtonFormField<Language>(
+      decoration: const InputDecoration(
+labelText: 'Language',
+floatingLabelBehavior: FloatingLabelBehavior.always,
+labelStyle: TextStyle(fontSize: 15, color: Color(0xffcfcfcf)),
+      ),
+      // underline: Container(height: 1.4, color: Color(0xffc0c0c0)),
+      onChanged: (Language? newValue) {
+// value 값 보내주기
+       // Environment().initConfig(newValue!); -- > cubit으로 처리 ?
+       // widget.game.backgroundBloc.close();
+//RestartWidget.restartApp(navigatorKey.currentContext!, newValue!);
+print(newValue);
+   // widget.game.languageManageBloc.changeLanguage(newValue);
+      },
+      items: [Language.en, Language.jp, Language.ko]
+  .map<DropdownMenuItem<Language>>((Language i) {
+return DropdownMenuItem<Language>(
+  value: i,
+  child: Text(
+      '${{'en': 'english', 'jp': 'japan', 'ko': "korea"}[i.name]}'),
+  //  {'en': 'english', 'jp': 'japan','ko':"korea"}[i.name]
+  // Text({'M': '남성', 'F': '여성'}[i] ?? '비공개'),
+);
+      }).toList(),
+    );
+
+
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CommonColor.green,
-        title: Text("설정"),
+        title: Text(Environment().config.constant.setting),
       ),
       body: SafeArea(
         child: Center(
           child:Column(
             children: [
-              toggleWidget(txt: "음악 on/off",onChanged: onOffSound),
+           //   dropDownButton(),
+              toggleWidget(txt:Environment().config.constant.soundOnOff,onChanged: onOffSound),
               //toggleWidget(txt: "푸시설정 on/off",onChanged: onOffSound),
              // Text("언어설정"),
             ],

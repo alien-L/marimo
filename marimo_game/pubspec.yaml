@@ -19,7 +19,7 @@ dependencies:
   flutter_secure_storage: 8.0.0
   connectivity: 3.0.6
   http: 0.13.5
-  geolocator: ^8.2.0
+  geolocator: ^9.0.2
   flutter_native_splash: ^2.2.19
   flame_bloc: ^1.8.3
   flutter_bloc: ^8.0.1

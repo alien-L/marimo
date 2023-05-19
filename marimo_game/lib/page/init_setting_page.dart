@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/style/color.dart';
 
 import '../app_manage/language.dart';
 import '../app_manage/local_repository.dart';
+import '../components/game_alert.dart';
 
 class InitSettingPage extends StatelessWidget {
   InitSettingPage({Key? key}) : super(key: key);
@@ -12,28 +14,6 @@ class InitSettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Widget dropDownButton() => DropdownButtonFormField<Language>(
-          decoration: const InputDecoration(
-            labelText: 'Language',
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            labelStyle: TextStyle(fontSize: 15, color: Color(0xffcfcfcf)),
-          ),
-          // underline: Container(height: 1.4, color: Color(0xffc0c0c0)),
-          onChanged: (Language? newValue) {
-            // value 값 보내주기
-            print(newValue);
-          },
-          items: [Language.en, Language.jp, Language.ko]
-              .map<DropdownMenuItem<Language>>((Language i) {
-            return DropdownMenuItem<Language>(
-              value: i,
-              child: Text(
-                  '${{'en': 'english', 'jp': 'japan', 'ko': "korea"}[i.name]}'),
-              //  {'en': 'english', 'jp': 'japan','ko':"korea"}[i.name]
-              // Text({'M': '남성', 'F': '여성'}[i] ?? '비공개'),
-            );
-          }).toList(),
-        );
     Widget textFormField(){
 
       return Column(
@@ -63,20 +43,21 @@ class InitSettingPage extends StatelessWidget {
               ),),
               onPressed: () async {
                 final name = controller.value.text;
-                if(name !=""){
+               // if(name !="" || name.isNotEmpty){
                   // 로컬저장소에 첫설치 아니라고 알려주기
                   // 로컬저장소에 이름 저장
                   // 이름 전송
-                  LocalRepository localRepository = LocalRepository();
-                  await localRepository.setKeyValue(key: 'marimoName', value: name);
-                  Navigator.pushNamed(context, "/main_scene");
-
-                }else{
-                  //null 체크 및 validation 체크 들어가야됨
-                  print("null ====> $name");
-                }
-
-
+                  // 특수기호 및 1~10 글자 허용
+                  bool specialChar = name.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+                  bool gap = name.contains(RegExp('\\s'));
+                  if(specialChar || name.length>11 || name.isEmpty|| name == "" || gap){
+                    GameAlert().showErrorDialog(text:Environment().config.constant.nameValidationCheckMsg);
+                  }else{
+                    LocalRepository localRepository = LocalRepository();
+                    await localRepository.setKeyValue(key: 'marimoName', value: name);
+                    await localRepository.setKeyValue(key: 'firstInstall', value: "0");
+                    Navigator.pushNamed(context, "/main_scene");
+                  }
               },
               child: const Text('OK'),
             ),
@@ -108,3 +89,5 @@ class InitSettingPage extends StatelessWidget {
               ))));
   }
 }
+
+
