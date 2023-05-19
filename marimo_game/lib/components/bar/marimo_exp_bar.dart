@@ -22,7 +22,7 @@ class MarimoExpBar extends PositionComponent
   @override
   Future<void>? onLoad() async {
    final marimoHpBloc =  game.marimoHpBloc;
-   final marimoLifeCycleBloc = game.marimoLifeCycleBloc;
+  // final marimoLifeCycleBloc = game.marimoLifeCycleBloc;
 
     final lifeBarSprite = await game.loadSprite('exp_bar_100.png');
     //marimoScoreBloc.state

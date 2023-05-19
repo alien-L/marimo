@@ -6,16 +6,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:marimo_game/app_manage/language.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/coin_bloc.dart';
-import 'package:marimo_game/bloc/time_check_bloc.dart';
+import 'package:marimo_game/bloc/component_bloc/time_check_bloc.dart';
 import 'package:marimo_game/components/bar/marimo_exp_bar.dart';
 import 'package:marimo_game/components/trash_component.dart';
 import 'app_manage/local_repository.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
 import 'bloc/environment_bloc/environment_temperature_bloc.dart';
 import 'bloc/environment_bloc/environment_trash_bloc.dart';
-import 'bloc/language_manage_bloc.dart';
+import 'bloc/component_bloc/language_manage_bloc.dart';
+import 'bloc/marimo_bloc/marimo_exp_bloc.dart';
 import 'bloc/marimo_bloc/marimo_level_bloc.dart';
-import 'bloc/marimo_bloc/marimo_lifecycle_bloc.dart';
 import 'bloc/marimo_bloc/marimo_hp_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
 import 'components/bar/coin_collector_bar.dart';
@@ -39,7 +39,8 @@ class MarimoWorldGame extends FlameGame
 
   final MarimoLevelBloc marimoLevelBloc;
   final MarimoHpBloc marimoHpBloc;
-  final MarimoLifeCycleBloc marimoLifeCycleBloc;
+  final MarimoExpBloc marimoExpBloc;
+ // final MarimoHpLifeCycleBloc marimoLifeCycleBloc;
   final LanguageManageBloc languageManageBloc;
   final EnvironmentHumidityBloc environmentHumidityBloc;
   final EnvironmentTemperatureBloc environmentTemperatureBloc;
@@ -68,10 +69,11 @@ class MarimoWorldGame extends FlameGame
   final BuildContext context;
 
   MarimoWorldGame({
+    required this.marimoExpBloc,
     required this.languageManageBloc,
     required this.marimoHpBloc,
     required this.marimoLevelBloc,
-    required this.marimoLifeCycleBloc,
+    //required this.marimoLifeCycleBloc,
     required this.environmentHumidityBloc,
     required this.environmentTemperatureBloc,
     required this.environmentTrashBloc,
@@ -104,14 +106,17 @@ class MarimoWorldGame extends FlameGame
           FlameBlocProvider<LanguageManageBloc, Language>.value(
             value: languageManageBloc,
           ),
-          FlameBlocProvider<MarimoLifeCycleBloc, MarimoLifeCycle>.value(
-            value: marimoLifeCycleBloc,
-          ),
+          // FlameBlocProvider<MarimoHpLifeCycleBloc, MarimoHpLifeCycle>.value(
+          //   value: marimoLifeCycleBloc,
+          // ),
           FlameBlocProvider<MarimoLevelBloc, MarimoLevel>.value(
             value: marimoLevelBloc,
           ),
           FlameBlocProvider<MarimoHpBloc, int>.value(
             value: marimoHpBloc,
+          ),
+          FlameBlocProvider<MarimoExpBloc, int>.value(
+            value: marimoExpBloc,
           ),
           FlameBlocProvider<EnvironmentTemperatureBloc, double>.value(
             value: environmentTemperatureBloc,

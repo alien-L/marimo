@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marimo_game/bloc/time_check_bloc.dart';
+import 'package:marimo_game/bloc/component_bloc/time_check_bloc.dart';
 ///
 /// Created by ahhyun [ah2yun@gmail.com] on 2023. 03. 30
 ///

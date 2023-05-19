@@ -80,12 +80,23 @@ class MainGamePage extends StatelessWidget {
                   // await  LocalRepository().setKeyValue(
                   //     key: "marimoStateScore", value: "1000000");
                   game.marimoHpBloc.subtractScore(10);
-                  game.marimoLifeCycleBloc.changeLifeCycleToScore(game.marimoHpBloc.state);
+                  game.marimoHpBloc.changeLifeCycleToHp();
                 },
                 child: Container(
                     height: 20,
                     color: Colors.green,
-                    child: Text('코인 --'))),
+                    child: Text('hp --'))),
+            TextButton(
+                onPressed: () async {
+                  // await  LocalRepository().setKeyValue(
+                  //     key: "marimoStateScore", value: "1000000");
+                  game.marimoHpBloc.addScore(10);
+                  game.marimoHpBloc.changeLifeCycleToHp();
+                },
+                child: Container(
+                    height: 20,
+                    color: Colors.green,
+                    child: Text('hp ++'))),
             TextButton(
                 onPressed: () async {
                   game.environmentTemperatureBloc.updateState(25);

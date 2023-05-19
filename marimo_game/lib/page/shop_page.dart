@@ -187,13 +187,10 @@ class ShopPage extends StatelessWidget {
                                               } else {
                                                 game.soundBloc.effectSoundPlay(
                                                     '/music/click.mp3');
-                                                game.coinBloc.subtractCoin(
-                                                    int.parse(price));
-                                                game.marimoHpBloc.addScore(
-                                                    int.parse(stateScore));
-                                                game.marimoLifeCycleBloc
-                                                    .changeLifeCycleToScore(game
-                                                        .marimoHpBloc.state);
+                                                game.coinBloc.subtractCoin(int.parse(price));
+                                                game.marimoHpBloc.addScore(int.parse(stateScore));
+                                                game.marimoHpBloc.changeLifeCycleToHp();
+                                               // game.marimoLifeCycleBloc.changeLifeCycleToExp(game.marimoExpBloc.state, game.marimoLevelBloc.state);
                                                 game.soundBloc.effectSoundPlay(
                                                     '/music/popup.mp3');
                                                 if (environment_category ==

@@ -43,12 +43,12 @@ import 'bloc/component_bloc/coin_bloc.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
 import 'bloc/environment_bloc/environment_temperature_bloc.dart';
 import 'bloc/environment_bloc/environment_trash_bloc.dart';
-import 'bloc/language_manage_bloc.dart';
+import 'bloc/component_bloc/language_manage_bloc.dart';
+import 'bloc/marimo_bloc/marimo_exp_bloc.dart';
 import 'bloc/marimo_bloc/marimo_level_bloc.dart';
-import 'bloc/marimo_bloc/marimo_lifecycle_bloc.dart';
 import 'bloc/marimo_bloc/marimo_hp_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
-import 'bloc/time_check_bloc.dart';
+import 'bloc/component_bloc/time_check_bloc.dart';
 import 'const/constant.dart';
 import 'marimo_game_world.dart';
 import 'model/marimo_items.dart';
@@ -76,7 +76,8 @@ Future<void> main() async {
         BlocProvider<BackgroundBloc>(create: (_) => BackgroundBloc(BackgroundState.normal)),
         BlocProvider<MarimoLevelBloc>(create: (_) => MarimoLevelBloc(marimoItemsMap["marimoLevel"]??MarimoLevel.baby)),
         BlocProvider<MarimoHpBloc>(create: (_) => MarimoHpBloc(marimoItemsMap["marimoHp"]??50)),
-        BlocProvider<MarimoLifeCycleBloc>(create: (_) => MarimoLifeCycleBloc(marimoItemsMap["marimoLifeCycle"]??MarimoLifeCycle.normal)),
+        BlocProvider<MarimoExpBloc>(create: (_) => MarimoExpBloc(marimoItemsMap["marimoExp"]??100)),
+      //  BlocProvider<MarimoHpLifeCycleBloc>(create: (_) => MarimoHpLifeCycleBloc(marimoItemsMap["marimoLifeCycle"]??MarimoHpLifeCycle.normal)),
 
         BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"]?? "0"))),
         BlocProvider<SoundBloc>(create: (_) => SoundBloc(false)), // booleen 형 바꿔주기 //marimoItemsMap["isCheckedOnOffSound"]??false
@@ -121,8 +122,9 @@ class App extends StatelessWidget {
       coinBloc: context.read<CoinBloc>(),
       marimoHpBloc: context.read<MarimoHpBloc>(),
       marimoLevelBloc: context.read<MarimoLevelBloc>(),
-      marimoLifeCycleBloc: context.read<MarimoLifeCycleBloc>(),
+      //marimoLifeCycleBloc: context.read<MarimoHpLifeCycleBloc>(),
       timeCheckBloc: context.read<TimeCheckBloc>(),
+      marimoExpBloc:  context.read<MarimoExpBloc>(),
     );
 
     return initWidget(

@@ -13,33 +13,6 @@ class MarimoLevelBloc extends Cubit<MarimoLevel> {
     updateLocalCoin();
   }
 
-  int getExpAmount(MarimoLevel level) {
-    int result = 0;
-
-    switch (level) {
-      case MarimoLevel.baby:
-        result = 10;
-        break;
-      case MarimoLevel.child:
-        result = 1000;
-        break;
-      case MarimoLevel.child2:
-        result = 2000;
-        break;
-      case MarimoLevel.teenager:
-        result = 3000;
-        break;
-      case MarimoLevel.adult:
-        result = 4000;
-        break;
-      case MarimoLevel.oldMan:
-        result = 5000;
-        break;
-    }
-
-    return result;
-  }
-
   Villain showVillain (MarimoLevel level){
     Villain result;
     switch (level) {

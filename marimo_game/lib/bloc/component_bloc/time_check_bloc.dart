@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../app_manage/local_repository.dart';
+import '../../app_manage/local_repository.dart';
 
 class TimeCheckBloc extends Cubit<bool>{
   TimeCheckBloc(super.initialState);
