@@ -7,11 +7,9 @@ enum MarimoHpState{level1,level2,level3,level4,level5}
 class MarimoHpBloc extends Cubit<int>{
   MarimoHpBloc(super.initialState);
 
-
   //  더하기
   void addScore(int addNum){
     emit(state+addNum);
-    print("hp hp ==> ${state+addNum}");
     changeLifeCycleToHp();
     updateLocalScore();
   }
@@ -33,21 +31,15 @@ class MarimoHpBloc extends Cubit<int>{
 
   MarimoHpState changeLifeCycleToHp(){
     MarimoHpState result;
-    
-   int caseNum = (state/10).round();
+    int caseNum = (state/10).floor();
 
-   //print("caseNum===> $caseNum");
-
+    // 게임 엔딩 초기화 시키기 , die
    if(caseNum<0){
      emit(0);
-     // 게임 엔딩 초기화 시키기
-
     return MarimoHpState.level1;
    }
 
    if(caseNum>10){
-     //컨트롤 추가
-     //emit(100);
      caseNum = 10;
      return MarimoHpState.level5;
    }

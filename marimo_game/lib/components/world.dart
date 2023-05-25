@@ -1,6 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
-
 import '../bloc/component_bloc/background_bloc.dart';
 
 // 백그라운드 사이즈는 어떻게 정하지???

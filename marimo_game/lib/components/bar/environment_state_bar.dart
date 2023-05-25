@@ -2,7 +2,6 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import '../../app_manage/environment/environment.dart';
-import '../../const/constant.dart';
 import '../../marimo_game_world.dart';
 
 class EnvironmentStateBar extends PositionComponent
@@ -70,7 +69,7 @@ class EnvironmentStateBar extends PositionComponent
     if(game.environmentTemperatureBloc.isHotWater()){
       game.backgroundBloc.backgroundChange(BackgroundState.red);
     }else{
-      //game.backgroundBloc.backgroundChange(BackgroundState.normal);
+      game.backgroundBloc.backgroundChange(BackgroundState.normal);
     }
 
     _temperatureTextComponent.text = constant.temperature+game.environmentTemperatureBloc.state.toString()+constant.celsius;

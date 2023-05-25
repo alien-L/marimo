@@ -1,12 +1,9 @@
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/style/color.dart';
 
 import '../app_manage/language.dart';
-import '../app_manage/restart_widget.dart';
-import '../main.dart';
 import '../marimo_game_world.dart';
 
 
@@ -20,7 +17,6 @@ class GameSettingPage extends StatefulWidget {
 
 class _GameSettingPageState extends State<GameSettingPage> {
 
- // late bool isSwitched = true;
 
 Future<ValueChanged<bool>?> onOffSound(value) async {
   setState(() {
@@ -89,11 +85,9 @@ return DropdownMenuItem<Language>(
         child: Center(
           child:Column(
             children: [
-           //   dropDownButton(),
               Text("닉네임"),
               Text("UID"),
               toggleWidget(txt:Environment().config.constant.bgmOnOff,onChanged: onOffSound),
-              //toggleWidget(txt: "푸시설정 on/off",onChanged: onOffSound),
               Text("평가하기"),
               Text("게임버전"),
               Text("초기화"),

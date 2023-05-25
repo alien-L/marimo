@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:marimo_game/app_manage/local_repository.dart';
 
 class MarimoItems {
@@ -83,23 +82,8 @@ class MarimoItems {
 }
 
 Future<MarimoItems> getInitLocalMarimoItems() async {
-//  List list = [];
-  //LocalRepository localRepository = LocalRepository(); // 로컬 저장소
- // Map<String, dynamic> _map = {};
- // Map<String, dynamic> result = {};
-  // MarimoItems().toJson().keys.forEach((key) async {
-  //
-  //   final value = await LocalRepository().getValue(key: key);
-  //   print("$key, value==> $value");
-  //   //_json.addAll({element:value});
-  //  // _json.update(element, (v) => value);
-  // //  _json = {element:value};
-  // //  _map[key] = value;
-  // _map.addAll({key:value});
-  //  // result.addEntries()
-  // //  _map[key] = value;
-  // });
-  final itmes = MarimoItems(
+
+  final items = MarimoItems(
       language: await LocalRepository().getValue(key: "language"),
       lastDay: await LocalRepository().getValue(key: "lastDay"),
       background: await  LocalRepository().getValue(key: "background"),
@@ -114,20 +98,8 @@ Future<MarimoItems> getInitLocalMarimoItems() async {
       humidity: await LocalRepository().getValue(key: "humidity"),
       temperature: await LocalRepository().getValue(key: "temperature"),
       firstInstall: await LocalRepository().getValue(key: "firstInstall"),);
-  print("json ==> $itmes");
-  return itmes;
-}
 
-// Future<Map<String, dynamic>> getMap(Iterable keys) async {
-//  // Map<String, dynamic> result;
-//  // final value = await LocalRepository().getValue(key: keys);
-//  // keys.map((e){
-//  //
-//  //  });
-//  List keyList = keys.toList();
-//
-// // result.addAll({"":""});
-//
-//
-//   return result;
-// }
+  print("json ==> $items");
+
+  return items;
+}

@@ -2,11 +2,8 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
-import 'package:marimo_game/components/villian_component.dart';
-import '../app_manage/local_repository.dart';
 import '../bloc/marimo_bloc/marimo_level_bloc.dart';
 import '../helpers/direction.dart';
 import '../marimo_game_world.dart';
@@ -191,16 +188,12 @@ class MarimoComponent extends SpriteAnimationComponent
 
 levelUpMarimo(MarimoWorldGame game, level) async {
   game.soundBloc.effectSoundPlay('/music/popup.mp3');
-  //game.removeFromParent();
-  //game.marimoComponent.removeFromParent();
-  //game.remove(game.marimoComponent);
   await GameAlert().showMyDialog(
     text: Environment().config.constant.levelUpMsg,
     assetsName: "assets/images/one_marimo.png",
   );
+
   game.marimoExpBloc.initState();
-  //game.marimoExpBloc.emit(0);
-  // 이미지 필요 one_marimo
 
   switch (level) {
     case MarimoLevel.baby: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값

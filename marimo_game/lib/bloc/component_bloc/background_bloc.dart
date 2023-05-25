@@ -22,12 +22,8 @@ class BackgroundBloc extends Cubit<BackgroundState> {
       case BackgroundState.red:
         result = "background_01_red";
         break;
-      // case BackgroundState.dirty:
-      //   result = "background_01_dirty";
-      //   break;
     }
     _updateLocalBg();
-    // emit(backgroundState);
     return result;
   }
 

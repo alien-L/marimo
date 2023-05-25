@@ -21,8 +21,6 @@ class GameAlert {
           insetPadding: EdgeInsets.zero,
           actionsPadding: EdgeInsets.zero,
           buttonPadding: EdgeInsets.zero,
-       //   title: Text(title),
-          //"assets/images/dialog.png"
           content: Stack(
             children: [
               Align(
@@ -37,7 +35,7 @@ class GameAlert {
                   onTap: (){
                     Navigator.of(context).pop();
                   },
-                  child: Container(
+                  child: SizedBox(
                       width: 80,
                       height: 80,
                       child: Image.asset(assetsName)),
@@ -48,7 +46,7 @@ class GameAlert {
                 child: Padding(
                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2 -300,),
                   child: Text(text
-                      ,style: TextStyle(
+                      ,style: const TextStyle(
                     color: Color.fromRGBO(238, 130, 148,1),
                   ),
                   ),
@@ -63,7 +61,7 @@ class GameAlert {
                       onTap: (){
                         Navigator.of(context).pop();
                       },
-                      child: Container(
+                      child: SizedBox(
                           width: 70,
                           height: 30,
                           child: Image.asset("assets/images/ok_btn.png",width: 151,height: 57,)),
@@ -72,8 +70,6 @@ class GameAlert {
               )
             ],
           ),
-          actions: <Widget>[
-          ],
         );
       },
     );
@@ -82,7 +78,6 @@ class GameAlert {
 
   Future<void> showErrorDialog({
     required String text,
-   // required String assetsName,
   }) async {
     return showDialog<void>(
       context: navigatorKey.currentContext!,
@@ -96,8 +91,6 @@ class GameAlert {
           insetPadding: EdgeInsets.zero,
           actionsPadding: EdgeInsets.zero,
           buttonPadding: EdgeInsets.zero,
-          //   title: Text(title),
-          //"assets/images/dialog.png"
           content: GestureDetector(
             onTap: (){
               Navigator.of(context).pop();
@@ -117,10 +110,9 @@ class GameAlert {
                   child: Padding(
                     padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2 -350,),
                     child: Text(text
-                      ,style: TextStyle(
+                      ,style: const TextStyle(
                         fontSize: 13,
                       color: Colors.black
-                      //  color: Color.fromRGBO(255, 0, 120, 1)
                       ),
                     ),
                   ),
@@ -128,8 +120,6 @@ class GameAlert {
               ],
             ),
           ),
-          actions: <Widget>[
-          ],
         );
       },
     );

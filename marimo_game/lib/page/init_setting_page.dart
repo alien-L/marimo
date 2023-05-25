@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/style/color.dart';
-
-import '../app_manage/language.dart';
 import '../app_manage/local_repository.dart';
 import '../components/game_alert.dart';
 
@@ -43,11 +41,6 @@ class InitSettingPage extends StatelessWidget {
               ),),
               onPressed: () async {
                 final name = controller.value.text;
-               // if(name !="" || name.isNotEmpty){
-                  // 로컬저장소에 첫설치 아니라고 알려주기
-                  // 로컬저장소에 이름 저장
-                  // 이름 전송
-                  // 특수기호 및 1~10 글자 허용
                   bool specialChar = name.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
                   bool gap = name.contains(RegExp('\\s'));
                   if(specialChar || name.length>11 || name.isEmpty|| name == "" || gap){

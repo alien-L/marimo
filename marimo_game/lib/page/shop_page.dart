@@ -34,13 +34,8 @@ class ShopPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(onPressed: () {
-        //   Navigator.pop(context);
-        //   //라우트 이동 시 argument 전달 해 주기
-        //  // Navigator.pushNamed(context, "/main_scene");
-        // }, icon: Icon(Icons.navigate_before),),
         backgroundColor: CommonColor.green,
-        title: Text(
+        title: const Text(
           "SHOP",
           style: TextStyle(
             fontFamily: 'NeoDunggeunmoPro',
@@ -73,14 +68,8 @@ class ShopPage extends StatelessWidget {
                       ////"environment_category" exp_score
 
                       return Container(
-                        // padding: const EdgeInsets.all(3),
-                        //color: Colors.white,
                         decoration: BoxDecoration(
                           color: isEnabled ? Colors.white : Colors.black26,
-                          // border: Border.all(
-                          //       width: 1,
-                          //     color: CommonColor.green,
-                          //     ),
                         ),
                         child: Column(
                           children: [

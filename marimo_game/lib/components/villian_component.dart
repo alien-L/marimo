@@ -1,15 +1,9 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
-import '../app_manage/local_repository.dart';
 import '../bloc/marimo_bloc/marimo_level_bloc.dart';
-import '../helpers/direction.dart';
 import '../marimo_game_world.dart';
-import 'coin_component.dart';
 import 'game_alert.dart';
 import 'marimo_component.dart';
 
@@ -17,16 +11,11 @@ class VillainController extends Component
     with
         HasGameRef<MarimoWorldGame>,
         FlameBlocListenable<MarimoExpBloc, int> {
-  //final BuildContext context;
   bool isFirst = true;
   VillainController();
 
   @override
   bool listenWhen(int previousState, int newState) {
-
-    print("1))) isFirst $isFirst");
-   // newState
-   // game.marimoExpBloc.getExpMaxCount();
     bool isLevel3 = game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) ==  MarimoExpState.level3;
     // exp 는 -- 관리 없는걸로 , 무찌르면 4로 업 , 못 치우면 계속 hp --
     // 빌런을 없앴는지 체크하는 로직 추가 , 빌런 없애기전까지는 레벨업 못하게 막아야됨
@@ -61,21 +50,7 @@ class VillainComponent extends SpriteAnimationComponent
         CollisionCallbacks,
         KeyboardHandler,
         FlameBlocListenable<MarimoLevelBloc, MarimoLevel> {
- //  bool destroyed = false;
- // // final BuildContext context;
- //  final double _playerSpeed = 300.0;
- //  final double _animationSpeed = 0.15;
- //  int tempCoin = 0;
- //  late final SpriteAnimation _runDownAnimation;
- //
- //  late final SpriteAnimation _runLeftAnimation;
- //  late final SpriteAnimation _runUpAnimation;
- //  late final SpriteAnimation _runRightAnimation;
- //  late final SpriteAnimation _standingAnimation;
- //
- //  Direction direction = Direction.none;
- //  final Direction _collisionDirection = Direction.none;
- //  final bool _hasCollided = false;
+
    final MarimoLevel level;
 
   VillainComponent(this.level){

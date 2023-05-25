@@ -31,7 +31,6 @@ class TimeCheckBloc extends Cubit<bool>{
       }
     }
     //2번 불러지는 것도 체크
-    print("checkForTomorrow() result ==> $state");
   }
 
   Future<void> updateLocalLastTime(DateTime dateTime) async {
