@@ -11,13 +11,13 @@ abstract class Constant {
   String get environment;
   String get levelUpMsg;
   String get setting;
-  String get soundOnOff;
+  String get bgmOnOff;
   String get nameValidationCheckMsg;
   String get coinUnit;
   String get getItemMsg;
   String get buyItem;
   String get comingSoon;
-  
+  String get effectSoundOnOff;
 }
 
 class KoreanConstant extends Constant{
@@ -44,7 +44,7 @@ class KoreanConstant extends Constant{
   String get setting => "설정";
 
   @override
-  String get soundOnOff => "음악 on/off";
+  String get bgmOnOff => "배경음";
 
   @override
   String get nameValidationCheckMsg => """닉네임은 1~10 글자 까지 가능합니다.\n공백 및 특수기호는 사용할 수 없습니다.""";
@@ -60,6 +60,9 @@ class KoreanConstant extends Constant{
 
   @override
   String get getItemMsg => "을 구매했어요 !!";
+
+  @override
+  String get effectSoundOnOff => "효과음";
 
 }
 
@@ -102,7 +105,10 @@ class EnglishConstant extends Constant{
   String get setting => "setting";
 
   @override
-  String get soundOnOff => "sound on/off";
+  String get bgmOnOff => "sound on/off";
+
+  @override
+  String get effectSoundOnOff => "효과음";
 
 }
 
@@ -145,6 +151,9 @@ class JapanConstant extends Constant{
   String get setting => "設定";
 
   @override
-  String get soundOnOff => "音楽 on/off";
+  String get bgmOnOff => "音楽 on/off";
+
+  @override
+  String get effectSoundOnOff => "효과음";
 
 }

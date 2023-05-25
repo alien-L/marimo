@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app_manage/local_repository.dart';
 
-enum MarimoHpLifeCycle{dangerous,good,bad,normal,die,lucky}
+enum MarimoHpState{level1,level2,level3,level4,level5}
 
 class MarimoHpBloc extends Cubit<int>{
   MarimoHpBloc(super.initialState);
@@ -12,6 +12,7 @@ class MarimoHpBloc extends Cubit<int>{
   void addScore(int addNum){
     emit(state+addNum);
     print("hp hp ==> ${state+addNum}");
+    changeLifeCycleToHp();
     updateLocalScore();
   }
 
@@ -19,6 +20,7 @@ class MarimoHpBloc extends Cubit<int>{
   void subtractScore(int subNum){
     int tempScore = state - subNum;
     emit(tempScore);
+    changeLifeCycleToHp();
     updateLocalScore();
   }
 
@@ -29,8 +31,8 @@ class MarimoHpBloc extends Cubit<int>{
 
   }
 
-  MarimoHpLifeCycle changeLifeCycleToHp(){
-    MarimoHpLifeCycle result;
+  MarimoHpState changeLifeCycleToHp(){
+    MarimoHpState result;
     
    int caseNum = (state/10).round();
 
@@ -40,45 +42,37 @@ class MarimoHpBloc extends Cubit<int>{
      emit(0);
      // 게임 엔딩 초기화 시키기
 
-    return MarimoHpLifeCycle.die;
+    return MarimoHpState.level1;
    }
 
    if(caseNum>10){
      //컨트롤 추가
-     emit(100);
-     return MarimoHpLifeCycle.lucky;
+     //emit(100);
+     caseNum = 10;
+     return MarimoHpState.level5;
    }
 
     switch(caseNum)
     {
       case 10:
-        result =  MarimoHpLifeCycle.lucky;
+        result =  MarimoHpState.level5;
         break;
       case 9: case 8: case 7:
-      result =  MarimoHpLifeCycle.good;
+      result =  MarimoHpState.level2;
         break;
       case 6: case 5: case 4:
-      result =  MarimoHpLifeCycle.normal;
+      result =  MarimoHpState.level4;
         break;
       case 3: case 2: case 1:
-      result =  MarimoHpLifeCycle.bad;
+      result =  MarimoHpState.level3;
         break;
       case 0:
-        result =  MarimoHpLifeCycle.dangerous;
-        break;
-      case 0:
-        result =  MarimoHpLifeCycle.die;
+        result =  MarimoHpState.level1;
         break;
       default:
-        result = MarimoHpLifeCycle.die;
+        result = MarimoHpState.level1;
       break;
     }
       return result;
   }
-
-  // Future<void> updateLocalLifeCycle(MarimoHpLifeCycle _marimoHpLifeCycle) async {
-  //   await LocalRepository().setKeyValue(
-  //       key: "marimoLifeCycle", value: _marimoHpLifeCycle.toString());
-  // }
-
 }

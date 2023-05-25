@@ -28,12 +28,17 @@
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/components/game_alert.dart';
+import 'package:marimo_game/components/marimo_component.dart';
+import '../app_manage/environment/environment.dart';
 import '../app_manage/local_repository.dart';
+import '../bloc/marimo_bloc/marimo_exp_bloc.dart';
+import '../bloc/marimo_bloc/marimo_level_bloc.dart';
 import '../helpers/direction.dart';
 import '../helpers/joypad.dart';
 import '../marimo_game_world.dart';
-
+bool isTrue = true;
 class MainGamePage extends StatelessWidget {
   MainGamePage({
     Key? key, required this.game,
@@ -77,10 +82,7 @@ class MainGamePage extends StatelessWidget {
           children: [
             TextButton(
                 onPressed: () async {
-                  // await  LocalRepository().setKeyValue(
-                  //     key: "marimoStateScore", value: "1000000");
                   game.marimoHpBloc.subtractScore(10);
-                  game.marimoHpBloc.changeLifeCycleToHp();
                 },
                 child: Container(
                     height: 20,
@@ -88,10 +90,7 @@ class MainGamePage extends StatelessWidget {
                     child: Text('hp --'))),
             TextButton(
                 onPressed: () async {
-                  // await  LocalRepository().setKeyValue(
-                  //     key: "marimoStateScore", value: "1000000");
                   game.marimoHpBloc.addScore(10);
-                  game.marimoHpBloc.changeLifeCycleToHp();
                 },
                 child: Container(
                     height: 20,
@@ -140,6 +139,34 @@ class MainGamePage extends StatelessWidget {
       ),
     );
 
+
+
+
+  // Widget blocListener(Widget child)=>  BlocListener<MarimoExpBloc, int>(
+  //       bloc: game.marimoExpBloc,
+  //       listener: (context, state) async {
+  //         state;
+  //
+  //       //   if(isTrue){
+  //            bool isPulledExp = game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) == MarimoExpState.level5;
+  //
+  //            if(isPulledExp){
+  //              await levelUpMarimo(game.marimoLevelBloc.state);
+  //             // game.marimoExpBloc.initState();
+  //              print("경험치 $state=== $isTrue");
+  //            }
+  //      //    }else{
+  //
+  //       //   }
+  //        //  print("경험치 $state=== $isTrue");
+  //       // int expMaxCount  =  game.marimoExpBloc.getExpMaxCount(game.marimoLevelBloc.state);
+  //       // if(expMaxCount == state){
+  //       //
+  //       // }
+  //       // do stuff here based on BlocA's state
+  //       },
+  //       child: child
+  //   );
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SafeArea(

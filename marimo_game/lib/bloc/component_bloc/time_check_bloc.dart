@@ -31,12 +31,14 @@ class TimeCheckBloc extends Cubit<bool>{
       }
     }
     //2번 불러지는 것도 체크
-    print("result ==> $state");
+    print("checkForTomorrow() result ==> $state");
   }
 
   Future<void> updateLocalLastTime(DateTime dateTime) async {
+    final endDay = await LocalRepository().getValue(key: "lastDay");
+    final value = dateTime.day.toString() == endDay ? "0":"1";
     await LocalRepository().setKeyValue(
-        key:"lastDay", value: dateTime.day.toString());
+        key:"lastDay", value: value);
   }
 
 }

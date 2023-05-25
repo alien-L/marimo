@@ -1,74 +1,133 @@
-
+import 'package:flutter/services.dart';
 import 'package:marimo_game/app_manage/local_repository.dart';
 
-class MarimoItems{
+class MarimoItems {
   // 로컬 저장소 체크 , 백그라운드 , 포그라운드 , 업데이트시
   // 앱을 처음 구동할때 불러와서 로컬에 있나 없나 체크 하기
   MarimoItems({
-    this.coin,
-    this.totalCoinCount,
-    this.isCheckedOnOffSound,
-    this.isCleanTrash,
-    this.humidity,
-    this.temperature,
-    this.marimoName,
-    this.marimoLevel,
-    this.marimoLifeCycle,
-    this.marimoHp
+    required this.language,
+    required this.lastDay,
+    required this.background,
+    required this.marimoName,
+    required this.marimoLevel,
+    required this.marimoHp,
+    required this.marimoExp,
+    required this.coin,
+    required this.totalCoinCount,
+    required this.isCheckedOnOffSound,
+    required this.isCleanTrash,
+    required this.humidity,
+    required this.temperature,
+    required this.firstInstall,
   });
 
-  dynamic coin;
-  dynamic totalCoinCount;
-
-  dynamic isCheckedOnOffSound;
-
-  dynamic isCleanTrash;
-  dynamic humidity;
-  dynamic temperature;
+  dynamic language; // 보류
+  dynamic lastDay; //ok ??? 체크
+  dynamic background; //ok
 
   dynamic marimoName;
-  dynamic marimoLevel;
-  dynamic marimoLifeCycle;
-  dynamic marimoHp;
+
+  /// ok init_setting.dart 에서 관리
+  dynamic marimoLevel; //ok
+  dynamic marimoHp; //ok
+  dynamic marimoExp;
+
+  dynamic coin; //ok
+  dynamic totalCoinCount;
+
+  /// ok
+
+  dynamic isCheckedOnOffSound; //ok
+
+  dynamic isCleanTrash; //ok
+  dynamic humidity; //ok
+  dynamic temperature; //ok
+
+  dynamic firstInstall;
+
+  /// ok  main_view.dart 에서 관리
 
   factory MarimoItems.fromJson(Map<String, dynamic> json) => MarimoItems(
-    isCheckedOnOffSound: json['isCheckedOnOffSound'] as dynamic,
-    coin: json['coin'] as dynamic,
-    totalCoinCount: json['totalCoinCount'] as dynamic,
-    isCleanTrash: json['isCleanTrash'] as dynamic,
-    humidity: json['humidity'] as dynamic,
-    temperature: json['temperature'] as dynamic,
-
-    marimoName: json['marimoName'] as dynamic,
-    marimoLevel: json['marimoLevel'] as dynamic,
-    marimoHp: json['marimoHp'] as dynamic,
-    marimoLifeCycle: json['marimoLifeCycle'] as dynamic,
-  );
+        language: json['language'] as dynamic,
+        lastDay: json['lastDay'] as dynamic,
+        background: json['background'] as dynamic,
+        marimoName: json['marimoName'] as dynamic,
+        marimoLevel: json['marimoLevel'] as dynamic,
+        marimoHp: json['marimoHp'] as dynamic,
+        marimoExp: json['marimoExp'] as dynamic,
+        coin: json['coin'] as dynamic,
+        totalCoinCount: json['totalCoinCount'] as dynamic,
+        isCheckedOnOffSound: json['isCheckedOnOffSound'] as dynamic,
+        isCleanTrash: json['isCleanTrash'] as dynamic,
+        humidity: json['humidity'] as dynamic,
+        temperature: json['temperature'] as dynamic,
+        firstInstall: json['firstInstall'] as dynamic,
+      );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'coin': coin,
-    'isCheckedOnOffSound':isCheckedOnOffSound,
-    'totalCoinCount':totalCoinCount,
-    'isCleanTrash': isCleanTrash,
-    'humidity': humidity,
-    'temperature': temperature,
-
-    'marimoName': marimoName,
-    'marimoLevel': marimoLevel,
-    'marimoHp': marimoHp,
-    'marimoLifeCycle': marimoLifeCycle,
-  };
+        'language': language,
+        'lastDay': lastDay,
+        'background': background,
+        'marimoName': marimoName,
+        'marimoLevel': marimoLevel,
+        'marimoHp': marimoHp,
+        'marimoExp': marimoExp,
+        'coin': coin,
+        'totalCoinCount': totalCoinCount,
+        'isCheckedOnOffSound': isCheckedOnOffSound,
+        'isCleanTrash': isCleanTrash,
+        'humidity': humidity,
+        'temperature': temperature,
+        'firstInstall': firstInstall,
+      };
 }
 
 Future<MarimoItems> getInitLocalMarimoItems() async {
-  Map<String, dynamic> _json = {};
-
-  LocalRepository localRepository = LocalRepository(); // 로컬 저장소
-
-  MarimoItems().toJson().keys.forEach((element) async {
-    final value = await localRepository.getValue(key: element);
-    _json.addAll({element:value});
-  });
-
-  return MarimoItems.fromJson(_json);
+//  List list = [];
+  //LocalRepository localRepository = LocalRepository(); // 로컬 저장소
+ // Map<String, dynamic> _map = {};
+ // Map<String, dynamic> result = {};
+  // MarimoItems().toJson().keys.forEach((key) async {
+  //
+  //   final value = await LocalRepository().getValue(key: key);
+  //   print("$key, value==> $value");
+  //   //_json.addAll({element:value});
+  //  // _json.update(element, (v) => value);
+  // //  _json = {element:value};
+  // //  _map[key] = value;
+  // _map.addAll({key:value});
+  //  // result.addEntries()
+  // //  _map[key] = value;
+  // });
+  final itmes = MarimoItems(
+      language: await LocalRepository().getValue(key: "language"),
+      lastDay: await LocalRepository().getValue(key: "lastDay"),
+      background: await  LocalRepository().getValue(key: "background"),
+      marimoName: await  LocalRepository().getValue(key: "marimoName"),
+      marimoLevel: await LocalRepository().getValue(key: "marimoLevel"),
+      marimoHp: await LocalRepository().getValue(key: "marimoHp"),
+      marimoExp: await LocalRepository().getValue(key: "marimoExp"),
+      coin: await LocalRepository().getValue(key: "coin"),
+      totalCoinCount:  await LocalRepository().getValue(key: "totalCoinCount"),
+      isCheckedOnOffSound: await LocalRepository().getValue(key: "isCheckedOnOffSound"),
+      isCleanTrash: await LocalRepository().getValue(key: "isCleanTrash"),
+      humidity: await LocalRepository().getValue(key: "humidity"),
+      temperature: await LocalRepository().getValue(key: "temperature"),
+      firstInstall: await LocalRepository().getValue(key: "firstInstall"),);
+  print("json ==> $itmes");
+  return itmes;
 }
+
+// Future<Map<String, dynamic>> getMap(Iterable keys) async {
+//  // Map<String, dynamic> result;
+//  // final value = await LocalRepository().getValue(key: keys);
+//  // keys.map((e){
+//  //
+//  //  });
+//  List keyList = keys.toList();
+//
+// // result.addAll({"":""});
+//
+//
+//   return result;
+// }

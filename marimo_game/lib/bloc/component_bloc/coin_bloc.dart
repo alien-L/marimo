@@ -18,20 +18,36 @@ class CoinBloc extends Cubit<int>{
   // 코인 더하기
   void addCoin(){
     emit(state+10);
-    updateLocalCoin();
+    _updateLocalCoin();
   }
 
   // 코인 빼기
   void subtractCoin(int price){
     int tempCoin = state - price;
     emit(tempCoin);
-    updateLocalCoin();
+    _updateLocalCoin();
   }
 
   // 코인 local 저장소에 갱신하기
-  Future<void> updateLocalCoin() async {
+  Future<void> _updateLocalCoin() async {
     await LocalRepository().setKeyValue(
         key: "coin", value: state.toString());
+  }
+
+  Future<void> updateLocaltotalCoinCount(int count) async {
+    await LocalRepository().setKeyValue(
+        key: "totalCoinCount", value: count.toString());
+  }
+
+  getLocalTotalCoinCount() async {
+    await LocalRepository().getValue(key: "totalCoinCount");
+  }
+
+  Future<int> getTotalCoinCount() async {
+    // 코인 조건 넣어주기
+    String? totalCoinCountLocalValue = await getLocalTotalCoinCount();
+    int totalCoinCount = int.parse(totalCoinCountLocalValue ?? "20");
+    return totalCoinCount;
   }
 
 }

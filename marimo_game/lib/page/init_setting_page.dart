@@ -55,7 +55,7 @@ class InitSettingPage extends StatelessWidget {
                   }else{
                     LocalRepository localRepository = LocalRepository();
                     await localRepository.setKeyValue(key: 'marimoName', value: name);
-                    await localRepository.setKeyValue(key: 'firstInstall', value: "0");
+                    await localRepository.setKeyValue(key: 'firstInstall', value: "1");
                     Navigator.pushNamed(context, "/main_scene");
                   }
               },

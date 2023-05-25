@@ -24,7 +24,7 @@ class MarimoExpBar extends PositionComponent
    final marimoHpBloc =  game.marimoHpBloc;
   // final marimoLifeCycleBloc = game.marimoLifeCycleBloc;
 
-    final lifeBarSprite = await game.loadSprite('exp_bar_100.png');
+    final lifeBarSprite = await game.loadSprite('exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state).name}.png');
     //marimoScoreBloc.state
    _scoreTextComponent = TextComponent(
      text: "exp",
@@ -54,7 +54,7 @@ class MarimoExpBar extends PositionComponent
 
   @override
   Future<void> update(double dt) async {
-    _spriteComponent.sprite = await game.loadSprite('exp_bar_100.png');
+    _spriteComponent.sprite = await game.loadSprite('exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state).name}.png');
     super.update(dt);
   }
 }

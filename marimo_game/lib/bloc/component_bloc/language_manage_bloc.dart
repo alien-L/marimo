@@ -7,4 +7,5 @@ class LanguageManageBloc extends Cubit<Language>{
     changeLanguage(Language language){
       emit(language);
     }
+
 }

@@ -14,7 +14,7 @@ class EnvironmentTrashBloc extends Cubit<bool>{
   //많이 줄 경우 어항 드러워짐 , 어항 청소기 - 먹이
   Future<void> updateLocalValue() async {
     await LocalRepository().setKeyValue(
-        key: "isCleanTrash", value: state.toString());
+        key: "isCleanTrash", value: state?"0":"1");  // null 또는 0이면 true , 1이면 false
   }
 
 }

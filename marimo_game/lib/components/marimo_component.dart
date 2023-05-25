@@ -4,6 +4,8 @@ import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
+import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
+import 'package:marimo_game/components/villian_component.dart';
 import '../app_manage/local_repository.dart';
 import '../bloc/marimo_bloc/marimo_level_bloc.dart';
 import '../helpers/direction.dart';
@@ -15,9 +17,8 @@ class MarimoController extends Component
     with
         HasGameRef<MarimoWorldGame>,
         FlameBlocListenable<MarimoLevelBloc, MarimoLevel> {
-  final BuildContext context;
 
-  MarimoController(this.context);
+  MarimoController();
 
   @override
   bool listenWhen(MarimoLevel previousState, MarimoLevel newState) {
@@ -26,8 +27,9 @@ class MarimoController extends Component
 
   @override
   void onNewState(MarimoLevel state) {
+    game.marimoComponent.removeFromParent();
     parent?.add(gameRef.marimoComponent =
-        MarimoComponent(name: state.name, context: context));
+        MarimoComponent(name: state.name,));
   }
 }
 
@@ -38,7 +40,6 @@ class MarimoComponent extends SpriteAnimationComponent
         KeyboardHandler,
         FlameBlocListenable<MarimoLevelBloc, MarimoLevel> {
   bool destroyed = false;
-  final BuildContext context;
   final double _playerSpeed = 300.0;
   final double _animationSpeed = 0.15;
   int tempCoin = 0;
@@ -54,7 +55,7 @@ class MarimoComponent extends SpriteAnimationComponent
   final bool _hasCollided = false;
   final String? name;
 
-  MarimoComponent({required this.name, required this.context})
+  MarimoComponent({required this.name,})
       : super(size: Vector2.all(64.0), position: Vector2(100, 500)) {
     add(RectangleComponent());
     add(RectangleHitbox());
@@ -95,26 +96,19 @@ class MarimoComponent extends SpriteAnimationComponent
     super.onCollision(points, other);
     if (other is CoinComponent) {
       other.removeFromParent();
+      game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
       game.coinBloc.addCoin();
-      String? totalCoinCountLocalValue =
-          await LocalRepository().getValue(key: "totalCoinCount");
-      int totalCoinCount = int.parse(totalCoinCountLocalValue ?? "20");
-      totalCoinCount --;
+      int totalCoinCount = await game.coinBloc.getTotalCoinCount();
+      totalCoinCount--;
       tempCoin++;
-      await LocalRepository().setKeyValue(
-          key: "totalCoinCount", value: totalCoinCount.toString());
-
-      game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
-
-      if (name == "baby" && tempCoin == 3) { // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
-        game.soundBloc.effectSoundPlay('/music/popup.mp3');
-        removeFromParent();
-        gameRef.marimoLevelBloc.levelUp(MarimoLevel.child);
-        await GameAlert().showMyDialog(
-          text: Environment().config.constant.levelUpMsg,
-          assetsName: "assets/images/one_marimo.png",
-        );
+      game.coinBloc.updateLocaltotalCoinCount(totalCoinCount);
+      bool isPulledExp =
+          game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) ==
+              MarimoExpState.level5;
+      if (isPulledExp) {
+        await levelUpMarimo(game, game.marimoLevelBloc.state);
       }
+      game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
     }
   }
 
@@ -192,5 +186,40 @@ class MarimoComponent extends SpriteAnimationComponent
 
   void moveRight(double delta) {
     position.add(Vector2(delta * _playerSpeed, 0));
+  }
+}
+
+levelUpMarimo(MarimoWorldGame game, level) async {
+  game.soundBloc.effectSoundPlay('/music/popup.mp3');
+  //game.removeFromParent();
+  //game.marimoComponent.removeFromParent();
+  //game.remove(game.marimoComponent);
+  await GameAlert().showMyDialog(
+    text: Environment().config.constant.levelUpMsg,
+    assetsName: "assets/images/one_marimo.png",
+  );
+  game.marimoExpBloc.initState();
+  //game.marimoExpBloc.emit(0);
+  // 이미지 필요 one_marimo
+
+  switch (level) {
+    case MarimoLevel.baby: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
+      game.marimoLevelBloc.levelUp(MarimoLevel.child);
+      break;
+    case MarimoLevel.child:
+      game.marimoLevelBloc.levelUp(MarimoLevel.child2);
+      break;
+    case MarimoLevel.child2:
+      game.marimoLevelBloc.levelUp(MarimoLevel.teenager);
+      break;
+    case MarimoLevel.teenager:
+      game.marimoLevelBloc.levelUp(MarimoLevel.adult);
+      break;
+    case MarimoLevel.adult:
+      game.marimoLevelBloc.levelUp(MarimoLevel.oldMan);
+      break;
+    case MarimoLevel.oldMan:
+      // 흠??
+      break;
   }
 }

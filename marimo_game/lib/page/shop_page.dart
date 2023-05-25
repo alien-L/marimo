@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/components/game_alert.dart';
 
+import '../bloc/marimo_bloc/marimo_exp_bloc.dart';
+import '../components/marimo_component.dart';
 import '../marimo_game_world.dart';
 import '../style/color.dart';
 
@@ -189,10 +191,15 @@ class ShopPage extends StatelessWidget {
                                                     '/music/click.mp3');
                                                 game.coinBloc.subtractCoin(int.parse(price));
                                                 game.marimoHpBloc.addScore(int.parse(stateScore));
-                                                game.marimoHpBloc.changeLifeCycleToHp();
-                                               // game.marimoLifeCycleBloc.changeLifeCycleToExp(game.marimoExpBloc.state, game.marimoLevelBloc.state);
+                                                game.marimoExpBloc.addScore(game.marimoLevelBloc.state, int.parse(expScore));
                                                 game.soundBloc.effectSoundPlay(
                                                     '/music/popup.mp3');
+                                                bool isPulledExp =
+                                                    game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) ==
+                                                        MarimoExpState.level5;
+                                                if (isPulledExp) {
+                                                  await levelUpMarimo(game, game.marimoLevelBloc.state);
+                                                }
                                                 if (environment_category ==
                                                     "humidity") {
                                                   game.environmentHumidityBloc
