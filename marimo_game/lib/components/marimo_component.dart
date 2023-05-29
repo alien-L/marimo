@@ -36,20 +36,21 @@ class MarimoComponent extends SpriteAnimationComponent
         CollisionCallbacks,
         KeyboardHandler,
         FlameBlocListenable<MarimoLevelBloc, MarimoLevel> {
+  final Vector2 lastPosition = Vector2.zero();
   bool destroyed = false;
   final double _playerSpeed = 300.0;
   final double _animationSpeed = 0.15;
   int tempCoin = 0;
-  late final SpriteAnimation _runDownAnimation;
 
+  late final SpriteAnimation _runDownAnimation;
   late final SpriteAnimation _runLeftAnimation;
   late final SpriteAnimation _runUpAnimation;
   late final SpriteAnimation _runRightAnimation;
   late final SpriteAnimation _standingAnimation;
 
   Direction direction = Direction.none;
-  final Direction _collisionDirection = Direction.none;
-  final bool _hasCollided = false;
+  Direction _collisionDirection = Direction.none;
+   bool _hasCollided = false;
   final String? name;
 
   MarimoComponent({required this.name,})
@@ -106,65 +107,114 @@ class MarimoComponent extends SpriteAnimationComponent
         await levelUpMarimo(game, game.marimoLevelBloc.state);
       }
       game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
+    }else if(other is ScreenHitbox){
+      _hasCollided = false;
+      final firstPoint = points.first;
+      // If you don't move/zoom the camera this step can be skipped
+      final screenPoint = gameRef.marimoComponent.position;
+      final screenSize = gameRef.size;
+   //    if (screenPoint.x < 10 || screenPoint.y < 10 ||screenPoint.x > screenSize.x-70||screenPoint.y > screenSize.y-70) {
+         if (!_hasCollided) {
+           print("여기요  1🐶🐶");
+           _hasCollided = true;
+           _collisionDirection = game.marimoComponent.direction;
+         }else{
+           print("여기요  5🐶🐶");
+         }
+   //      //  print("여기 0) $_collisionDirection");
+   //      }else{
+   //
+   //        //_collisionDirection = game.marimoComponent.direction;
+   //  //      print("여기 00) ${game.marimoComponent.direction}");
+   //      }
+   //     // print("x ==0 🐶) other ===> $other");
+   //    }
+
+      return;
     }
   }
 
   void movePlayer(double delta) {
-    switch (direction) {
-      case Direction.up:
-        if (canPlayerMoveUp()) {
-          animation = _runUpAnimation;
-          moveUp(delta);
-        }
-        break;
-      case Direction.down:
-        if (canPlayerMoveDown()) {
-          animation = _runDownAnimation;
-          moveDown(delta);
-        }
-        break;
-      case Direction.left:
-        if (canPlayerMoveLeft()) {
-          animation = _runLeftAnimation;
-          moveLeft(delta);
-        }
-        break;
-      case Direction.right:
-        if (canPlayerMoveRight()) {
-          animation = _runRightAnimation;
-          moveRight(delta);
-        }
-        break;
-      case Direction.none:
-        animation = _standingAnimation;
-        break;
-    }
+      switch (direction) {
+        case Direction.up:
+          if (canPlayerMoveUp()) {
+            animation = _runUpAnimation;
+            moveUp(delta);
+          }
+          break;
+        case Direction.down:
+          if (canPlayerMoveDown()) {
+            animation = _runDownAnimation;
+            moveDown(delta);
+          }
+          break;
+        case Direction.left:
+          if (canPlayerMoveLeft()) {
+            animation = _runLeftAnimation;
+            moveLeft(delta);
+          }
+          break;
+        case Direction.right:
+          if (canPlayerMoveRight()) {
+            animation = _runRightAnimation;
+            moveRight(delta);
+          }
+          break;
+        case Direction.none:
+          animation = _standingAnimation;
+          if (_hasCollided) {
+            print("여기요  2🐶🐶");
+            _hasCollided = false;
+            _collisionDirection = game.marimoComponent.direction;
+          }else{
+           // _hasCollided = false;
+            //_collisionDirection = game.marimoComponent.direction;
+            print("여기요  3🐶🐶");
+          //  _hasCollided = true;
+           // _collisionDirection = game.marimoComponent.direction;
+           // print("여기욤");
+          }
+          break;
+      }
   }
 
   bool canPlayerMoveUp() {
-    if (_hasCollided && _collisionDirection == Direction.up) {
+    if (_hasCollided && _collisionDirection == Direction.up ) {
+      print("여기요  4 🐶🐶 $_collisionDirection");
+    //  print("여기 1 ))$_collisionDirection , $_hasCollided");
       return false;
+    }else{
+    //  print("여기 2 ))$_collisionDirection , $_hasCollided");
     }
     return true;
   }
 
   bool canPlayerMoveDown() {
     if (_hasCollided && _collisionDirection == Direction.down) {
+     // print("여기 1 ))$_collisionDirection , $_hasCollided");
       return false;
+    }else{
+    //  print("여기 2 ))$_collisionDirection , $_hasCollided");
     }
     return true;
   }
 
   bool canPlayerMoveLeft() {
     if (_hasCollided && _collisionDirection == Direction.left) {
+     // print("여기 1 ))$_collisionDirection , $_hasCollided");
       return false;
+    }else{
+    //  print("여기 2 ))$_collisionDirection , $_hasCollided");
     }
     return true;
   }
 
   bool canPlayerMoveRight() {
     if (_hasCollided && _collisionDirection == Direction.right) {
+     // print("여기 1 ))$_collisionDirection , $_hasCollided");
       return false;
+    }else{
+    //  print("여기 2 ))$_collisionDirection , $_hasCollided");
     }
     return true;
   }

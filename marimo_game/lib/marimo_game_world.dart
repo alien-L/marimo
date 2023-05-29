@@ -86,6 +86,7 @@ class MarimoWorldGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    add(ScreenHitbox());
     _world = World(backgroundBloc);
     final marimoLevel = marimoLevelBloc.state;
     await add(_world);

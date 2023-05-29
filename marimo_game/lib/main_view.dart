@@ -75,15 +75,23 @@ class _MainViewState extends State<MainView> {
   //   return _currentPosition;
   // }
 
-  Future<WeatherInfo> getWeatherByCurrentLocation(lat, lon) async {
-    var url =
-        'https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=658d847ef1d28e72e047ab0c5a476d54&units=metric';
-    Uri myUri = Uri.parse(url);
-    final response = await http.get(myUri);
-    final responseJson = json.decode(utf8.decode(response.bodyBytes));
-    print("url ===> 🦄 $responseJson");
-    // local에 저장
-    return WeatherInfo.fromJson(responseJson);
+  Future<WeatherInfo?> getWeatherByCurrentLocation(lat, lon) async {
+    try {
+      var url =
+          'https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=658d847ef1d28e72e047ab0c5a476d54&units=metric';
+      Uri myUri = Uri.parse(url);
+      final response = await http.get(myUri);
+      final responseJson = json.decode(utf8.decode(response.bodyBytes));
+      print("url ===> 🦄 $responseJson");
+      return WeatherInfo.fromJson(responseJson);
+    } on SocketException {
+      print('No Internet connection 😑');
+    } on HttpException {
+      print("Couldn't find the post 😱");
+    } on FormatException {
+      print("Bad response format 👎");
+    }
+    // null 에러 체크 해주기
   }
 
   checkEnvironment(Map<String, dynamic> data) async {
@@ -102,7 +110,7 @@ class _MainViewState extends State<MainView> {
     var lat = 37.785834;
     var lon = -122.406417;
     final _weatherInfo = await getWeatherByCurrentLocation(lat, lon);
-    final detailedWeatherInfo = _weatherInfo.main;
+    final detailedWeatherInfo = _weatherInfo?.main;
     checkEnvironment(detailedWeatherInfo);
   }
 
