@@ -8,6 +8,7 @@ import '../app_manage/local_repository.dart';
 import '../helpers/direction.dart';
 import '../helpers/joypad.dart';
 import '../marimo_game_world.dart';
+import 'drag_event.dart';
 
 class MainGamePage extends StatelessWidget {
   MainGamePage({
@@ -20,9 +21,9 @@ class MainGamePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     void onJoypadDirectionChanged(Direction direction) {
-       final deviceSize = MediaQuery.of(context).size;
-      print("디바이스 사이즈 ==> width : ${deviceSize.width}, height : ${deviceSize.height}");
-      print("x =>${game.marimoComponent.position.x}, y => ${game.marimoComponent.position.y}");
+    //   final deviceSize = MediaQuery.of(context).size;
+     // print("디바이스 사이즈 ==> width : ${deviceSize.width}, height : ${deviceSize.height}");
+     // print("x =>${game.marimoComponent.position.x}, y => ${game.marimoComponent.position.y}");
        game.onJoypadDirectionChanged(direction);
        game.soundBloc.effectSoundPlay('/music/bubble.mp3');
     }
@@ -121,6 +122,7 @@ class MainGamePage extends StatelessWidget {
           bottom: false,
           child: Stack(
             children: [
+             // GameWidget(game: DragEventsGame()),
               GameWidget(game: game),
               Align(
                 alignment: Alignment.bottomRight,

@@ -25,6 +25,7 @@ dependencies:
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
   flame_audio: ^2.0.2
+  flame_splash_screen: ^0.1.0
 
 dev_dependencies:
   flutter_test:

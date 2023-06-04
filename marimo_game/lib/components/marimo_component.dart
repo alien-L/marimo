@@ -50,13 +50,14 @@ class MarimoComponent extends SpriteAnimationComponent
 
   Direction direction = Direction.none;
   Direction _collisionDirection = Direction.none;
-   bool _hasCollided = false;
+  bool _hasCollided = false;
   final String? name;
 
   MarimoComponent({required this.name,})
       : super(size: Vector2.all(64.0), position: Vector2(100, 500)) {
     add(RectangleComponent());
     add(RectangleHitbox());
+
   }
 
   @override
@@ -86,8 +87,29 @@ class MarimoComponent extends SpriteAnimationComponent
   @override
   void update(double dt) {
     super.update(dt);
+    _controlMovePlayer();
     movePlayer(dt);
   }
+
+  _controlMovePlayer(){
+    final screenPoint = gameRef.marimoComponent.position;
+    final screenSize = gameRef.size;
+    if (game.marimoComponent.y < 0) {
+      game.marimoComponent.x =  game.marimoComponent.x;
+      game.marimoComponent.y = - game.marimoComponent.y;
+    }else if(game.marimoComponent.x < 0){
+      game.marimoComponent.x = -game.marimoComponent.x;
+      game.marimoComponent.y =  game.marimoComponent.y;
+    }else if(screenPoint.x > screenSize.x-70){
+      game.marimoComponent.x = screenSize.x-70;
+      game.marimoComponent.y =  game.marimoComponent.y;
+    }else if(screenPoint.y > screenSize.y-70){
+      game.marimoComponent.x =  game.marimoComponent.x;
+      game.marimoComponent.y = screenSize.y-70;
+    }
+  }
+
+
 
   @override
   Future<void> onCollision(Set<Vector2> points, PositionComponent other) async {
@@ -107,35 +129,12 @@ class MarimoComponent extends SpriteAnimationComponent
         await levelUpMarimo(game, game.marimoLevelBloc.state);
       }
       game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
-    }else if(other is ScreenHitbox){
-      _hasCollided = false;
-      final firstPoint = points.first;
-      // If you don't move/zoom the camera this step can be skipped
-      final screenPoint = gameRef.marimoComponent.position;
-      final screenSize = gameRef.size;
-   //    if (screenPoint.x < 10 || screenPoint.y < 10 ||screenPoint.x > screenSize.x-70||screenPoint.y > screenSize.y-70) {
-         if (!_hasCollided) {
-           print("여기요  1🐶🐶");
-           _hasCollided = true;
-           _collisionDirection = game.marimoComponent.direction;
-         }else{
-           print("여기요  5🐶🐶");
-         }
-   //      //  print("여기 0) $_collisionDirection");
-   //      }else{
-   //
-   //        //_collisionDirection = game.marimoComponent.direction;
-   //  //      print("여기 00) ${game.marimoComponent.direction}");
-   //      }
-   //     // print("x ==0 🐶) other ===> $other");
-   //    }
-
-      return;
     }
   }
 
+
   void movePlayer(double delta) {
-      switch (direction) {
+    switch (direction) {
         case Direction.up:
           if (canPlayerMoveUp()) {
             animation = _runUpAnimation;
@@ -162,60 +161,39 @@ class MarimoComponent extends SpriteAnimationComponent
           break;
         case Direction.none:
           animation = _standingAnimation;
-          if (_hasCollided) {
-            print("여기요  2🐶🐶");
-            _hasCollided = false;
-            _collisionDirection = game.marimoComponent.direction;
-          }else{
-           // _hasCollided = false;
-            //_collisionDirection = game.marimoComponent.direction;
-            print("여기요  3🐶🐶");
-          //  _hasCollided = true;
-           // _collisionDirection = game.marimoComponent.direction;
-           // print("여기욤");
-          }
           break;
       }
   }
 
   bool canPlayerMoveUp() {
     if (_hasCollided && _collisionDirection == Direction.up ) {
-      print("여기요  4 🐶🐶 $_collisionDirection");
-    //  print("여기 1 ))$_collisionDirection , $_hasCollided");
       return false;
-    }else{
-    //  print("여기 2 ))$_collisionDirection , $_hasCollided");
     }
+
     return true;
   }
 
   bool canPlayerMoveDown() {
     if (_hasCollided && _collisionDirection == Direction.down) {
-     // print("여기 1 ))$_collisionDirection , $_hasCollided");
       return false;
-    }else{
-    //  print("여기 2 ))$_collisionDirection , $_hasCollided");
     }
+
     return true;
   }
 
   bool canPlayerMoveLeft() {
     if (_hasCollided && _collisionDirection == Direction.left) {
-     // print("여기 1 ))$_collisionDirection , $_hasCollided");
       return false;
-    }else{
-    //  print("여기 2 ))$_collisionDirection , $_hasCollided");
     }
+
     return true;
   }
 
   bool canPlayerMoveRight() {
     if (_hasCollided && _collisionDirection == Direction.right) {
-     // print("여기 1 ))$_collisionDirection , $_hasCollided");
       return false;
-    }else{
-    //  print("여기 2 ))$_collisionDirection , $_hasCollided");
     }
+
     return true;
   }
 

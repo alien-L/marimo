@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flame/flame.dart';
+import 'package:flame_splash_screen/flame_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/page/game_setting_page.dart';
@@ -32,35 +33,68 @@ final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
-  final marimoItems =  await getInitLocalMarimoItems();
-  final marimoItemsMap =  marimoItems.toJson();
+  final marimoItems = await getInitLocalMarimoItems();
+  final marimoItemsMap = marimoItems.toJson();
   String? firstInstall = await LocalRepository().getValue(key: "firstInstall");
 
-  String initRoute = firstInstall != null ?'/main_scene' : '/init_setting';
+  String initRoute = firstInstall != null ? '/main_scene' : '/init_setting';
 
   print("marimoItems ===> ${marimoItems.toJson()}");
-  final backgroundValue = BackgroundState.values.firstWhere((element) => element.name == marimoItemsMap["background"], orElse: () => BackgroundState.normal);
-  final languageManageValue = Language.values.firstWhere((element) => element.name == marimoItemsMap["language"], orElse: () =>Language.ko);
-  final marimoLevelValue = MarimoLevel.values.firstWhere((element) => element.name == marimoItemsMap["marimoLevel"], orElse: () => MarimoLevel.baby);
+  final backgroundValue = BackgroundState.values.firstWhere(
+      (element) => element.name == marimoItemsMap["background"],
+      orElse: () => BackgroundState.normal);
+  final languageManageValue = Language.values.firstWhere(
+      (element) => element.name == marimoItemsMap["language"],
+      orElse: () => Language.ko);
+  final marimoLevelValue = MarimoLevel.values.firstWhere(
+      (element) => element.name == marimoItemsMap["marimoLevel"],
+      orElse: () => MarimoLevel.baby);
 
   Environment().initConfig(languageManageValue); // 언어 환경 세팅
   runApp(RestartWidget(
       child: MultiBlocProvider(
           providers: [
-        BlocProvider<LanguageManageBloc>(create: (_) => LanguageManageBloc(languageManageValue)),
-        BlocProvider<TimeCheckBloc>(create: (_) => TimeCheckBloc(marimoItemsMap["lastDay"] != "1")), /// 체크 초기값 설정 고민 해보자 marimoItemsMap["lastDay"]??
-        BlocProvider<BackgroundBloc>(create: (_) => BackgroundBloc(backgroundValue)),//marimoItemsMap["background"]??"
+        BlocProvider<LanguageManageBloc>(
+            create: (_) => LanguageManageBloc(languageManageValue)),
+        BlocProvider<TimeCheckBloc>(
+            create: (_) => TimeCheckBloc(marimoItemsMap["lastDay"] != "1")),
 
-        BlocProvider<MarimoLevelBloc>(create: (_) => MarimoLevelBloc(marimoLevelValue)),
-        BlocProvider<MarimoHpBloc>(create: (_) => MarimoHpBloc(int.parse(marimoItemsMap["marimoHp"]??"40"))), // ok
-        BlocProvider<MarimoExpBloc>(create: (_) => MarimoExpBloc(int.parse(marimoItemsMap["marimoExp"]??"0"))), //ok
+        /// 체크 초기값 설정 고민 해보자 marimoItemsMap["lastDay"]??
+        BlocProvider<BackgroundBloc>(
+            create: (_) => BackgroundBloc(backgroundValue)),
+        //marimoItemsMap["background"]??"
 
-        BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"]?? "0"))), //ok
-        BlocProvider<SoundBloc>(create: (_) => SoundBloc(marimoItemsMap["isCheckedOnOffSound"]!= "1")),  // ok null 또는 0이면 true , 1이면 false
+        BlocProvider<MarimoLevelBloc>(
+            create: (_) => MarimoLevelBloc(marimoLevelValue)),
+        BlocProvider<MarimoHpBloc>(
+            create: (_) =>
+                MarimoHpBloc(int.parse(marimoItemsMap["marimoHp"] ?? "40"))),
+        // ok
+        BlocProvider<MarimoExpBloc>(
+            create: (_) =>
+                MarimoExpBloc(int.parse(marimoItemsMap["marimoExp"] ?? "0"))),
+        //ok
 
-        BlocProvider<EnvironmentTrashBloc>(create: (_) => EnvironmentTrashBloc(marimoItemsMap["isCleanTrash"] != "1")), // ok  null 또는 0이면 true , 1이면 false
-        BlocProvider<EnvironmentHumidityBloc>(create: (_) => EnvironmentHumidityBloc(int.parse(marimoItemsMap["humidity"]??"50"))), //ok
-        BlocProvider<EnvironmentTemperatureBloc>(create: (_) => EnvironmentTemperatureBloc(double.parse(marimoItemsMap["temperature"]??"16"))), //ok
+        BlocProvider<CoinBloc>(
+            create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"] ?? "0"))),
+        //ok
+        BlocProvider<SoundBloc>(
+            create: (_) =>
+                SoundBloc(marimoItemsMap["isCheckedOnOffSound"] != "1")),
+        // ok null 또는 0이면 true , 1이면 false
+
+        BlocProvider<EnvironmentTrashBloc>(
+            create: (_) =>
+                EnvironmentTrashBloc(marimoItemsMap["isCleanTrash"] != "1")),
+        // ok  null 또는 0이면 true , 1이면 false
+        BlocProvider<EnvironmentHumidityBloc>(
+            create: (_) => EnvironmentHumidityBloc(
+                int.parse(marimoItemsMap["humidity"] ?? "50"))),
+        //ok
+        BlocProvider<EnvironmentTemperatureBloc>(
+            create: (_) => EnvironmentTemperatureBloc(
+                double.parse(marimoItemsMap["temperature"] ?? "16"))),
+        //ok
       ],
           child: App(
             initRoute: initRoute,
@@ -73,12 +107,10 @@ class App extends StatelessWidget {
   App({Key? key, required this.initRoute}) : super(key: key);
   final String initRoute;
 
-
   @override
   Widget build(BuildContext context) {
-
     Widget initWidget(Widget child) => AppStatusObserver(
-        timeCheckBloc: context.read<TimeCheckBloc>() ,
+        timeCheckBloc: context.read<TimeCheckBloc>(),
         // 앱 백그라운드 , 포그라운드 상태 체크
         child: NetWorkCheckWidget(
           //네트워크 상태 체크
@@ -98,7 +130,7 @@ class App extends StatelessWidget {
       marimoHpBloc: context.read<MarimoHpBloc>(),
       marimoLevelBloc: context.read<MarimoLevelBloc>(),
       timeCheckBloc: context.read<TimeCheckBloc>(),
-      marimoExpBloc:  context.read<MarimoExpBloc>(),
+      marimoExpBloc: context.read<MarimoExpBloc>(),
     );
 
     return initWidget(
@@ -110,19 +142,25 @@ class App extends StatelessWidget {
         ),
         initialRoute: initRoute,
         routes: {
-          '/main_scene': (context) => MainGamePage(game: game,),
+          '/main_scene': (context) => MainGamePage(
+                game: game,
+              ),
           '/init_setting': (context) => InitSettingPage(),
-          '/game_setting': (context) => GameSettingPage(game: game,),
-          '/shop_page': (context) => ShopPage(game: game,),
+          '/game_setting': (context) => GameSettingPage(
+                game: game,
+              ),
+          '/shop_page': (context) => ShopPage(
+                game: game,
+              ),
         },
-        home: MainGamePage(game: game,),
+        home: MainGamePage(
+          game: game,
+        ),
         navigatorKey: navigatorKey,
       ),
     );
   }
 }
-
-
 
 enum AppStartType { forceUpdate, myapp, shutdown }
 
@@ -143,13 +181,9 @@ class MyHttpOverrides extends HttpOverrides {
 //앱 시작 타입      : 강제 업데이트 , 운영 , 정기점검
 
 // 서버 개발
-void checkAppVersion() {
+void checkAppVersion() {} // 앱 버전 체크 => 앱 스토어로 이동
 
-} // 앱 버전 체크 => 앱 스토어로 이동
-
-void checkSystemMaintenance(){
-
-} // 앱 정기점검
+void checkSystemMaintenance() {} // 앱 정기점검
 
 // 앱 접근 권한 추가
 // 네트워크 체크

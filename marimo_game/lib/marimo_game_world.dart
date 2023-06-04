@@ -164,6 +164,7 @@ class MarimoWorldGame extends FlameGame
     camera.followComponent(marimoComponent,
         worldBounds: Rect.fromLTRB(0, 0, _world.size.x, _world.size.y));
 
+
     soundBloc.bgmPlay();
 
   }
