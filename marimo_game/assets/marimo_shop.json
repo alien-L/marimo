@@ -106,6 +106,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "villain",
+       "villain_name": "cat",
       "image_name": "fish.png"
     },
     {
@@ -118,6 +119,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "villain",
+      "villain_name": "rabbit",
       "image_name": "egg.png"
     },
     {
@@ -130,6 +132,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "villain",
+      "villain_name": "mouse",
       "image_name": "cheese.png"
     },
     {
@@ -142,6 +145,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "villain",
+      "villain_name": "shark",
       "image_name": "cherry.png"
     },
     {
@@ -154,6 +158,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "villain",
+      "villain_name": "shrimp",
       "image_name": "meat.png"
     },
     {
@@ -166,6 +171,7 @@
       "enabled": "true",
       "bought": "false",
       "category": "villain",
+      "villain_name": "snail",
       "image_name": "star.png"
     },
     {

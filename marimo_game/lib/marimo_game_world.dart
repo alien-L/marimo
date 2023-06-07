@@ -7,6 +7,7 @@ import 'package:marimo_game/app_manage/language.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/coin_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/time_check_bloc.dart';
+import 'package:marimo_game/bloc/component_bloc/villian_bloc.dart';
 import 'package:marimo_game/components/bar/marimo_exp_bar.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
 import 'bloc/environment_bloc/environment_temperature_bloc.dart';
@@ -20,7 +21,7 @@ import 'components/bar/coin_collector_bar.dart';
 import 'components/bar/environment_state_bar.dart';
 import 'components/bar/marimo_hp_bar.dart';
 import 'components/moldy_component.dart';
-import 'components/villian_component.dart';
+import 'components/villain_component.dart';
 import 'components/world.dart';
 import 'components/world_collidable.dart';
 import 'helpers/direction.dart';
@@ -48,13 +49,15 @@ class MarimoWorldGame extends FlameGame
   final CoinBloc coinBloc;
   final TimeCheckBloc timeCheckBloc;
 
+  final VillainBloc villainBloc;
+
   late Timer bulletCreator;
   final List<CoinComponent> _coinList =
       List<CoinComponent>.empty(growable: true);
   final List<MoldyComponent> moldyList =
       List<MoldyComponent>.empty(growable: true);
 
-  late World _world;
+//  late World _world;
 
   final CoinCollector _coinCollector = CoinCollector();
   final MarimoHpBar _marimoHpBar = MarimoHpBar();
@@ -73,6 +76,7 @@ class MarimoWorldGame extends FlameGame
     required this.coinBloc,
     required this.backgroundBloc,
     required this.timeCheckBloc,
+    required this.villainBloc,
   });
 
   void onJoypadDirectionChanged(Direction direction) {
@@ -86,10 +90,11 @@ class MarimoWorldGame extends FlameGame
 
   @override
   Future<void> onLoad() async {
+   // super.onLoad();
+    await add(World(backgroundBloc));
     add(ScreenHitbox());
-    _world = World(backgroundBloc);
+   // _world = World(backgroundBloc);
     final marimoLevel = marimoLevelBloc.state;
-    await add(_world);
 
     await add(
       FlameMultiBlocProvider(
@@ -121,7 +126,7 @@ class MarimoWorldGame extends FlameGame
         ],
         children: [
           villainComponent = VillainComponent(MarimoLevel.zero),
-          marimoComponent = MarimoComponent(name: marimoLevel.name,),
+          marimoComponent = MarimoComponent(name: marimoLevel.name,isCry: false),
           environmentStateBar = EnvironmentStateBar(),
           MarimoController(),
           VillainController(),
@@ -159,22 +164,23 @@ class MarimoWorldGame extends FlameGame
     // 동전 남아있게 만들기
     add(_marimoHpBar); // 마리모 상태바
     add(_marimoExpBar);
-    marimoComponent.position = _world.size / 2;
-
-    camera.followComponent(marimoComponent,
-        worldBounds: Rect.fromLTRB(0, 0, _world.size.x, _world.size.y));
+    marimoComponent.position = Vector2(100,300);
+    // marimoComponent.position = _world.size / 2;
+    //
+    // camera.followComponent(marimoComponent,
+    //     worldBounds: Rect.fromLTRB(0, 0, _world.size.x, _world.size.y));
 
 
     soundBloc.bgmPlay();
 
   }
 
-  WorldCollidable createWorldCollidable(Rect rect) {
-    final collidable = WorldCollidable();
-    collidable.position = Vector2(rect.left, rect.top);
-    collidable.width = rect.width;
-    collidable.height = rect.height;
-
-    return collidable;
-  }
+  // WorldCollidable createWorldCollidable(Rect rect) {
+  //   final collidable = WorldCollidable();
+  //   collidable.position = Vector2(rect.left, rect.top);
+  //   collidable.width = rect.width;
+  //   collidable.height = rect.height;
+  //
+  //   return collidable;
+  // }
 }

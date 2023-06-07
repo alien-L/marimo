@@ -18,8 +18,10 @@ class MarimoItems {
     required this.humidity,
     required this.temperature,
     required this.firstInstall,
+    required this.isCheckedVillain
   });
 
+  dynamic isCheckedVillain;
   dynamic language; // 보류
   dynamic lastDay; //ok ??? 체크
   dynamic background; //ok
@@ -61,6 +63,7 @@ class MarimoItems {
         humidity: json['humidity'] as dynamic,
         temperature: json['temperature'] as dynamic,
         firstInstall: json['firstInstall'] as dynamic,
+        isCheckedVillain: json['isCheckedVillain'] as dynamic,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -78,6 +81,7 @@ class MarimoItems {
         'humidity': humidity,
         'temperature': temperature,
         'firstInstall': firstInstall,
+        'isCheckedVillain':isCheckedVillain
       };
 }
 
@@ -97,7 +101,8 @@ Future<MarimoItems> getInitLocalMarimoItems() async {
       isCleanTrash: await LocalRepository().getValue(key: "isCleanTrash"),
       humidity: await LocalRepository().getValue(key: "humidity"),
       temperature: await LocalRepository().getValue(key: "temperature"),
-      firstInstall: await LocalRepository().getValue(key: "firstInstall"),);
+      firstInstall: await LocalRepository().getValue(key: "firstInstall"),
+      isCheckedVillain:  await LocalRepository().getValue(key: "isCheckedVillain"), );
 
   print("json ==> $items");
 

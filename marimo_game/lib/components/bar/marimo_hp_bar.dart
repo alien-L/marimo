@@ -39,6 +39,7 @@ class MarimoHpBar extends PositionComponent
     add(_scoreTextComponent);
     add(_spriteComponent);
 
+
     return super.onLoad();
   }
 

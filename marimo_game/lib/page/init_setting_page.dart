@@ -41,10 +41,14 @@ class InitSettingPage extends StatelessWidget {
               ),),
               onPressed: () async {
                 final name = controller.value.text;
-                  bool specialChar = name.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+                  bool specialChar = name.contains( RegExp(r'''
+  ^!#%&@`:;-.<>,~\\(\\)\\{\\}\\^\\[\\][*][+][$][|][']["]
+  '''));
+              //  ^[ㄱ-ㅎ가-힣0-9a-zA-Z]*$
+                 RegExp basicReg = RegExp(r"^[ㄱ-ㅎ가-힣0-9a-zA-Z\s+]*$");
                   bool gap = name.contains(RegExp('\\s'));
                   if(specialChar || name.length>11 || name.isEmpty|| name == "" || gap){
-                    GameAlert().showErrorDialog(text:Environment().config.constant.nameValidationCheckMsg);
+                    GameAlert().showMyDialog(text:Environment().config.constant.nameValidationCheckMsg, assetsName: 'assets/images/one_marimo.png', dialogNumber: '01');
                   }else{
                     LocalRepository localRepository = LocalRepository();
                     await localRepository.setKeyValue(key: 'marimoName', value: name);
@@ -66,20 +70,19 @@ class InitSettingPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-          child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                          Center(
-                            child: Image(
-                                width: 100,
-                                height: 100,
-                                image: AssetImage("assets/images/one_marimo.png")),
-                          ),
-                  initSettingWidget(),
-                ],
-              ))));
+      body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+                      Center(
+                        child: Image(
+                            width: 100,
+                            height: 100,
+                            image: AssetImage("assets/images/one_marimo.png")),
+                      ),
+              initSettingWidget(),
+            ],
+          )));
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
+import 'package:marimo_game/app_manage/local_repository.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
 import '../bloc/marimo_bloc/marimo_level_bloc.dart';
 import '../helpers/direction.dart';
@@ -26,7 +27,7 @@ class MarimoController extends Component
   void onNewState(MarimoLevel state) {
     game.marimoComponent.removeFromParent();
     parent?.add(gameRef.marimoComponent =
-        MarimoComponent(name: state.name,));
+        MarimoComponent(name: state.name, isCry: false,));
   }
 }
 
@@ -51,44 +52,50 @@ class MarimoComponent extends SpriteAnimationComponent
   Direction direction = Direction.none;
   Direction _collisionDirection = Direction.none;
   bool _hasCollided = false;
+ final bool isCry;
   final String? name;
 
-  MarimoComponent({required this.name,})
+  MarimoComponent({required this.name,required this.isCry})
       : super(size: Vector2.all(64.0), position: Vector2(100, 500)) {
     add(RectangleComponent());
     add(RectangleHitbox());
-
   }
+
+  late SpriteSheet _spriteSheet;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    final spriteSheet = SpriteSheet(
-      image: await game.images.load('marimo/marimo_${name}.png'),
-      srcSize: Vector2(64.0, 64.0),
-    );
+    
+    String cry = isCry?"_cry":"";
+    // final
+      _spriteSheet = SpriteSheet(
+        image: await game.images.load('marimo/marimo_${name}$cry.png'),
+        srcSize: Vector2(64.0, 64.0),
+      ); 
 
     _runDownAnimation =
-        spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed, to: 4);
+        _spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed, to: 4);
 
     _runLeftAnimation =
-        spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed, to: 4);
+        _spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed, to: 4);
 
     _runUpAnimation =
-        spriteSheet.createAnimation(row: 2, stepTime: _animationSpeed, to: 4);
+        _spriteSheet.createAnimation(row: 2, stepTime: _animationSpeed, to: 4);
 
     _runRightAnimation =
-        spriteSheet.createAnimation(row: 3, stepTime: _animationSpeed, to: 4);
+        _spriteSheet.createAnimation(row: 3, stepTime: _animationSpeed, to: 4);
 
     _standingAnimation =
-        spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed, to: 1);
+        _spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed, to: 1);
   }
 
   @override
-  void update(double dt) {
+  Future<void> update(double dt) async {
     super.update(dt);
     _controlMovePlayer();
     movePlayer(dt);
+   // print("game.villainBloc.state==> ${game.villainBloc.state}");
   }
 
   _controlMovePlayer(){
@@ -125,7 +132,9 @@ class MarimoComponent extends SpriteAnimationComponent
       bool isPulledExp =
           game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) ==
               MarimoExpState.level5;
-      if (isPulledExp) {
+      final isCheckedVillain = await LocalRepository().getValue(key: "isCheckedVillain") == "1";
+      print("isCheckedVillain  $isCheckedVillain");
+      if (isPulledExp && isCheckedVillain) {
         await levelUpMarimo(game, game.marimoLevelBloc.state);
       }
       game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
@@ -219,6 +228,7 @@ levelUpMarimo(MarimoWorldGame game, level) async {
   await GameAlert().showMyDialog(
     text: Environment().config.constant.levelUpMsg,
     assetsName: "assets/images/one_marimo.png",
+    dialogNumber: "04"
   );
 
   game.marimoExpBloc.initState();

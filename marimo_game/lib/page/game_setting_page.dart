@@ -81,23 +81,21 @@ return DropdownMenuItem<Language>(
         backgroundColor: CommonColor.green,
         title: Text(Environment().config.constant.setting),
       ),
-      body: SafeArea(
-        child: Center(
-          child:Column(
-            children: [
-              Text("닉네임"),
-              Text("UID"),
-              toggleWidget(txt:Environment().config.constant.bgmOnOff,onChanged: onOffSound),
-              Text("평가하기"),
-              Text("게임버전"),
-              Text("초기화"),
-              Text("언어설정"),
-              Text("문의하기"),
-              Text("copyright"),
-              Text("권한설정??"),
-              Text("게임종료"),
-            ],
-          ),
+      body: Center(
+        child:Column(
+          children: [
+            Text("닉네임"),
+            Text("UID"),
+            toggleWidget(txt:Environment().config.constant.bgmOnOff,onChanged: onOffSound),
+            Text("평가하기"),
+            Text("게임버전"),
+            Text("초기화"),
+            Text("언어설정"),
+            Text("문의하기"),
+            Text("copyright"),
+            Text("권한설정??"),
+            Text("게임종료"),
+          ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

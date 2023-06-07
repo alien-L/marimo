@@ -101,6 +101,8 @@ class _MainViewState extends State<MainView> {
     final environmentTemperatureBloc = BlocProvider.of<EnvironmentTemperatureBloc>(context);
     final environmentHumidityBloc = BlocProvider.of<EnvironmentHumidityBloc>(context);
 
+    print("여기 temp 체크 ==> ${temperature.runtimeType.toString()}");
+    print("여기 humidity 체크 ==> ${humidity.runtimeType.toString()}");
     environmentTemperatureBloc.updateState(temperature);
     environmentHumidityBloc.updateState(humidity);
   }
@@ -110,7 +112,7 @@ class _MainViewState extends State<MainView> {
     var lat = 37.785834;
     var lon = -122.406417;
     final _weatherInfo = await getWeatherByCurrentLocation(lat, lon);
-    final detailedWeatherInfo = _weatherInfo?.main;
+  final detailedWeatherInfo = _weatherInfo?.main;
     checkEnvironment(detailedWeatherInfo);
   }
 
@@ -124,17 +126,17 @@ class _MainViewState extends State<MainView> {
       } else {
         checkPermissionForAos();
       }
-      final isFirstInstallApp = await _getFirstInstallStatus();
-      if (!mounted) return;
-      if (isFirstInstallApp) {
-        getMyEnvironment();
-        // 첫 앱 설치
-      }
+     // final isFirstInstallApp = await _getFirstInstallStatus();
+    //  if (!mounted) return;
+      // if (isFirstInstallApp) {
+      //   getMyEnvironment();
+      //   // 첫 앱 설치
+      // }
     });
   }
 
-  @override
-  bool get mounted => super.mounted;
+  //@override
+ // bool get mounted => super.mounted;
 
   @override
   void dispose() {

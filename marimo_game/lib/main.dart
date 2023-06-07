@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:flame/flame.dart';
-import 'package:flame_splash_screen/flame_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/page/game_setting_page.dart';
@@ -14,6 +12,7 @@ import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
 import 'bloc/component_bloc/background_bloc.dart';
 import 'bloc/component_bloc/coin_bloc.dart';
+import 'bloc/component_bloc/villian_bloc.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
 import 'bloc/environment_bloc/environment_temperature_bloc.dart';
 import 'bloc/environment_bloc/environment_trash_bloc.dart';
@@ -32,14 +31,14 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Flame.device.fullScreen();
+ // await Flame.device.fullScreen();
   final marimoItems = await getInitLocalMarimoItems();
   final marimoItemsMap = marimoItems.toJson();
   String? firstInstall = await LocalRepository().getValue(key: "firstInstall");
-
+  String? marimoName = await LocalRepository().getValue(key: "marimoName");
   String initRoute = firstInstall != null ? '/main_scene' : '/init_setting';
 
-  print("marimoItems ===> ${marimoItems.toJson()}");
+ // print("marimoItems ===> ${marimoItems.toJson()}");
   final backgroundValue = BackgroundState.values.firstWhere(
       (element) => element.name == marimoItemsMap["background"],
       orElse: () => BackgroundState.normal);
@@ -49,63 +48,37 @@ Future<void> main() async {
   final marimoLevelValue = MarimoLevel.values.firstWhere(
       (element) => element.name == marimoItemsMap["marimoLevel"],
       orElse: () => MarimoLevel.baby);
+  final isCheckedOnOffSound = marimoItemsMap["isCheckedOnOffSound"] == null?false:marimoItemsMap["isCheckedOnOffSound"] != 1;
+  final isCheckedVillain = marimoItemsMap["isCheckedVillain"] == null?false:marimoItemsMap["isCheckedVillain"] != 1;
 
   Environment().initConfig(languageManageValue); // 언어 환경 세팅
-  runApp(RestartWidget(
-      child: MultiBlocProvider(
-          providers: [
-        BlocProvider<LanguageManageBloc>(
-            create: (_) => LanguageManageBloc(languageManageValue)),
-        BlocProvider<TimeCheckBloc>(
-            create: (_) => TimeCheckBloc(marimoItemsMap["lastDay"] != "1")),
-
-        /// 체크 초기값 설정 고민 해보자 marimoItemsMap["lastDay"]??
-        BlocProvider<BackgroundBloc>(
-            create: (_) => BackgroundBloc(backgroundValue)),
-        //marimoItemsMap["background"]??"
-
-        BlocProvider<MarimoLevelBloc>(
-            create: (_) => MarimoLevelBloc(marimoLevelValue)),
-        BlocProvider<MarimoHpBloc>(
-            create: (_) =>
-                MarimoHpBloc(int.parse(marimoItemsMap["marimoHp"] ?? "40"))),
-        // ok
-        BlocProvider<MarimoExpBloc>(
-            create: (_) =>
-                MarimoExpBloc(int.parse(marimoItemsMap["marimoExp"] ?? "0"))),
-        //ok
-
-        BlocProvider<CoinBloc>(
-            create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"] ?? "0"))),
-        //ok
-        BlocProvider<SoundBloc>(
-            create: (_) =>
-                SoundBloc(marimoItemsMap["isCheckedOnOffSound"] != "1")),
-        // ok null 또는 0이면 true , 1이면 false
-
-        BlocProvider<EnvironmentTrashBloc>(
-            create: (_) =>
-                EnvironmentTrashBloc(marimoItemsMap["isCleanTrash"] != "1")),
-        // ok  null 또는 0이면 true , 1이면 false
-        BlocProvider<EnvironmentHumidityBloc>(
-            create: (_) => EnvironmentHumidityBloc(
-                int.parse(marimoItemsMap["humidity"] ?? "50"))),
-        //ok
-        BlocProvider<EnvironmentTemperatureBloc>(
-            create: (_) => EnvironmentTemperatureBloc(
-                double.parse(marimoItemsMap["temperature"] ?? "16"))),
-        //ok
-      ],
-          child: App(
-            initRoute: initRoute,
-          ))));
+  runApp(MultiBlocProvider(
+      providers: [
+    BlocProvider<VillainBloc>(create: (_) => VillainBloc(isCheckedVillain)),
+    BlocProvider<LanguageManageBloc>(create: (_) => LanguageManageBloc(languageManageValue)),
+    BlocProvider<TimeCheckBloc>(create: (_) => TimeCheckBloc(marimoItemsMap["lastDay"] != "1")), /// 체크 초기값 설정 고민 해보자 marimoItemsMap["lastDay"]??
+    BlocProvider<BackgroundBloc>(create: (_) => BackgroundBloc(backgroundValue)), //marimoItemsMap["background"]??"
+    BlocProvider<MarimoLevelBloc>(create: (_) => MarimoLevelBloc(marimoLevelValue)),
+    BlocProvider<MarimoHpBloc>(create: (_) => MarimoHpBloc(int.parse(marimoItemsMap["marimoHp"] ?? "40"))),
+    BlocProvider<MarimoExpBloc>(create: (_) => MarimoExpBloc(int.parse(marimoItemsMap["marimoExp"] ?? "0"))), //ok
+    BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"] ?? "0"))), //ok
+    BlocProvider<SoundBloc>(create: (_) => SoundBloc(isCheckedOnOffSound)),     // ok null 또는 0이면 true , 1이면 false
+    BlocProvider<EnvironmentTrashBloc>(create: (_) => EnvironmentTrashBloc(isCheckedOnOffSound)), // ok  null 또는 0이면 true , 1이면 false
+    BlocProvider<EnvironmentHumidityBloc>(create: (_) => EnvironmentHumidityBloc(int.parse(marimoItemsMap["humidity"] ?? "50"))),
+    BlocProvider<EnvironmentTemperatureBloc>(create: (_) => EnvironmentTemperatureBloc(double.parse(marimoItemsMap["temperature"] ?? "16"))), //ok
+  ],
+      child: App(
+        initRoute: initRoute,
+        marimoName: marimoName,
+      )));
 
   // FlutterNativeSplash.remove();
 }
 
 class App extends StatelessWidget {
-  App({Key? key, required this.initRoute}) : super(key: key);
+  App({Key? key, required this.initRoute, required this.marimoName}) : super(key: key);
   final String initRoute;
+  final String? marimoName;
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +104,7 @@ class App extends StatelessWidget {
       marimoLevelBloc: context.read<MarimoLevelBloc>(),
       timeCheckBloc: context.read<TimeCheckBloc>(),
       marimoExpBloc: context.read<MarimoExpBloc>(),
+      villainBloc: context.read<VillainBloc>(),
     );
 
     return initWidget(
@@ -143,6 +117,7 @@ class App extends StatelessWidget {
         initialRoute: initRoute,
         routes: {
           '/main_scene': (context) => MainGamePage(
+             marimoName: marimoName??"",
                 game: game,
               ),
           '/init_setting': (context) => InitSettingPage(),
@@ -154,6 +129,7 @@ class App extends StatelessWidget {
               ),
         },
         home: MainGamePage(
+          marimoName: marimoName??"",
           game: game,
         ),
         navigatorKey: navigatorKey,
