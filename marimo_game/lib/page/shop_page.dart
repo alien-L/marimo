@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/bloc/component_bloc/villian_bloc.dart';
+import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
+import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/components/game_alert.dart';
 
 import '../app_manage/local_repository.dart';
@@ -57,6 +59,9 @@ class ShopPage extends StatelessWidget {
                   List<dynamic> list = snapshot.requireData;
                   List<Widget> listView = List.generate(list.length, (index) {
                     var name = list[index]["name"];
+                    var isCheckedMoving = list[index]["isCheckedMoving"]== "true";
+                 //   var position_x = list[index]["position_x"];
+                  //  var position_y = list[index]["position_y"];
                     var price = list[index]["price"];
                     var stateScore = list[index]["state_score"];
                     var expScore = list[index]["exp_score"];
@@ -182,12 +187,12 @@ class ShopPage extends StatelessWidget {
                                               game.soundBloc.effectSoundPlay('/music/click.mp3');
                                               game.coinBloc.subtractCoin(int.parse(price));
                                               game.marimoHpBloc.addScore(int.parse(stateScore));
-                                              game.marimoExpBloc.addScore(game.marimoLevelBloc.state, int.parse(expScore));
+                                              game.marimoExpBloc.addScore(game.marimoBloc.state.marimoLevel, int.parse(expScore));
                                               game.soundBloc.effectSoundPlay('/music/popup.mp3');
-                                              bool isPulledExp = game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) == MarimoExpState.level5;
+                                              bool isPulledExp = game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) == MarimoExpState.level5;
                                               final isCheckedVillain = await LocalRepository().getValue(key: "isCheckedVillain") == "1";
                                               if (isPulledExp && isCheckedVillain) {
-                                                await levelUpMarimo(game, game.marimoLevelBloc.state);
+                                                await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
                                               }
 
                                               if (environment_category == "humidity") {
@@ -200,12 +205,17 @@ class ShopPage extends StatelessWidget {
                                               }else {}
 
                                               if(category == "villain"){
-                                                final name =  game.villainComponent.getVillanName();
+                                                final name =  game.villainComponent.getVillianInfoList().first;
 
                                                 if(name == villain_name){
                                                     game.villainComponent.removeFromParent();
                                                     game.villainBloc.hideVillain();
+                                                    game.marimoBloc.add(MarimoEmotionChanged(MarimoEmotion.normal));
                                                 }
+
+                                              }else if(category == "deco"){
+                                                print("여기 !!!");
+                                                game.shopBloc.add(BuyEvent(name: name,isCheckedMoving: isCheckedMoving));
 
                                               }
 

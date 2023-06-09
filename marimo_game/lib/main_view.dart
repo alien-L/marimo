@@ -113,7 +113,7 @@ class _MainViewState extends State<MainView> {
     var lon = -122.406417;
     final _weatherInfo = await getWeatherByCurrentLocation(lat, lon);
   final detailedWeatherInfo = _weatherInfo?.main;
-    checkEnvironment(detailedWeatherInfo);
+    checkEnvironment(detailedWeatherInfo); //null 체크
   }
 
   @override

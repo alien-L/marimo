@@ -1,11 +1,12 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/experimental.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/app_manage/local_repository.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
-import '../bloc/marimo_bloc/marimo_level_bloc.dart';
+import '../bloc/marimo_bloc/marimo_bloc.dart';
 import '../helpers/direction.dart';
 import '../marimo_game_world.dart';
 import 'coin_component.dart';
@@ -14,20 +15,21 @@ import 'game_alert.dart';
 class MarimoController extends Component
     with
         HasGameRef<MarimoWorldGame>,
-        FlameBlocListenable<MarimoLevelBloc, MarimoLevel> {
+        FlameBlocListenable<MarimoBloc, MarimoState>{
 
   MarimoController();
 
   @override
-  bool listenWhen(MarimoLevel previousState, MarimoLevel newState) {
+  bool listenWhen(MarimoState previousState, MarimoState newState) {
     return previousState != newState;
   }
 
   @override
-  void onNewState(MarimoLevel state) {
+  void onNewState(MarimoState state) {
+    // 로컬 저장소 값 비교 레벨
     game.marimoComponent.removeFromParent();
     parent?.add(gameRef.marimoComponent =
-        MarimoComponent(name: state.name, isCry: false,));
+        MarimoComponent(levelName: state.marimoLevel.name, emotionName: state.marimoEmotion.name,));
   }
 }
 
@@ -36,7 +38,7 @@ class MarimoComponent extends SpriteAnimationComponent
         HasGameRef<MarimoWorldGame>,
         CollisionCallbacks,
         KeyboardHandler,
-        FlameBlocListenable<MarimoLevelBloc, MarimoLevel> {
+        FlameBlocListenable<MarimoBloc, MarimoState>,TapCallbacks {
   final Vector2 lastPosition = Vector2.zero();
   bool destroyed = false;
   final double _playerSpeed = 300.0;
@@ -52,10 +54,10 @@ class MarimoComponent extends SpriteAnimationComponent
   Direction direction = Direction.none;
   Direction _collisionDirection = Direction.none;
   bool _hasCollided = false;
- final bool isCry;
-  final String? name;
+  final String? emotionName;
+  final String? levelName;
 
-  MarimoComponent({required this.name,required this.isCry})
+  MarimoComponent({required this.levelName,required this.emotionName})
       : super(size: Vector2.all(64.0), position: Vector2(100, 500)) {
     add(RectangleComponent());
     add(RectangleHitbox());
@@ -64,13 +66,18 @@ class MarimoComponent extends SpriteAnimationComponent
   late SpriteSheet _spriteSheet;
 
   @override
+  void onTapUp(TapUpEvent event) {
+    print("event ==> $event");
+    // 동전 추가해서 넣기
+    // Do something in response to a tap event
+  }
+
+  @override
   Future<void> onLoad() async {
     await super.onLoad();
-    
-    String cry = isCry?"_cry":"";
     // final
       _spriteSheet = SpriteSheet(
-        image: await game.images.load('marimo/marimo_${name}$cry.png'),
+        image: await game.images.load('marimo/marimo_${levelName}_$emotionName.png'),
         srcSize: Vector2(64.0, 64.0),
       ); 
 
@@ -95,7 +102,6 @@ class MarimoComponent extends SpriteAnimationComponent
     super.update(dt);
     _controlMovePlayer();
     movePlayer(dt);
-   // print("game.villainBloc.state==> ${game.villainBloc.state}");
   }
 
   _controlMovePlayer(){
@@ -123,19 +129,18 @@ class MarimoComponent extends SpriteAnimationComponent
     super.onCollision(points, other);
     if (other is CoinComponent) {
       other.removeFromParent();
-      game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
+      game.marimoExpBloc.addScore(game.marimoBloc.state.marimoLevel, 10);
       game.coinBloc.addCoin();
       int totalCoinCount = await game.coinBloc.getTotalCoinCount();
       totalCoinCount--;
       tempCoin++;
       game.coinBloc.updateLocaltotalCoinCount(totalCoinCount);
       bool isPulledExp =
-          game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) ==
+          game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==
               MarimoExpState.level5;
       final isCheckedVillain = await LocalRepository().getValue(key: "isCheckedVillain") == "1";
-      print("isCheckedVillain  $isCheckedVillain");
       if (isPulledExp && isCheckedVillain) {
-        await levelUpMarimo(game, game.marimoLevelBloc.state);
+        await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
       }
       game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
     }
@@ -235,22 +240,21 @@ levelUpMarimo(MarimoWorldGame game, level) async {
 
   switch (level) {
     case MarimoLevel.baby: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
-      game.marimoLevelBloc.levelUp(MarimoLevel.child);
+      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.child));
       break;
     case MarimoLevel.child:
-      game.marimoLevelBloc.levelUp(MarimoLevel.child2);
+      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.child2));
       break;
     case MarimoLevel.child2:
-      game.marimoLevelBloc.levelUp(MarimoLevel.teenager);
+      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.teenager));
       break;
     case MarimoLevel.teenager:
-      game.marimoLevelBloc.levelUp(MarimoLevel.adult);
+      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.adult));
       break;
     case MarimoLevel.adult:
-      game.marimoLevelBloc.levelUp(MarimoLevel.oldMan);
+      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.oldMan));
       break;
     case MarimoLevel.oldMan:
-      // 흠??
       break;
   }
 }

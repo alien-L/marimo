@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/page/game_setting_page.dart';
 import 'package:marimo_game/page/init_setting_page.dart';
 import 'package:marimo_game/page/shop_page.dart';
@@ -18,7 +19,7 @@ import 'bloc/environment_bloc/environment_temperature_bloc.dart';
 import 'bloc/environment_bloc/environment_trash_bloc.dart';
 import 'bloc/component_bloc/language_manage_bloc.dart';
 import 'bloc/marimo_bloc/marimo_exp_bloc.dart';
-import 'bloc/marimo_bloc/marimo_level_bloc.dart';
+import 'bloc/marimo_bloc/marimo_bloc.dart';
 import 'bloc/marimo_bloc/marimo_hp_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
 import 'bloc/component_bloc/time_check_bloc.dart';
@@ -48,17 +49,21 @@ Future<void> main() async {
   final marimoLevelValue = MarimoLevel.values.firstWhere(
       (element) => element.name == marimoItemsMap["marimoLevel"],
       orElse: () => MarimoLevel.baby);
+  final marimoEmotionValue =MarimoEmotion.values.firstWhere(
+          (element) => element.name == marimoItemsMap["marimoEmotion"],
+      orElse: () => MarimoEmotion.normal);
   final isCheckedOnOffSound = marimoItemsMap["isCheckedOnOffSound"] == null?false:marimoItemsMap["isCheckedOnOffSound"] != 1;
   final isCheckedVillain = marimoItemsMap["isCheckedVillain"] == null?false:marimoItemsMap["isCheckedVillain"] != 1;
 
   Environment().initConfig(languageManageValue); // 언어 환경 세팅
   runApp(MultiBlocProvider(
       providers: [
+    BlocProvider<ShopBloc>(create: (_) => ShopBloc(const ItemState())),
     BlocProvider<VillainBloc>(create: (_) => VillainBloc(isCheckedVillain)),
     BlocProvider<LanguageManageBloc>(create: (_) => LanguageManageBloc(languageManageValue)),
     BlocProvider<TimeCheckBloc>(create: (_) => TimeCheckBloc(marimoItemsMap["lastDay"] != "1")), /// 체크 초기값 설정 고민 해보자 marimoItemsMap["lastDay"]??
     BlocProvider<BackgroundBloc>(create: (_) => BackgroundBloc(backgroundValue)), //marimoItemsMap["background"]??"
-    BlocProvider<MarimoLevelBloc>(create: (_) => MarimoLevelBloc(marimoLevelValue)),
+    BlocProvider<MarimoBloc>(create: (_) => MarimoBloc(MarimoState(marimoLevel: marimoLevelValue, marimoEmotion: marimoEmotionValue))),
     BlocProvider<MarimoHpBloc>(create: (_) => MarimoHpBloc(int.parse(marimoItemsMap["marimoHp"] ?? "40"))),
     BlocProvider<MarimoExpBloc>(create: (_) => MarimoExpBloc(int.parse(marimoItemsMap["marimoExp"] ?? "0"))), //ok
     BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"] ?? "0"))), //ok
@@ -101,10 +106,11 @@ class App extends StatelessWidget {
       soundBloc: context.read<SoundBloc>(),
       coinBloc: context.read<CoinBloc>(),
       marimoHpBloc: context.read<MarimoHpBloc>(),
-      marimoLevelBloc: context.read<MarimoLevelBloc>(),
+      marimoBloc: context.read<MarimoBloc>(),
       timeCheckBloc: context.read<TimeCheckBloc>(),
       marimoExpBloc: context.read<MarimoExpBloc>(),
       villainBloc: context.read<VillainBloc>(),
+      shopBloc: context.read<ShopBloc>(),
     );
 
     return initWidget(

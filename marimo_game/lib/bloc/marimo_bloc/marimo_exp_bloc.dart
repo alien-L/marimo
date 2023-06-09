@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../app_manage/local_repository.dart';
-import 'marimo_level_bloc.dart';
+import 'marimo_bloc.dart';
 enum MarimoExpState{level1,level2,level3,level4,level5}
 
 class MarimoExpBloc extends Cubit<int>{
