@@ -21,7 +21,6 @@ import 'bloc/component_bloc/sound_bloc.dart';
 import 'components/bar/coin_collector_bar.dart';
 import 'components/bar/environment_state_bar.dart';
 import 'components/bar/marimo_hp_bar.dart';
-import 'components/frog_component.dart';
 import 'components/marin_animals_component.dart';
 import 'components/moldy_component.dart';
 import 'components/shop_component.dart';
@@ -36,6 +35,7 @@ class MarimoWorldGame extends FlameGame
   late MarimoComponent marimoComponent;
   late VillainComponent villainComponent;
   late ShopComponent shopComponent;
+  late MarinAnimalsComponent marinAnimalsComponent ;
   late EnvironmentStateBar environmentStateBar;
 
   late ShopBloc shopBloc;
@@ -63,7 +63,6 @@ class MarimoWorldGame extends FlameGame
   final List<MoldyComponent> moldyList =
       List<MoldyComponent>.empty(growable: true);
 
-//  late World _world;
 
   final CoinCollector _coinCollector = CoinCollector();
   final MarimoHpBar _marimoHpBar = MarimoHpBar();
@@ -85,8 +84,6 @@ class MarimoWorldGame extends FlameGame
     required this.villainBloc,
   });
 
-  //final List<MarinAnimialsComponent> _fishList = List<MarinAnimialsComponent>.empty(growable: true);
-
   void onJoypadDirectionChanged(Direction direction) {
     marimoComponent.direction = direction;
   }
@@ -94,109 +91,12 @@ class MarimoWorldGame extends FlameGame
   @override
   Future<void> update(double dt) async {
     super.update(dt);
-    //    bool isLevel2 = marimoExpBloc.changeLifeCycleToExp(marimoBloc.state.marimoLevel) ==  MarimoExpState.level2;
-    //   if(isLevel2){
-    //     print("level 2");
-    //     // await add(ShopComponent(
-    //     //     name: 'tree',
-    //     //     componentPosition: Vector2(100,size.y-210),
-    //     //     componentSize: Vector2.all(200)));
-    //   }
   }
 
   @override
   Future<void> onLoad() async {
-    // super.onLoad();
     await add(marimoWorld.World(backgroundBloc));
-    // await add(ShopComponent(
-    //     name: 'tree',
-    //     componentPosition: Vector2(100,size.y-210),
-    //     componentSize: Vector2.all(200)));
-    // await add(ShopComponent(
-    //     name: 'flower',
-    //     componentPosition: Vector2(270,size.y-150),
-    //     componentSize: Vector2.all(50)));
-    // await add(ShopComponent(
-    //     name: 'coral',
-    //     componentPosition: Vector2(size.x -50,size.y-180),
-    //     componentSize: Vector2.all(100)));
-    // await add(ShopComponent(
-    //     name: 'mushroom',
-    //     componentPosition: Vector2(170,size.y-150),
-    //     componentSize: Vector2.all(50)));
-
-    //  add(SpriteSheetWidget());
-    //  for (var i = 0; i < 10; i++) {
-    final creationTime = DateTime.now().millisecondsSinceEpoch / 1000.0;
-    final tempFish = MarinAnimialsComponent(
-      worldSize: size,
-      time: creationTime,
-      imageName: "octopus_sprite",
-      screenSize: Vector2(48, 48),
-      imageSize: Vector2(48, 48),
-      totalNum: 5,
-    );
-    final tempFish2 = MarinAnimialsComponent(
-      worldSize: size,
-      time: creationTime,
-      imageName: "deep_sea_fish_sprite",
-      screenSize: Vector2(48, 48),
-      imageSize: Vector2(48, 48),
-      totalNum: 3,
-    );
-    final tempFish3 = MarinAnimialsComponent(
-      worldSize: size,
-      time: creationTime,
-      imageName: "turtle_sprite",
-      screenSize: Vector2(48, 48),
-      imageSize: Vector2(48, 48),
-      totalNum: 5,
-    );
-
-    final tempFish4 = MarinAnimialsComponent(
-      worldSize: size,
-      time: creationTime,
-      imageName: "frog_sprite",
-      screenSize: Vector2(32, 32),
-      imageSize: Vector2(16, 16),
-      totalNum: 3,
-    );
-    final tempFish5 = MarinAnimialsComponent(
-      worldSize: size,
-      time: creationTime,
-      imageName: "blue_marlin_sprite",
-      screenSize: Vector2(48, 48),
-      imageSize: Vector2(48, 48),
-      totalNum: 3,
-    );
-    final tempFish6 = MarinAnimialsComponent(
-      worldSize: size,
-      time: creationTime,
-      imageName: "earthworm_sprite",
-      screenSize: Vector2(48, 48),
-      imageSize: Vector2(48, 48),
-      totalNum: 5,
-    );
-    final tempFish7 = MarinAnimialsComponent(
-      worldSize: size,
-      time: creationTime,
-      imageName: "crab_sprites",
-      screenSize: Vector2(48, 48),
-      imageSize: Vector2(48, 48),
-      totalNum: 3,
-    );
-    add(tempFish7);
-    add(tempFish6);
-    add(tempFish5);
-    add(tempFish4);
-    add(tempFish3);
-    add(tempFish2);
-    add(tempFish);
-    //   }
-    // add(DeepSeaFishComponent(size));
-    // add(CrabMarlinComponent(size));
     add(ScreenHitbox());
-    // _world = World(backgroundBloc);
     final marimoLevel = marimoBloc.state.marimoLevel;
     final marimoEmotion = marimoBloc.state.marimoEmotion;
 
@@ -232,7 +132,6 @@ class MarimoWorldGame extends FlameGame
           FlameBlocProvider<TimeCheckBloc, bool>.value(value: timeCheckBloc),
         ],
         children: [
-          villainComponent = VillainComponent(size, MarimoLevel.zero),
           shopComponent = ShopComponent(),
           marimoComponent = MarimoComponent(
               levelName: marimoLevel.name, emotionName: marimoEmotion.name),
@@ -240,12 +139,13 @@ class MarimoWorldGame extends FlameGame
           MarimoController(),
           ShopItemController(),
           VillainController(),
+          CoinController(),
         ],
       ),
     );
 
     add(_coinCollector);
-
+     //add(CoinDecoComponent(size));
     int totalCoinCount = await coinBloc.getTotalCoinCount();
     int num = timeCheckBloc.state ? 20 : totalCoinCount;
 
@@ -275,8 +175,6 @@ class MarimoWorldGame extends FlameGame
     add(_marimoHpBar); // 마리모 상태바
     add(_marimoExpBar);
     marimoComponent.position = Vector2(100, 300);
-    // marimoComponent.position = _world.size / 2;
-    //add(VillainComponent(size,MarimoLevel.zero));
     soundBloc.bgmPlay();
   }
 }

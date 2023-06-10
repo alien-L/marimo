@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../marimo_game_world.dart';
 import '../bloc/shop_bloc.dart';
+import 'marin_animals_component.dart';
 class ShopItemController extends Component
     with
         HasGameRef<MarimoWorldGame>,
@@ -15,7 +16,6 @@ class ShopItemController extends Component
 
   @override
   bool listenWhen(ItemState previousState,ItemState newState) {
-    print("여기 !!! @@@@");
     return previousState != newState;
   }
 
@@ -30,10 +30,14 @@ class ShopItemController extends Component
     print(list);
     Map<String,dynamic> _map = list.firstWhere((element)=>element["name"] == state.name );
 
-    parent?.add(gameRef.shopComponent = ShopComponent(name:_map["image_name"],
-            componentPosition: Vector2(double.parse(_map["position_x"]),game.size.y-double.parse(_map["position_y"])),
-            componentSize: Vector2.all(double.parse(_map["size"]))));
-    print("여기 !!! @@@@@@@@@@@@@@@@@%%%");
+    if(state.isCheckedMoving??false){
+      parent?.add(gameRef.marinAnimalsComponent =MarinAnimalsComponent(worldSize: gameRef.size,
+          animalName: _map["image_name"], screenSize: Vector2.all(double.parse(_map["screenSize"]??_map["size"])), imageSize: Vector2.all(double.parse(_map["size"])), totalNum:_map["totalNum"]));
+    }else {
+      parent?.add(gameRef.shopComponent = ShopComponent(name:_map["image_name"],
+          componentPosition: Vector2(double.parse(_map["position_x"]),game.size.y-double.parse(_map["position_y"])),
+          componentSize: Vector2.all(double.parse(_map["size"]))));
+    }
   }
 }
 

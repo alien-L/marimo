@@ -47,13 +47,9 @@ abstract class ShopEvent extends Equatable {
 class BuyEvent extends ShopEvent {
   BuyEvent(
       {required this.name,
-  //    required this.position,
-   //   required this.size,
       required this.isCheckedMoving});
 
   final String name;
- // final Vector2 position;
- // final Vector2 size;
   final bool isCheckedMoving;
 
   @override

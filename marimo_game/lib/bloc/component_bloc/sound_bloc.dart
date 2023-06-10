@@ -9,7 +9,10 @@ class SoundBloc extends Cubit<bool> {
     FlameAudio.bgm.initialize();
   }
 
+
   void isAllStopSound(bool value) => emit(value);
+
+  void onOffSound(bool value) => emit(value);
 
   void bgmPlay(){
     if(!state){

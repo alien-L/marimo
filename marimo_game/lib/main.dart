@@ -67,14 +67,16 @@ Future<void> main() async {
     BlocProvider<MarimoHpBloc>(create: (_) => MarimoHpBloc(int.parse(marimoItemsMap["marimoHp"] ?? "40"))),
     BlocProvider<MarimoExpBloc>(create: (_) => MarimoExpBloc(int.parse(marimoItemsMap["marimoExp"] ?? "0"))), //ok
     BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"] ?? "0"))), //ok
-    BlocProvider<SoundBloc>(create: (_) => SoundBloc(isCheckedOnOffSound)),     // ok null 또는 0이면 true , 1이면 false
+    BlocProvider<SoundBloc>(create: (_) => SoundBloc(false)),     // ok null 또는 0이면 true , 1이면 false
     BlocProvider<EnvironmentTrashBloc>(create: (_) => EnvironmentTrashBloc(isCheckedOnOffSound)), // ok  null 또는 0이면 true , 1이면 false
     BlocProvider<EnvironmentHumidityBloc>(create: (_) => EnvironmentHumidityBloc(int.parse(marimoItemsMap["humidity"] ?? "50"))),
     BlocProvider<EnvironmentTemperatureBloc>(create: (_) => EnvironmentTemperatureBloc(double.parse(marimoItemsMap["temperature"] ?? "16"))), //ok
   ],
-      child: App(
-        initRoute: initRoute,
-        marimoName: marimoName,
+      child: RestartWidget(
+        child: App(
+          initRoute: initRoute,
+          marimoName: marimoName,
+        ),
       )));
 
   // FlutterNativeSplash.remove();
@@ -127,9 +129,9 @@ class App extends StatelessWidget {
                 game: game,
               ),
           '/init_setting': (context) => InitSettingPage(),
-          '/game_setting': (context) => GameSettingPage(
-                game: game,
-              ),
+          // '/game_setting': (context) => GameSettingPage(
+          //        game,
+          //     ),
           '/shop_page': (context) => ShopPage(
                 game: game,
               ),

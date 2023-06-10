@@ -205,7 +205,7 @@ class ShopPage extends StatelessWidget {
                                               }else {}
 
                                               if(category == "villain"){
-                                                final name =  game.villainComponent.getVillianInfoList().first;
+                                                final name =  game.villainComponent.getVillainInfoMap()["name"];
 
                                                 if(name == villain_name){
                                                     game.villainComponent.removeFromParent();

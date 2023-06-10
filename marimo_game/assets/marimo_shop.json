@@ -188,19 +188,6 @@
       "isCheckedMoving": "false"
     },
     {
-      "name": "마리모 친구",
-      "name_en": "marimo friend",
-      "name_jp": "まりもの友達",
-      "price": "7000",
-      "state_score": "7",
-      "exp_score": "700",
-      "enabled": "true",
-      "bought": "false",
-      "category": "deco",
-      "image_name": "e_marimo.png",
-      "isCheckedMoving": "true"
-    },
-    {
       "name": "청새치",
       "name_en": "blue malin",
       "name_jp": "カジキ",
@@ -211,7 +198,9 @@
       "bought": "false",
       "category": "deco",
       "image_name": "blue_marlin.png",
-      "isCheckedMoving": "true"
+      "isCheckedMoving": "true",
+      "totalNum": 3,
+      "size": "48"
     },
     {
       "name": "게",
@@ -224,7 +213,9 @@
       "bought": "false",
       "category": "deco",
       "image_name": "crab.png",
-      "isCheckedMoving": "true"
+      "isCheckedMoving": "true",
+      "totalNum": 3,
+      "size": "48"
     },
     {
       "name": "심해어",
@@ -237,7 +228,9 @@
       "bought": "false",
       "category": "deco",
       "image_name": "deep_sea_fish.png",
-      "isCheckedMoving": "true"
+      "isCheckedMoving": "true",
+      "totalNum": 3,
+      "size": "48"
     },
     {
       "name": "지렁이",
@@ -250,7 +243,9 @@
       "bought": "false",
       "category": "deco",
       "image_name": "earthworm.png",
-      "isCheckedMoving": "true"
+      "isCheckedMoving": "true",
+      "totalNum": 5,
+      "size": "48"
     },
     {
       "name": "개구리",
@@ -263,7 +258,10 @@
       "bought": "false",
       "category": "deco",
       "image_name": "frog.png",
-      "isCheckedMoving": "true"
+      "isCheckedMoving": "true",
+      "totalNum": 3,
+      "size": "16",
+      "screenSize": "32"
     },
     {
       "name": "문어",
@@ -276,7 +274,9 @@
       "bought": "false",
       "category": "deco",
       "image_name": "octopus.png",
-      "isCheckedMoving": "true"
+      "isCheckedMoving": "true",
+      "totalNum": 5,
+      "size": "48"
     },
     {
       "name": "거북이",
@@ -289,7 +289,9 @@
       "bought": "false",
       "category": "deco",
       "image_name": "turtle.png",
-      "isCheckedMoving":"true"
+      "isCheckedMoving":"true",
+      "totalNum": 5,
+      "size": "48"
     },
     {
       "name": "물 갈아주기",

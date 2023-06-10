@@ -64,14 +64,30 @@ class MarimoComponent extends SpriteAnimationComponent
   }
 
   late SpriteSheet _spriteSheet;
+  final coin = CoinDecoComponent();
 
   @override
-  void onTapUp(TapUpEvent event) {
+  Future<void> onTapUp(TapUpEvent event) async {
     print("event ==> $event");
+    //parent?.add(coin);
+    await getCoin();
+    //coin.removeFromParent();
     // 동전 추가해서 넣기
     // Do something in response to a tap event
   }
 
+  @override
+  void onTapDown(TapDownEvent event) {
+    // TODO: implement onTapDown
+ //   parent?.remove(coin);
+    super.onTapDown(event);
+  }
+  @override
+  void onTapCancel(TapCancelEvent event) {
+    // TODO: implement onTapCancel
+    //parent?.remove(coin);
+    super.onTapCancel(event);
+  }
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -122,6 +138,18 @@ class MarimoComponent extends SpriteAnimationComponent
     }
   }
 
+  getCoin() async {
+    game.marimoExpBloc.addScore(game.marimoBloc.state.marimoLevel, 10);
+    game.coinBloc.addCoin();
+    bool isPulledExp =
+        game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==
+            MarimoExpState.level5;
+    final isCheckedVillain = await LocalRepository().getValue(key: "isCheckedVillain") == "1";
+    if (isPulledExp && isCheckedVillain) {
+      await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
+    }
+    game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
+  }
 
 
   @override
@@ -129,20 +157,21 @@ class MarimoComponent extends SpriteAnimationComponent
     super.onCollision(points, other);
     if (other is CoinComponent) {
       other.removeFromParent();
-      game.marimoExpBloc.addScore(game.marimoBloc.state.marimoLevel, 10);
-      game.coinBloc.addCoin();
+    //  game.marimoExpBloc.addScore(game.marimoBloc.state.marimoLevel, 10);
+   //   game.coinBloc.addCoin();
       int totalCoinCount = await game.coinBloc.getTotalCoinCount();
       totalCoinCount--;
-      tempCoin++;
+     // tempCoin++;
       game.coinBloc.updateLocaltotalCoinCount(totalCoinCount);
-      bool isPulledExp =
-          game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==
-              MarimoExpState.level5;
-      final isCheckedVillain = await LocalRepository().getValue(key: "isCheckedVillain") == "1";
-      if (isPulledExp && isCheckedVillain) {
-        await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
-      }
-      game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
+     await getCoin();
+      // bool isPulledExp =
+      //     game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==
+      //         MarimoExpState.level5;
+      // final isCheckedVillain = await LocalRepository().getValue(key: "isCheckedVillain") == "1";
+      // if (isPulledExp && isCheckedVillain) {
+      //   await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
+      // }
+      // game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
     }
   }
 

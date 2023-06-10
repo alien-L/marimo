@@ -3,6 +3,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/animation.dart';
+import 'package:marimo_game/const/effects.dart';
 import '../marimo_game_world.dart';
 
 class MoldyComponent extends SpriteComponent with HasGameRef<MarimoWorldGame> {
@@ -21,14 +22,7 @@ class MoldyComponent extends SpriteComponent with HasGameRef<MarimoWorldGame> {
     sprite = Sprite(moldyImage);
 
     add(RectangleHitbox()..collisionType = CollisionType.inactive);
-    add(
-      RotateEffect.by(90,
-          EffectController(
-            duration: 40,
-            infinite: true,
-            curve: Curves.easeOutQuad,
-          ),),
-    );
+    add(CommonEffects.rotateEffect());
     final random = Random();
     final posX = random.nextDouble() * _worldSize.x;
     final posY = random.nextDouble() * _worldSize.y;
