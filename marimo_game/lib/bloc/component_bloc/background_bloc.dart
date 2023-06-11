@@ -17,7 +17,7 @@ class BackgroundBloc extends Cubit<BackgroundState> {
 
     switch (state) {
       case BackgroundState.normal:
-        result = "background_01";
+        result = "bg";
         break;
       case BackgroundState.red:
         result = "background_01_red";

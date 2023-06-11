@@ -6,7 +6,7 @@ enum MarimoLevel { zero, baby, child, child2, teenager, adult, oldMan }
 
 enum MarimoEmotion { normal, cry }
 
-enum Villain { cat, shrimp, snail, dog, shark, marooMarimo }
+enum EnemyLevel { cat, shrimp, snail, dog, shark, marooMarimo }
 
 class MarimoBloc extends Bloc<MarimoEvent, MarimoState> {
   MarimoBloc(super.initialState) {

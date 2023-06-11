@@ -13,7 +13,7 @@ import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
 import 'bloc/component_bloc/background_bloc.dart';
 import 'bloc/component_bloc/coin_bloc.dart';
-import 'bloc/component_bloc/villian_bloc.dart';
+import 'bloc/component_bloc/enemy_bloc.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
 import 'bloc/environment_bloc/environment_temperature_bloc.dart';
 import 'bloc/environment_bloc/environment_trash_bloc.dart';
@@ -53,13 +53,13 @@ Future<void> main() async {
           (element) => element.name == marimoItemsMap["marimoEmotion"],
       orElse: () => MarimoEmotion.normal);
   final isCheckedOnOffSound = marimoItemsMap["isCheckedOnOffSound"] == null?false:marimoItemsMap["isCheckedOnOffSound"] != 1;
-  final isCheckedVillain = marimoItemsMap["isCheckedVillain"] == null?false:marimoItemsMap["isCheckedVillain"] != 1;
+  final isCheckedEnemy = marimoItemsMap["isCheckedEnemy"] == null?false:marimoItemsMap["isCheckedEnemy"] != 1;
 
   Environment().initConfig(languageManageValue); // 언어 환경 세팅
   runApp(MultiBlocProvider(
       providers: [
     BlocProvider<ShopBloc>(create: (_) => ShopBloc(const ItemState())),
-    BlocProvider<VillainBloc>(create: (_) => VillainBloc(isCheckedVillain)),
+    BlocProvider<EnemyBloc>(create: (_) => EnemyBloc(isCheckedEnemy)),
     BlocProvider<LanguageManageBloc>(create: (_) => LanguageManageBloc(languageManageValue)),
     BlocProvider<TimeCheckBloc>(create: (_) => TimeCheckBloc(marimoItemsMap["lastDay"] != "1")), /// 체크 초기값 설정 고민 해보자 marimoItemsMap["lastDay"]??
     BlocProvider<BackgroundBloc>(create: (_) => BackgroundBloc(backgroundValue)), //marimoItemsMap["background"]??"
@@ -111,7 +111,7 @@ class App extends StatelessWidget {
       marimoBloc: context.read<MarimoBloc>(),
       timeCheckBloc: context.read<TimeCheckBloc>(),
       marimoExpBloc: context.read<MarimoExpBloc>(),
-      villainBloc: context.read<VillainBloc>(),
+      enemyBloc: context.read<EnemyBloc>(),
       shopBloc: context.read<ShopBloc>(),
     );
 

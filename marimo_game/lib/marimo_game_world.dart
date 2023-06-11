@@ -7,7 +7,7 @@ import 'package:marimo_game/app_manage/language.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/coin_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/time_check_bloc.dart';
-import 'package:marimo_game/bloc/component_bloc/villian_bloc.dart';
+import 'package:marimo_game/bloc/component_bloc/enemy_bloc.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/components/bar/marimo_exp_bar.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
@@ -21,23 +21,24 @@ import 'bloc/component_bloc/sound_bloc.dart';
 import 'components/bar/coin_collector_bar.dart';
 import 'components/bar/environment_state_bar.dart';
 import 'components/bar/marimo_hp_bar.dart';
-import 'components/marin_animals_component.dart';
-import 'components/moldy_component.dart';
-import 'components/shop_component.dart';
-import 'components/villain_component.dart';
+import 'components/effects/effects_component.dart';
+import 'components/marin_animal.dart';
+import 'components/moldy.dart';
+import 'components/item.dart';
+import 'components/enemy.dart';
 import 'components/world.dart' as marimoWorld;
 import 'helpers/direction.dart';
-import 'components/coin_component.dart';
-import 'components/marimo_component.dart';
+import 'components/coin.dart';
+import 'components/marimo.dart';
 
 class MarimoWorldGame extends FlameGame
     with PanDetector, HasCollisionDetection {
-  late MarimoComponent marimoComponent;
-  late VillainComponent villainComponent;
-  late ShopComponent shopComponent;
-  late MarinAnimalsComponent marinAnimalsComponent ;
+  late Marimo marimoComponent;
+  late Enemy enemyComponent;
+  late Item shopComponent;
+  late MarinAnimal marinAnimalsComponent ;
   late EnvironmentStateBar environmentStateBar;
-
+  late EffectComponent coinEffectComponent;
   late ShopBloc shopBloc;
 
   final MarimoBloc marimoBloc;
@@ -55,11 +56,11 @@ class MarimoWorldGame extends FlameGame
   final CoinBloc coinBloc;
   final TimeCheckBloc timeCheckBloc;
 
-  final VillainBloc villainBloc;
+  final EnemyBloc enemyBloc;
 
   late Timer bulletCreator;
-  final List<CoinComponent> _coinList =
-      List<CoinComponent>.empty(growable: true);
+  final List<Coin> _coinList =
+      List<Coin>.empty(growable: true);
   final List<MoldyComponent> moldyList =
       List<MoldyComponent>.empty(growable: true);
 
@@ -67,6 +68,7 @@ class MarimoWorldGame extends FlameGame
   final CoinCollector _coinCollector = CoinCollector();
   final MarimoHpBar _marimoHpBar = MarimoHpBar();
   final MarimoExpBar _marimoExpBar = MarimoExpBar();
+  //final coin = CoinDecoComponent();
 
   MarimoWorldGame({
     required this.shopBloc,
@@ -81,7 +83,7 @@ class MarimoWorldGame extends FlameGame
     required this.coinBloc,
     required this.backgroundBloc,
     required this.timeCheckBloc,
-    required this.villainBloc,
+    required this.enemyBloc,
   });
 
   void onJoypadDirectionChanged(Direction direction) {
@@ -132,13 +134,13 @@ class MarimoWorldGame extends FlameGame
           FlameBlocProvider<TimeCheckBloc, bool>.value(value: timeCheckBloc),
         ],
         children: [
-          shopComponent = ShopComponent(),
-          marimoComponent = MarimoComponent(
+          shopComponent = Item(),
+          marimoComponent = Marimo(
               levelName: marimoLevel.name, emotionName: marimoEmotion.name),
           environmentStateBar = EnvironmentStateBar(),
           MarimoController(),
-          ShopItemController(),
-          VillainController(),
+          ItemController(),
+          EnemyController(),
           CoinController(),
         ],
       ),
@@ -150,7 +152,7 @@ class MarimoWorldGame extends FlameGame
     int num = timeCheckBloc.state ? 20 : totalCoinCount;
 
     for (var i = 0; i < num; i++) {
-      final tempCoin = CoinComponent(size);
+      final tempCoin = Coin(size);
       _coinList.add(tempCoin);
       add(tempCoin);
     }

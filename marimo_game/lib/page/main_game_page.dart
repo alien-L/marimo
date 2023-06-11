@@ -2,7 +2,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:marimo_game/components/game_alert.dart';
+import 'package:marimo_game/components/alert/game_alert.dart';
 import 'package:marimo_game/style/color.dart';
 import '../app_manage/local_repository.dart';
 import '../helpers/direction.dart';
@@ -45,6 +45,7 @@ class MainGamePage extends StatelessWidget {
                     height: 20,
                     color: Colors.green,
                     child: Text('코인 ++ '))),
+          //  CoinEffect(game: game,),
             TextButton(
                 onPressed: () {
                   localRepository.getSecureStorage().deleteAll();
@@ -95,13 +96,14 @@ class MainGamePage extends StatelessWidget {
     );
 
 
-    Widget topButtonWidget(String route,String imagePath,double height)=>
+    Widget topButtonWidget(String route,String imagePath,double height,GestureTapCallback onTap)=>
     InkWell(
-      onTap: (){
+      onTap: onTap,
+    //(){
         // Navigator.pushNamed(
         //     context, route);
-        GameAlert().showSettingsDialog(game);
-      },
+    //    GameAlert().showSettingsDialog(game);
+     // },
       child: SizedBox(
         //width: 40,
         height: height,
@@ -129,15 +131,17 @@ class MainGamePage extends StatelessWidget {
                     child: Joypad(onDirectionChanged: onJoypadDirectionChanged),
                   ),
                 ),
-                Positioned(
-                    bottom: 30,
-                    left: 0,
-                    child: developerManagerWidget()),
+                // Positioned(
+                //     bottom: 30,
+                //     left: 0,
+                //     child: developerManagerWidget()),
                 Positioned(
                   top: 0,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 5.0,),
-                    child: topButtonWidget("/shop_page","assets/images/shop.png",50),
+                    child: topButtonWidget("/shop_page","assets/images/shop.png",50,(){
+                      Navigator.pushNamed(context,"/shop_page");
+                    }),
                   ),
                 ),
                 Positioned(
@@ -208,7 +212,9 @@ class MainGamePage extends StatelessWidget {
                   right: 5,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 3.0),
-                    child: topButtonWidget("/game_setting","assets/images/setting.png",20),
+                    child: topButtonWidget("/game_setting","assets/images/setting.png",20,(){
+                      GameAlert().showSettingsDialog(game);
+                    }),
                   ),
                 ),
               ],

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/style/color.dart';
 import '../app_manage/local_repository.dart';
-import '../components/common_button.dart';
-import '../components/game_alert.dart';
+import '../components/button/common_button.dart';
+import '../components/alert/game_alert.dart';
 
 class InitSettingPage extends StatelessWidget {
   InitSettingPage({Key? key}) : super(key: key);
