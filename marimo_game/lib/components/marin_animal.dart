@@ -112,8 +112,10 @@ class MarinAnimal extends SpriteAnimationComponent with HasGameRef {
       }
     }
 
-    if(_name == "frog" ||_name == "earthworm"){
+    if(_name == "earthworm"){
       position.x += moveX;
+    }else if(_name == "frog"){
+
     }else{
       position.x += moveX;
       position.y += moveY;

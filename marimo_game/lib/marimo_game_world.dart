@@ -36,7 +36,8 @@ class MarimoWorldGame extends FlameGame
   late Marimo marimoComponent;
   late Enemy enemyComponent;
   late Item shopComponent;
-  late MarinAnimal marinAnimalsComponent ;
+  late MarinAnimal marinAnimalsComponent;
+
   late EnvironmentStateBar environmentStateBar;
   late EffectComponent coinEffectComponent;
   late ShopBloc shopBloc;
@@ -59,15 +60,14 @@ class MarimoWorldGame extends FlameGame
   final EnemyBloc enemyBloc;
 
   late Timer bulletCreator;
-  final List<Coin> _coinList =
-      List<Coin>.empty(growable: true);
+  final List<Coin> _coinList = List<Coin>.empty(growable: true);
   final List<MoldyComponent> moldyList =
       List<MoldyComponent>.empty(growable: true);
-
 
   final CoinCollector _coinCollector = CoinCollector();
   final MarimoHpBar _marimoHpBar = MarimoHpBar();
   final MarimoExpBar _marimoExpBar = MarimoExpBar();
+
   //final coin = CoinDecoComponent();
 
   MarimoWorldGame({
@@ -99,6 +99,7 @@ class MarimoWorldGame extends FlameGame
   Future<void> onLoad() async {
     await add(marimoWorld.World(backgroundBloc));
     add(ScreenHitbox());
+
     final marimoLevel = marimoBloc.state.marimoLevel;
     final marimoEmotion = marimoBloc.state.marimoEmotion;
 
@@ -147,7 +148,7 @@ class MarimoWorldGame extends FlameGame
     );
 
     add(_coinCollector);
-     //add(CoinDecoComponent(size));
+    //add(CoinDecoComponent(size));
     int totalCoinCount = await coinBloc.getTotalCoinCount();
     int num = timeCheckBloc.state ? 20 : totalCoinCount;
 
@@ -176,6 +177,22 @@ class MarimoWorldGame extends FlameGame
     // 동전 남아있게 만들기
     add(_marimoHpBar); // 마리모 상태바
     add(_marimoExpBar);
+    for (var i = 0; i < 5; i++) {
+      add(MarinAnimal(
+          worldSize: size,
+          animalName: 'bubble',
+          screenSize: Vector2.all(30),
+          imageSize: Vector2.all(300),
+          totalNum: 6));
+    }
+    for (var i = 0; i < 5; i++) {
+      add(MarinAnimal(
+          worldSize: size,
+          animalName: 'bubble',
+          screenSize: Vector2.all(30),
+          imageSize: Vector2.all(300),
+          totalNum: 11));
+    }
     marimoComponent.position = Vector2(100, 300);
     soundBloc.bgmPlay();
   }

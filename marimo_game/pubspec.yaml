@@ -46,6 +46,7 @@ flutter:
     - assets/
     - assets/font/
     - assets/audio/music/
+    - assets/images/deco/
 
   fonts:
         - family: KimjungchulGothic

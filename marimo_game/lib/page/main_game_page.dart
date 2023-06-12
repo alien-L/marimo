@@ -140,7 +140,8 @@ class MainGamePage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 5.0,),
                     child: topButtonWidget("/shop_page","assets/images/shop.png",50,(){
-                      Navigator.pushNamed(context,"/shop_page");
+                    //  Navigator.pushNamed(context,"/shop_page");
+                      GameAlert().showShopDialog(game);
                     }),
                   ),
                 ),

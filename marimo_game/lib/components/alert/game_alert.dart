@@ -9,6 +9,7 @@ import '../../app_manage/environment/environment.dart';
 import '../../app_manage/language.dart';
 import '../../app_manage/local_repository.dart';
 import '../../main.dart';
+import '../../page/shop_page.dart';
 import '../../style/color.dart';
 import '../button/common_button.dart';
 
@@ -92,15 +93,15 @@ class GameAlert {
         }).toList(),
       );
 
-  Widget buttonWidget(
-          {required String title,
-          required String imageName,
-          required GestureTapCallback onTap,
-          bool isSoundButton = false,
-          }) =>
+  Widget buttonWidget({
+    required String title,
+    required String imageName,
+    required GestureTapCallback onTap,
+    bool isSoundButton = false,
+  }) =>
       Row(
-      // mainAxisAlignment: MainAxisAlignment.center,
-      // crossAxisAlignment: CrossAxisAlignment.center,
+        // mainAxisAlignment: MainAxisAlignment.center,
+        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             width: 150,
@@ -121,24 +122,27 @@ class GameAlert {
               ),
             ),
           ),
-          isSoundButton?Container(
-            width: 100,
-            child: CommonButton(imageName: imageName,
-              height: 40,
-              onTap: onTap,).buttonWidget1(),
-          ) :Container(
-            width: 100,
-            child: CommonButton(
-              imageName: imageName,
-              height: 40,
-              onTap: onTap,
-            ),
-          ),
+          isSoundButton
+              ? Container(
+                  width: 100,
+                  child: CommonButton(
+                    imageName: imageName,
+                    height: 40,
+                    onTap: onTap,
+                  ).buttonWidget1(),
+                )
+              : Container(
+                  width: 100,
+                  child: CommonButton(
+                    imageName: imageName,
+                    height: 40,
+                    onTap: onTap,
+                  ),
+                ),
         ],
       );
 
   Future<void> showSettingsDialog(MarimoWorldGame game) async {
-
     return showDialog<void>(
       context: navigatorKey.currentContext!,
       barrierDismissible: false, // user must tap button!
@@ -185,22 +189,23 @@ class GameAlert {
                   ),
                 ),
                 buttonWidget(
-                    title: '사운드 재생',
-                    imageName:  "music",
-                    onTap: () {
-                      bool isSwitched = game.soundBloc.state;
+                  title: '사운드 재생',
+                  imageName: "music",
+                  onTap: () {
+                    bool isSwitched = game.soundBloc.state;
                     //  String soundImageName = game.soundBloc.state?"music":"stop";
 
-                      if(isSwitched){
-                       game.soundBloc.onBgmSound();
-                       print("여기");
-                      }else{
-                        print("여기 1");
-                        game.soundBloc.offBgmSound();
-                      }
-                  ///    game.soundBloc.onOffSound(!game.soundBloc.state);
-                     // showInfoDialog('사운드 재생', '게임 정보입니당');
-                    },
+                    if (isSwitched) {
+                      game.soundBloc.onBgmSound();
+                      print("여기");
+                    } else {
+                      print("여기 1");
+                      game.soundBloc.offBgmSound();
+                    }
+
+                    ///    game.soundBloc.onOffSound(!game.soundBloc.state);
+                    // showInfoDialog('사운드 재생', '게임 정보입니당');
+                  },
                   isSoundButton: true,
                 ), // 소리 체크해서 위젯 편집 하기
                 buttonWidget(
@@ -229,7 +234,8 @@ class GameAlert {
                     title: '초기화',
                     imageName: 'yes',
                     onTap: () {
-                      showMiniDialog('초기화', '게임을 초기화 하겠습니까??\n앱이 자동으로 꺼집니다.', () {
+                      showMiniDialog('초기화', '게임을 초기화 하겠습니까??\n앱이 자동으로 꺼집니다.',
+                          () {
                         LocalRepository().getSecureStorage().deleteAll();
                         Navigator.pop(context);
                         //RestartWidget.restartApp(navigatorKey.currentContext!, Language.ko);
@@ -253,16 +259,19 @@ class GameAlert {
                       const APPLE_APP_STORE_WEB_LINK =
                           'https://apps.apple.com/us/app/antodo-%EC%8B%AC%ED%94%8C%ED%95%9C-%EC%86%90%EA%B8%80%EC%94%A8-%ED%95%A0%EC%9D%BC-%EA%B3%84%ED%9A%8D-%EB%A9%94%EB%AA%A8/id1553604322';
                       if (Platform.isIOS) {
-                        if (await canLaunchUrl(Uri.parse(APPLE_APP_STORE_LINK))) {
+                        if (await canLaunchUrl(
+                            Uri.parse(APPLE_APP_STORE_LINK))) {
                           await launchUrl(Uri.parse(APPLE_APP_STORE_LINK));
                         } else {
                           await launchUrl(Uri.parse(APPLE_APP_STORE_WEB_LINK));
                         }
                       } else {
-                        if (await canLaunchUrl(Uri.parse(GOOGLE_PLAY_STORE_LINK))) {
+                        if (await canLaunchUrl(
+                            Uri.parse(GOOGLE_PLAY_STORE_LINK))) {
                           await launchUrl(Uri.parse(GOOGLE_PLAY_STORE_LINK));
                         } else {
-                          await launchUrl(Uri.parse(GOOGLE_PLAY_STORE_WEB_LINK));
+                          await launchUrl(
+                              Uri.parse(GOOGLE_PLAY_STORE_WEB_LINK));
                         }
                       }
                     }),
@@ -378,5 +387,173 @@ class GameAlert {
             ),
           );
         });
+  }
+
+  Future<void> showShopDialog(MarimoWorldGame game) async {
+    return showDialog<void>(
+      context: navigatorKey.currentContext!,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            // Navigator.of(context).pop();
+          },
+          child: AlertDialog(
+            backgroundColor: CommonColor.green,
+            //Color.fromRGBO(200, 139, 251, 1),
+            //Colors.transparent,
+            titlePadding: EdgeInsets.zero,
+            contentPadding: EdgeInsets.zero,
+            iconPadding: EdgeInsets.zero,
+            insetPadding: EdgeInsets.zero,
+            actionsPadding: EdgeInsets.zero,
+            buttonPadding: EdgeInsets.zero,
+            content: Container(
+                //   color: Colors.white,
+                //Color.fromRGBO(21, 253, 15, 1),
+                width: 350,
+                height: 500,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 5,
+                      right: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: CommonButton(
+                            imageName: 'x',
+                            height: 20,
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Positioned(
+                    //   top: 0,
+                    //   child: Container(
+                    //     //   width: 600,
+                    //       child: Image.asset(
+                    //         "assets/images/deco/shop_popup.png",
+                    //         //    width: 500,
+                    //         height: 500,
+                    //       )),
+                    // ),
+                    //  Positioned(
+                    //    top: 10,
+                    // //   right: 0,
+                    //    child:
+                    //    Container(
+                    //      alignment: Alignment.topCenter,
+                    //      //   width: 600,
+                    //        child: Text("SHOP",style: TextStyle(fontSize: 20),))
+                    //        // Image.asset(
+                    //        //   "assets/images/buttons/yes.png",
+                    //        //   width: 60,
+                    //        // )),
+                    //  ),
+                    Positioned(
+                      top: 80,
+                      //  left: 36,
+                      child: Container(
+                          //   width: 600,
+                          child: Image.asset(
+                        "assets/images/deco/shop_bg.png",
+                        width: 350,
+                      )),
+                    ),
+                    Positioned(
+                      top: 130,
+                      left: 80,
+                      child: SizedBox(
+                          width: 80,
+                          child: CommonButton(
+                            imageName: 'shop_red',
+                            haveMessage: true,
+                          )),
+                    ),
+                    Positioned(
+                      top: 130,
+                      right: 70,
+                      child: SizedBox(
+                          width: 70,
+                          child: CommonButton(
+                            imageName: 'shop_green',
+                            haveMessage: true,
+                          )),
+                    ),
+                    Positioned(
+                      top: 50,
+                      left: 100,
+                      child: SizedBox(
+                          width: 55,
+                          child: CommonButton(
+                            imageName: 'shop_sky_s',
+                            haveMessage: true,
+                          )),
+                    ),
+                    Positioned(
+                      top: 45,
+                      right: 45,
+                      child: SizedBox(
+                          width: 70,
+                          child: CommonButton(
+                            imageName: 'shop_sky',
+                            haveMessage: true,
+                          )),
+                    ),
+                    Positioned(
+                      top: 55,
+                      left: 55,
+                      child: SizedBox(
+                          width: 40,
+                          child: CommonButton(
+                            imageName: 'shop_orange',
+                            haveMessage: true,
+                          )),
+                    ),
+                    Positioned(
+                      top: 250,
+                      child: SizedBox(
+                        width: 350,
+                        height: 200,
+                        child: ShopPage(
+                          game: game,
+                        ),
+                      ),
+                    ),
+                    // Positioned(
+                    //   bottom: 15,
+                    //   left: 120,
+                    //   child: Stack(
+                    //       alignment: Alignment.center,
+                    //       children: [
+                    //         Align(
+                    //           alignment: Alignment.center,
+                    //           child: SizedBox(
+                    //               width: 100,
+                    //               child: CommonButton(
+                    //                 imageName: 'assets/images/buttons/sky',
+                    //                 onTap: (){
+                    //                   Navigator.of(context).pop();
+                    //                 },
+                    //               )),
+                    //         ),
+                    //         Align(
+                    //             alignment: Alignment.center,
+                    //             child: Text("닫기",style: TextStyle(fontSize: 25),)),
+                    //       ]
+                    //   ),
+                    // ),
+                    //  child,
+                  ],
+                )),
+          ),
+        );
+      },
+    );
   }
 }
