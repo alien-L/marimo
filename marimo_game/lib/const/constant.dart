@@ -20,6 +20,18 @@ abstract class Constant {
   String get effectSoundOnOff;
 }
 
+class CommonConstant{
+ static String  assetsImageShop ="assets/images/shop/";
+ static String  assetsImageBackground ="background/";
+ static String  assetsImageBar ="bar/";
+ static String  assetsImageButtons ="assets/images/buttons/";
+ static String  assetsImageDialog ="assets/images/dialog/";
+ static String  assetsImageEnemy ="assets/images/enemy/";
+ static String  assetsImageMain ="assets/images/main/";
+ static String  assetsImageMarimo = "assets/images/marimo/";
+ static String  assetsImageWaterManagement ="water_management/";
+}
+
 class KoreanConstant extends Constant{
 
   @override

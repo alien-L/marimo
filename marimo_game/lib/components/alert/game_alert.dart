@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../app_manage/environment/environment.dart';
 import '../../app_manage/language.dart';
 import '../../app_manage/local_repository.dart';
+import '../../const/constant.dart';
 import '../../main.dart';
 import '../../page/shop_page.dart';
 import '../../style/color.dart';
@@ -44,7 +46,7 @@ class GameAlert {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child:
-                          Image.asset("assets/images/dialog_$dialogNumber.png"),
+                          Image.asset("${CommonConstant.assetsImageDialog}dialog_$dialogNumber.png"),
                     )),
                 Align(
                   alignment: Alignment.center,
@@ -184,7 +186,7 @@ class GameAlert {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20.0),
                   child: Image.asset(
-                    "assets/images/marimo_joypad.png",
+                    "${CommonConstant.assetsImageMain}setting.png",
                     height: 60,
                   ),
                 ),
@@ -394,164 +396,126 @@ class GameAlert {
       context: navigatorKey.currentContext!,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return GestureDetector(
-          onTap: () {
-            // Navigator.of(context).pop();
-          },
-          child: AlertDialog(
-            backgroundColor: CommonColor.green,
-            //Color.fromRGBO(200, 139, 251, 1),
-            //Colors.transparent,
-            titlePadding: EdgeInsets.zero,
-            contentPadding: EdgeInsets.zero,
-            iconPadding: EdgeInsets.zero,
-            insetPadding: EdgeInsets.zero,
-            actionsPadding: EdgeInsets.zero,
-            buttonPadding: EdgeInsets.zero,
-            content: Container(
-                //   color: Colors.white,
-                //Color.fromRGBO(21, 253, 15, 1),
-                width: 350,
-                height: 500,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 5,
-                      right: 0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: Container(
-                          alignment: Alignment.topLeft,
-                          child: CommonButton(
-                            imageName: 'x',
-                            height: 20,
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
+        final sc = StreamController<String>.broadcast();
+
+        getShopCategory(String categoryName) {
+          sc.add(categoryName);
+        }
+
+        return AlertDialog(
+          backgroundColor: CommonColor.green,
+          titlePadding: EdgeInsets.zero,
+          contentPadding: EdgeInsets.zero,
+          iconPadding: EdgeInsets.zero,
+          insetPadding: EdgeInsets.zero,
+          actionsPadding: EdgeInsets.zero,
+          buttonPadding: EdgeInsets.zero,
+          content: StreamBuilder<String>(
+              stream: sc.stream,
+              initialData: "marimo",
+              builder: (context, snapshot) {
+                if(!snapshot.hasData || snapshot.hasError){
+                  return Container();
+                }else{
+                  return SizedBox(
+                      width: 350,
+                      height: 500,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            top: 5,
+                            right: 0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5.0),
+                              child: Container(
+                                alignment: Alignment.topLeft,
+                                child: CommonButton(
+                                  imageName: 'x',
+                                  height: 20,
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                    // Positioned(
-                    //   top: 0,
-                    //   child: Container(
-                    //     //   width: 600,
-                    //       child: Image.asset(
-                    //         "assets/images/deco/shop_popup.png",
-                    //         //    width: 500,
-                    //         height: 500,
-                    //       )),
-                    // ),
-                    //  Positioned(
-                    //    top: 10,
-                    // //   right: 0,
-                    //    child:
-                    //    Container(
-                    //      alignment: Alignment.topCenter,
-                    //      //   width: 600,
-                    //        child: Text("SHOP",style: TextStyle(fontSize: 20),))
-                    //        // Image.asset(
-                    //        //   "assets/images/buttons/yes.png",
-                    //        //   width: 60,
-                    //        // )),
-                    //  ),
-                    Positioned(
-                      top: 80,
-                      //  left: 36,
-                      child: Container(
-                          //   width: 600,
-                          child: Image.asset(
-                        "assets/images/deco/shop_bg.png",
-                        width: 350,
-                      )),
-                    ),
-                    Positioned(
-                      top: 130,
-                      left: 80,
-                      child: SizedBox(
-                          width: 80,
-                          child: CommonButton(
-                            imageName: 'shop_red',
-                            haveMessage: true,
-                          )),
-                    ),
-                    Positioned(
-                      top: 130,
-                      right: 70,
-                      child: SizedBox(
-                          width: 70,
-                          child: CommonButton(
-                            imageName: 'shop_green',
-                            haveMessage: true,
-                          )),
-                    ),
-                    Positioned(
-                      top: 50,
-                      left: 100,
-                      child: SizedBox(
-                          width: 55,
-                          child: CommonButton(
-                            imageName: 'shop_sky_s',
-                            haveMessage: true,
-                          )),
-                    ),
-                    Positioned(
-                      top: 45,
-                      right: 45,
-                      child: SizedBox(
-                          width: 70,
-                          child: CommonButton(
-                            imageName: 'shop_sky',
-                            haveMessage: true,
-                          )),
-                    ),
-                    Positioned(
-                      top: 55,
-                      left: 55,
-                      child: SizedBox(
-                          width: 40,
-                          child: CommonButton(
-                            imageName: 'shop_orange',
-                            haveMessage: true,
-                          )),
-                    ),
-                    Positioned(
-                      top: 250,
-                      child: SizedBox(
-                        width: 350,
-                        height: 200,
-                        child: ShopPage(
-                          game: game,
-                        ),
-                      ),
-                    ),
-                    // Positioned(
-                    //   bottom: 15,
-                    //   left: 120,
-                    //   child: Stack(
-                    //       alignment: Alignment.center,
-                    //       children: [
-                    //         Align(
-                    //           alignment: Alignment.center,
-                    //           child: SizedBox(
-                    //               width: 100,
-                    //               child: CommonButton(
-                    //                 imageName: 'assets/images/buttons/sky',
-                    //                 onTap: (){
-                    //                   Navigator.of(context).pop();
-                    //                 },
-                    //               )),
-                    //         ),
-                    //         Align(
-                    //             alignment: Alignment.center,
-                    //             child: Text("닫기",style: TextStyle(fontSize: 25),)),
-                    //       ]
-                    //   ),
-                    // ),
-                    //  child,
-                  ],
-                )),
-          ),
+                          Positioned(
+                            top: 80,
+                            child: Image.asset(
+                              "${CommonConstant.assetsImageShop}shop_bg.png",
+                              width: 350,
+                            ),
+                          ),
+                          Positioned(
+                            top: 130,
+                            left: 80,
+                            child: SizedBox(
+                                width: 80,
+                                child: CommonButton(
+                                  imageName: 'shop_red',
+                                  haveMessage: true,
+                                  onTap: () => getShopCategory("grocery"),
+                                )),
+                          ),
+                          Positioned(
+                            top: 130,
+                            right: 70,
+                            child: SizedBox(
+                                width: 70,
+                                child: CommonButton(
+                                  imageName: 'shop_green',
+                                  haveMessage: true,
+                                  onTap: () => getShopCategory("marimo"),
+                                )),
+                          ),
+                          Positioned(
+                            top: 50,
+                            left: 100,
+                            child: SizedBox(
+                                width: 55,
+                                child: CommonButton(
+                                  imageName: 'shop_sky_s',
+                                  haveMessage: true,
+                                  onTap: () => getShopCategory("environment"),
+                                )),
+                          ),
+                          Positioned(
+                            top: 45,
+                            right: 45,
+                            child: SizedBox(
+                                width: 70,
+                                child: CommonButton(
+                                  imageName: 'shop_sky',
+                                  haveMessage: true,
+                                  onTap: () => getShopCategory("deco"),
+                                )),
+                          ),
+                          Positioned(
+                            top: 55,
+                            left: 55,
+                            child: SizedBox(
+                                width: 40,
+                                child: CommonButton(
+                                  imageName: 'shop_orange',
+                                  haveMessage: true,
+                                  onTap: () => getShopCategory("coin"),
+                                )),
+                          ),
+                          Positioned(
+                            top: 250,
+                            child: SizedBox(
+                              width: 350,
+                              height: 200,
+                              child: ShopPage(
+                                game: game,
+                                categoryName: snapshot.requireData,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ));
+                }
+              }),
         );
       },
     );

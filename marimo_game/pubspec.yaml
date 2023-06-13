@@ -39,14 +39,20 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
-    - assets/images/marimo/
-    - assets/images/shop/
-    - assets/images/buttons/
     - assets/
     - assets/font/
     - assets/audio/music/
-    - assets/images/deco/
+    - assets/images/
+    - assets/images/shop/
+    - assets/images/background/
+    - assets/images/bar/
+    - assets/images/buttons/
+    - assets/images/dialog/
+    - assets/images/enemy/
+    - assets/images/main/
+    - assets/images/marimo/
+    - assets/images/shop/
+    - assets/images/water_management/
 
   fonts:
         - family: KimjungchulGothic

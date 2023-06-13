@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
+import '../const/constant.dart';
 import 'direction.dart';
 
 class Joypad extends StatefulWidget {
@@ -27,27 +28,74 @@ class JoypadState extends State<Joypad> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(60),
+          //Image.asset("assets/images/joystick_front.png"),
         ),
-        child: GestureDetector(
-          onPanDown: onDragDown,
-          onPanUpdate: onDragUpdate,
-          onPanEnd: onDragEnd,
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0x88ffffff),
-              borderRadius: BorderRadius.circular(60),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // SizedBox(
+            //   height: 120,
+            //   width: 120,
+            //   child: Image.asset("assets/images/joystick_back.png"),
+            // ),
+            Stack(
+              children: [
+                Container(
+                  height: 120,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: const Color(0x88ffffff),
+                    borderRadius: BorderRadius.circular(60),
+                  ),
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: Icon(Icons.keyboard_arrow_left,size: 30,color:Colors.black87),
+                    )),
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 3.0),
+                      child: Icon(Icons.keyboard_arrow_right,size: 30,color:Colors.black87),
+                    )),
+                Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 3.0),
+                      child: Icon(Icons.keyboard_arrow_up,size: 30,color:Colors.black87),
+                    )),
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: Icon(Icons.keyboard_arrow_down,size: 30,color:Colors.black87),
+                    )),
+              ]
             ),
-            child: Center(
-              child: Transform.translate(
-                offset: delta,
-                child: SizedBox(
-                  height: 60,
-                  width: 60,
-                  child: Image.asset("assets/images/marimo_joypad.png"),
+            GestureDetector(
+              onPanDown: onDragDown,
+              onPanUpdate: onDragUpdate,
+              onPanEnd: onDragEnd,
+              child: Container(
+                // decoration: BoxDecoration(
+                //   color: const Color(0x88ffffff),
+                //   borderRadius: BorderRadius.circular(60),
+                // ),
+                child: Center(
+                  child: Transform.translate(
+                    offset: delta,
+                    child: SizedBox(
+                      height: 60,
+                      width: 60,
+                      child: Image.asset("${CommonConstant.assetsImageMain}joystick_front.png",),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

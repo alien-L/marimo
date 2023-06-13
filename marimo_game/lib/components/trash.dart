@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/animation.dart';
 import 'package:marimo_game/components/effects/effects.dart';
+import '../const/constant.dart';
 import '../marimo_game_world.dart';
 
 class Trash extends SpriteComponent with HasGameRef<MarimoWorldGame> {
@@ -20,7 +21,7 @@ class Trash extends SpriteComponent with HasGameRef<MarimoWorldGame> {
   Future<void> onLoad() async {
     final bool isCleanTrash = game.environmentTrashBloc.state;
     if(isCleanTrash){
-      final moldyImage = await game.images.load('trash.png');
+      final moldyImage = await game.images.load('${CommonConstant.assetsImageWaterManagement}trash.png');
       sprite = Sprite(moldyImage);
       add(RectangleHitbox()..collisionType = CollisionType.inactive);
       add(
@@ -43,7 +44,7 @@ class Trash extends SpriteComponent with HasGameRef<MarimoWorldGame> {
   Future<void> update(double dt) async {
     final bool isCleanTrash = game.environmentTrashBloc.state;
     if(isCleanTrash){
-      final moldyImage = await game.images.load('trash.png');
+      final moldyImage = await game.images.load('${CommonConstant.assetsImageWaterManagement}trash.png');
       sprite = Sprite(moldyImage);
       add(RectangleHitbox()..collisionType = CollisionType.inactive);
       add(CommonEffects.rotateEffect());

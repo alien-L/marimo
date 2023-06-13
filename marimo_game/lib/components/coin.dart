@@ -1,9 +1,7 @@
 import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:flutter/animation.dart';
 import 'package:marimo_game/components/effects/effects.dart';
 import '../bloc/component_bloc/coin_bloc.dart';
 import '../marimo_game_world.dart';
@@ -22,7 +20,7 @@ class Coin extends SpriteComponent
 
   @override
   Future<void> onLoad() async {
-    final coinImage = await game.images.load('coin.png');
+    final coinImage = await game.images.load('main/coin.png');
     sprite = Sprite(coinImage);
 
     add(RectangleHitbox()..collisionType = CollisionType.passive);
@@ -46,7 +44,6 @@ class CoinController extends Component
 
   @override
   bool listenWhen(int previousState, int newState) {
-    print("coin");
     return previousState != newState;
   }
 
@@ -58,18 +55,10 @@ class CoinController extends Component
 
   @override
   void onNewState(int state) {
-    print("coin coin");
-    // game.coin.removeFromParent();
-    // 로컬 저장소 값 비교 레벨
-    // game.marimoComponent.removeFromParent();
-    //final coin = CoinDecoComponent();
-    parent?.add(gameRef.coinEffectComponent = ConinEffectComponent(
+    parent?.add(gameRef.coinEffectComponent = CoinEffectComponent(
         componentSize: Vector2.all(16),
         componentPosition: Vector2(65, 50),
         movePostion: Vector2(65, 20),
         imageName: 'coin'));
-    // parent?.add(coin );
-    // coin.removeFromParent();
-    //parent?.removeFromParent();
   }
 }

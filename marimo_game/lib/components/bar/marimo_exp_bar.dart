@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import '../../const/constant.dart';
 import '../../marimo_game_world.dart';
 class MarimoExpBar extends PositionComponent
     with HasGameRef<MarimoWorldGame>{
@@ -12,7 +13,7 @@ class MarimoExpBar extends PositionComponent
 
   @override
   Future<void>? onLoad() async {
-    final lifeBarSprite = await game.loadSprite('exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel).name}.png');
+    final lifeBarSprite = await game.loadSprite('${CommonConstant.assetsImageBar}exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel).name}.png');
 
    _scoreTextComponent = TextComponent(
      text: "exp",
@@ -42,7 +43,7 @@ class MarimoExpBar extends PositionComponent
 
   @override
   Future<void> update(double dt) async {
-    _spriteComponent.sprite = await game.loadSprite('exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel).name}.png');
+    _spriteComponent.sprite = await game.loadSprite('${CommonConstant.assetsImageBar}exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel).name}.png');
     super.update(dt);
   }
 }

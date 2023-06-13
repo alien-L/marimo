@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import '../../app_manage/environment/environment.dart';
+import '../../const/constant.dart';
 import '../../marimo_game_world.dart';
 
 class EnvironmentStateBar extends PositionComponent
@@ -35,7 +36,7 @@ class EnvironmentStateBar extends PositionComponent
     _humidityTextComponent = _textComponent(constant.humidity+humidity.toString()+constant.percent, Vector2(150, 40));
     add(_humidityTextComponent);
 
-    final foodTrashSprite = await game.loadSprite('${!isCleanTrash ?  "dirty":"clean" }.png');
+    final foodTrashSprite = await game.loadSprite('${CommonConstant.assetsImageWaterManagement}${!isCleanTrash ?  "dirty":"clean" }.png');
     add(_textComponent(constant.environment,Vector2(205, 40),));
     _trashChangedSpriteComponent  =  SpriteComponent(
       sprite: foodTrashSprite,
@@ -74,7 +75,7 @@ class EnvironmentStateBar extends PositionComponent
 
     _temperatureTextComponent.text = constant.temperature+game.environmentTemperatureBloc.state.toString()+constant.celsius;
     _humidityTextComponent.text = constant.humidity+game.environmentHumidityBloc.state.toString()+constant.percent;
-    _trashChangedSpriteComponent.sprite = await game.loadSprite('${!game.environmentTrashBloc.state?  "dirty":"clean" }.png');
+    _trashChangedSpriteComponent.sprite = await game.loadSprite('water_management/${!game.environmentTrashBloc.state?  "dirty":"clean" }.png');
     super.update(dt);
   }
 }

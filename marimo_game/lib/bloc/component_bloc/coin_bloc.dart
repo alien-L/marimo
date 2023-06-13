@@ -8,7 +8,7 @@ class CoinBloc extends Cubit<int>{
   // 코인 ui 컨트롤? 다이아몬드 ???
 
   bool canBuyCoinState(int price){
-    if(price <= state){
+    if(price < state){
       return true;
     }else{
       return false;

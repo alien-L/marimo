@@ -8,6 +8,7 @@ import 'package:marimo_game/bloc/component_bloc/enemy_bloc.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/components/alert/game_alert.dart';
+import 'package:marimo_game/const/constant.dart';
 
 import '../app_manage/local_repository.dart';
 import '../bloc/marimo_bloc/marimo_exp_bloc.dart';
@@ -15,27 +16,33 @@ import '../components/marimo.dart';
 import '../marimo_game_world.dart';
 import '../style/color.dart';
 
+//enum shopCategory
+
 class ShopPage extends StatelessWidget {
-  const ShopPage({Key? key, required this.game}) : super(key: key);
+  const ShopPage({Key? key, required this.game, required this.categoryName }) : super(key: key);
   final MarimoWorldGame game;
+  final String categoryName;
 
   Future<List<dynamic>> getData() async {
     List<dynamic> list = [];
+    Iterable<dynamic> result = [];
     try {
       final dynamicButtonList = await rootBundle
           .loadString('assets/marimo_shop.json')
           .then((jsonStr) => jsonStr);
       final data = await json.decode(dynamicButtonList);
       list = data["data"];
-      print("list ==> $list");
+      result=  list.where((element) => element["category"] == categoryName);
     } catch (e) {
       log(e.toString());
     }
-    return list;
+    return result.toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    var controller = PrimaryScrollController.of(context);
+   // controller?.jumpTo(0);
     return Center(
         child: FutureBuilder<List<dynamic>>(
             future: getData(),
@@ -45,6 +52,7 @@ class ShopPage extends StatelessWidget {
               if (!snapshot.hasData || snapshot.hasError) {
                 child = Container();
               } else {
+                controller.jumpTo(0);
                 List<dynamic> list = snapshot.requireData;
                 List<Widget> listView = List.generate(list.length, (index) {
                   var name = list[index]["name"];
@@ -116,16 +124,12 @@ class ShopPage extends StatelessWidget {
 
                       GameAlert().showMyDialog(
                           text: name + Environment().config.constant.getItemMsg,
-                          assetsName: "assets/images/shop/$image_name",
+                          assetsName: "${CommonConstant.assetsImageShop}/$image_name",
                           dialogNumber: "01");
                     }
                   }
 
-                  ////"environment_category" exp_score
-                  // shape: RoundedRectangleBorder(
-                  //     borderRadius: BorderRadius.circular(10.0)),
                   return Container(
-
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                      // shape: BoxShape.,
@@ -274,18 +278,11 @@ class ShopPage extends StatelessWidget {
                 mainAxisSpacing: 10,
                 crossAxisCount: 2,
                 children: listView);
-                    // GridView.count(
-                    // scrollDirection: Axis.vertical,
-                    // shrinkWrap: true,
-                    // primary: false,
-                    // padding: const EdgeInsets.all(10),
-                    // crossAxisSpacing: 10,
-                    // mainAxisSpacing: 10,
-                    // crossAxisCount: 1,
-                    // children: listView);
               }
 
-              return child;
+              return SingleChildScrollView(
+                  controller: controller,
+                  child: child);
             }));
   }
 }

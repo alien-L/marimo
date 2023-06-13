@@ -7,6 +7,7 @@ import 'package:flame/experimental.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/animation.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
+import 'package:marimo_game/const/constant.dart';
 import '../bloc/marimo_bloc/marimo_bloc.dart';
 import '../marimo_game_world.dart';
 import 'alert/game_alert.dart';
@@ -53,7 +54,7 @@ class EnemyController extends Component
     await GameAlert().showMyDialog(
         text: "꺅!!!빌런이 나타났어요!!!!!",
         assetsName:
-            "assets/images/${enemy.getEnemyInfoMap()["name"]}.png",
+            "${CommonConstant.assetsImageEnemy}${enemy.getEnemyInfoMap()["name"]}.png",
         dialogNumber: "02");
   }
 }
@@ -112,7 +113,7 @@ class Enemy extends SpriteComponent
   void onTapUp(TapUpEvent event) {
     GameAlert().showMyDialog(
         text: getEnemyInfoMap()["message"],
-        assetsName: "assets/images/${getEnemyInfoMap()["name"]}.png",
+        assetsName: "${CommonConstant.assetsImageEnemy}${getEnemyInfoMap()["name"]}.png",
         dialogNumber: "02");
   }
 
@@ -120,7 +121,7 @@ class Enemy extends SpriteComponent
   Future<void> onLoad() async {
     super.onLoad();
     final name = getEnemyInfoMap()["name"];
-    final coinSprite = await game.images.load('$name.png');
+    final coinSprite = await game.images.load('enemy/$name.png');
     sprite = Sprite(coinSprite);
   }
 

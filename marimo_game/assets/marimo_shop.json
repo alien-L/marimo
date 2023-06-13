@@ -65,6 +65,24 @@
       "size": "50"
     },
     {
+      "name": "방울",
+      "name_en": "bubble",
+      "name_jp": "泡立つ",
+      "price": "8000",
+      "state_score": "28",
+      "exp_score": "80",
+      "enabled": "true",
+      "bought": "false",
+      "category": "deco",
+      "image_name": "bubble.gif",
+      "isCheckedMoving": "true",
+      "position_x": "270",
+      "position_y": "150",
+      "size": "300",
+      "screenSize": "30",
+      "totalNum": [6,11]
+    },
+    {
       "name": "마리모 밥",
       "name_en": "marimo food",
       "name_jp": "まりものごはん",
@@ -73,7 +91,7 @@
       "exp_score": "10",
       "enabled": "true",
       "bought": "false",
-      "category": "deco",
+      "category": "marimo",
       "image_name": "food.png",
       "isCheckedMoving": "false"
     },
@@ -86,7 +104,7 @@
       "exp_score": "200",
       "enabled": "true",
       "bought": "false",
-      "category": "deco",
+      "category": "marimo",
       "image_name": "dictionary.png",
       "isCheckedMoving": "false"
     },
@@ -99,7 +117,7 @@
       "exp_score": "250",
       "enabled": "true",
       "bought": "false",
-      "category": "deco",
+      "category": "marimo",
       "image_name": "camera.png",
       "isCheckedMoving": "false"
     },
@@ -112,7 +130,8 @@
       "exp_score": "100",
       "enabled": "true",
       "bought": "false",
-      "category": "enemy",
+      "category": "grocery",
+      "category_m": "enemy",
        "enemy_name": "cat",
       "image_name": "fish.png",
       "isCheckedMoving": "false"
@@ -126,7 +145,8 @@
       "exp_score": "100",
       "enabled": "true",
       "bought": "false",
-      "category": "enemy",
+      "category": "grocery",
+      "category_m": "enemy",
       "enemy_name": "rabbit",
       "image_name": "egg.png",
       "isCheckedMoving": "false"
@@ -140,7 +160,8 @@
       "exp_score": "300",
       "enabled": "true",
       "bought": "false",
-      "category": "enemy",
+      "category": "grocery",
+      "category_m": "enemy",
       "enemy_name": "mouse",
       "image_name": "cheese.png",
       "isCheckedMoving": "false"
@@ -154,7 +175,8 @@
       "exp_score": "400",
       "enabled": "true",
       "bought": "false",
-      "category": "enemy",
+      "category": "grocery",
+      "category_m": "enemy",
       "enemy_name": "shark",
       "image_name": "cherry.png",
       "isCheckedMoving": "false"
@@ -168,7 +190,8 @@
       "exp_score": "500",
       "enabled": "true",
       "bought": "false",
-      "category": "enemy",
+      "category": "grocery",
+      "category_m": "enemy",
       "enemy_name": "shrimp",
       "image_name": "meat.png",
       "isCheckedMoving": "false"
@@ -182,7 +205,8 @@
       "exp_score": "600",
       "enabled": "true",
       "bought": "false",
-      "category": "enemy",
+      "category": "grocery",
+      "category_m": "enemy",
       "enemy_name": "snail",
       "image_name": "star.png",
       "isCheckedMoving": "false"

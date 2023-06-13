@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/animation.dart';
 import 'package:marimo_game/components/effects/effects.dart';
+import '../const/constant.dart';
 import '../marimo_game_world.dart';
 
 class MoldyComponent extends SpriteComponent with HasGameRef<MarimoWorldGame> {
@@ -18,7 +19,7 @@ class MoldyComponent extends SpriteComponent with HasGameRef<MarimoWorldGame> {
 
   @override
   Future<void> onLoad() async {
-    final moldyImage = await game.images.load('moldy.png');
+    final moldyImage = await game.images.load('${CommonConstant.assetsImageWaterManagement}moldy.png');
     sprite = Sprite(moldyImage);
 
     add(RectangleHitbox()..collisionType = CollisionType.inactive);

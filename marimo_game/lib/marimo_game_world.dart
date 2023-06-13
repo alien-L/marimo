@@ -40,6 +40,8 @@ class MarimoWorldGame extends FlameGame
 
   late EnvironmentStateBar environmentStateBar;
   late EffectComponent coinEffectComponent;
+  late HpEffectComponent hpEffectComponent;
+  late ExpEffectComponent expEffectComponent;
   late ShopBloc shopBloc;
 
   final MarimoBloc marimoBloc;
@@ -143,6 +145,7 @@ class MarimoWorldGame extends FlameGame
           ItemController(),
           EnemyController(),
           CoinController(),
+          HpController(),
         ],
       ),
     );
@@ -177,22 +180,7 @@ class MarimoWorldGame extends FlameGame
     // 동전 남아있게 만들기
     add(_marimoHpBar); // 마리모 상태바
     add(_marimoExpBar);
-    for (var i = 0; i < 5; i++) {
-      add(MarinAnimal(
-          worldSize: size,
-          animalName: 'bubble',
-          screenSize: Vector2.all(30),
-          imageSize: Vector2.all(300),
-          totalNum: 6));
-    }
-    for (var i = 0; i < 5; i++) {
-      add(MarinAnimal(
-          worldSize: size,
-          animalName: 'bubble',
-          screenSize: Vector2.all(30),
-          imageSize: Vector2.all(300),
-          totalNum: 11));
-    }
+
     marimoComponent.position = Vector2(100, 300);
     soundBloc.bgmPlay();
   }

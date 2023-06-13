@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:marimo_game/components/alert/game_alert.dart';
 import 'package:marimo_game/style/color.dart';
 import '../app_manage/local_repository.dart';
+import '../const/constant.dart';
 import '../helpers/direction.dart';
 import '../helpers/joypad.dart';
 import '../marimo_game_world.dart';
@@ -45,7 +46,6 @@ class MainGamePage extends StatelessWidget {
                     height: 20,
                     color: Colors.green,
                     child: Text('코인 ++ '))),
-          //  CoinEffect(game: game,),
             TextButton(
                 onPressed: () {
                   localRepository.getSecureStorage().deleteAll();
@@ -131,15 +131,15 @@ class MainGamePage extends StatelessWidget {
                     child: Joypad(onDirectionChanged: onJoypadDirectionChanged),
                   ),
                 ),
-                // Positioned(
-                //     bottom: 30,
-                //     left: 0,
-                //     child: developerManagerWidget()),
+                Positioned(
+                    bottom: 30,
+                    left: 0,
+                    child: developerManagerWidget()),
                 Positioned(
                   top: 0,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 5.0,),
-                    child: topButtonWidget("/shop_page","assets/images/shop.png",50,(){
+                    child: topButtonWidget("/shop_page","${CommonConstant.assetsImageMain}shop.png",50,(){
                     //  Navigator.pushNamed(context,"/shop_page");
                       GameAlert().showShopDialog(game);
                     }),
@@ -213,7 +213,7 @@ class MainGamePage extends StatelessWidget {
                   right: 5,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 3.0),
-                    child: topButtonWidget("/game_setting","assets/images/setting.png",20,(){
+                    child: topButtonWidget("/game_setting","${CommonConstant.assetsImageMain}setting.png",20,(){
                       GameAlert().showSettingsDialog(game);
                     }),
                   ),

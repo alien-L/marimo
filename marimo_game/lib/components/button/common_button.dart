@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/sound_bloc.dart';
 
+import '../../const/constant.dart';
+
 class CommonButton extends StatelessWidget {
   CommonButton({Key? key,
     this.width,
@@ -53,7 +55,7 @@ class CommonButton extends StatelessWidget {
                     child: Image(
                       fit: BoxFit.fill,
                       image: AssetImage(snapshot.requireData
-                          ? "assets/images/deco/speech_bubble_${imageName}.png"
+                          ? "${CommonConstant.assetsImageShop}speech_bubble_${imageName}.png"
                           : "assets/images/zero.png"),
                       width: 40,
                       height: 20,

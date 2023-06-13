@@ -7,15 +7,13 @@ import 'package:flutter/services.dart';
 import '../../marimo_game_world.dart';
 import '../bloc/shop_bloc.dart';
 import 'marin_animal.dart';
-class ItemController extends Component
-    with
-        HasGameRef<MarimoWorldGame>,
-        FlameBlocListenable<ShopBloc, ItemState>{
 
+class ItemController extends Component
+    with HasGameRef<MarimoWorldGame>, FlameBlocListenable<ShopBloc, ItemState> {
   ItemController();
 
   @override
-  bool listenWhen(ItemState previousState,ItemState newState) {
+  bool listenWhen(ItemState previousState, ItemState newState) {
     return previousState != newState;
   }
 
@@ -28,21 +26,47 @@ class ItemController extends Component
     final data = await json.decode(dynamicButtonList);
     List<dynamic> list = data["data"];
     print(list);
-    Map<String,dynamic> _map = list.firstWhere((element)=>element["name"] == state.name );
+    Map<String, dynamic> _map =
+        list.firstWhere((element) => element["name"] == state.name);
 
-    if(state.isCheckedMoving??false){
-      parent?.add(gameRef.marinAnimalsComponent =MarinAnimal(worldSize: gameRef.size,
-          animalName: _map["image_name"], screenSize: Vector2.all(double.parse(_map["screenSize"]??_map["size"])), imageSize: Vector2.all(double.parse(_map["size"])), totalNum:_map["totalNum"]));
-    }else {
-      parent?.add(gameRef.shopComponent = Item(name:_map["image_name"],
-          componentPosition: Vector2(double.parse(_map["position_x"]),game.size.y-double.parse(_map["position_y"])),
+    if(_map["name_en"] == "bubble"){
+      for (var i = 0; i < 3; i++) {
+        parent?.add(gameRef.marinAnimalsComponent = MarinAnimal(
+            worldSize: gameRef.size,
+            animalName: _map["name_en"],
+            screenSize:
+            Vector2.all(double.parse(_map["screenSize"] ?? _map["size"])),
+            imageSize: Vector2.all(double.parse(_map["size"])),
+            totalNum: _map["totalNum"][0]));
+        parent?.add(gameRef.marinAnimalsComponent = MarinAnimal(
+            worldSize: gameRef.size,
+            animalName: _map["name_en"],
+            screenSize:
+            Vector2.all(double.parse(_map["screenSize"] ?? _map["size"])),
+            imageSize: Vector2.all(double.parse(_map["size"])),
+            totalNum: _map["totalNum"][1]));
+      }
+
+    } else if (state.isCheckedMoving ?? false) {
+      parent?.add(gameRef.marinAnimalsComponent = MarinAnimal(
+          worldSize: gameRef.size,
+          animalName: _map["image_name"],
+          screenSize:
+              Vector2.all(double.parse(_map["screenSize"] ?? _map["size"])),
+          imageSize: Vector2.all(double.parse(_map["size"])),
+          totalNum: _map["totalNum"]));
+    } else {
+      parent?.add(gameRef.shopComponent = Item(
+          name: _map["image_name"],
+          componentPosition: Vector2(double.parse(_map["position_x"]),
+              game.size.y - double.parse(_map["position_y"])),
           componentSize: Vector2.all(double.parse(_map["size"]))));
     }
   }
 }
 
-class Item extends PositionComponent with HasGameRef<MarimoWorldGame>,
-    FlameBlocListenable<ShopBloc, ItemState> {
+class Item extends PositionComponent
+    with HasGameRef<MarimoWorldGame>, FlameBlocListenable<ShopBloc, ItemState> {
   Item({this.name, this.componentPosition, this.componentSize}) {
     positionType = PositionType.viewport;
   }

@@ -129,12 +129,6 @@ class App extends StatelessWidget {
                 game: game,
               ),
           '/init_setting': (context) => InitSettingPage(),
-          // '/game_setting': (context) => GameSettingPage(
-          //        game,
-          //     ),
-          '/shop_page': (context) => ShopPage(
-                game: game,
-              ),
         },
         home: MainGamePage(
           marimoName: marimoName??"",

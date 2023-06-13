@@ -27,7 +27,7 @@ class CoinCollector extends PositionComponent with HasGameRef<MarimoWorldGame> {
     );
     add(_coinTextComponent);
 
-    final coinSprite = await game.loadSprite('coin.png');
+    final coinSprite = await game.loadSprite('main/coin.png');
     add(
       SpriteComponent(
         sprite: coinSprite,
