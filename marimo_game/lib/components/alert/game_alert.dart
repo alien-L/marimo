@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/restart_widget.dart';
 import 'package:marimo_game/marimo_game_world.dart';
@@ -18,62 +19,62 @@ import '../button/common_button.dart';
 class GameAlert {
   GameAlert();
 
-  Future<void> showMyDialog({
-    required String text,
-    required String assetsName,
-    required String dialogNumber,
-  }) async {
-    return showDialog<void>(
-      context: navigatorKey.currentContext!,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: AlertDialog(
-            backgroundColor: Colors.transparent,
-            titlePadding: EdgeInsets.zero,
-            contentPadding: EdgeInsets.zero,
-            iconPadding: EdgeInsets.zero,
-            insetPadding: EdgeInsets.zero,
-            actionsPadding: EdgeInsets.zero,
-            buttonPadding: EdgeInsets.zero,
-            content: Stack(
-              children: [
-                Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child:
-                          Image.asset("${CommonConstant.assetsImageDialog}dialog_$dialogNumber.png"),
-                    )),
-                Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: assetsName != "" ? Image.asset(assetsName) : null),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 2 - 300,
-                    ),
-                    child: Text(
-                      text,
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Future<void> showMyDialog({
+  //   required String text,
+  //   required String assetsName,
+  //   required String dialogNumber,
+  // }) async {
+  //   return showDialog<void>(
+  //     context: navigatorKey.currentContext!,
+  //     barrierDismissible: false, // user must tap button!
+  //     builder: (BuildContext context) {
+  //       return GestureDetector(
+  //         onTap: () {
+  //           Navigator.of(context).pop();
+  //         },
+  //         child: AlertDialog(
+  //           backgroundColor: Colors.transparent,
+  //           titlePadding: EdgeInsets.zero,
+  //           contentPadding: EdgeInsets.zero,
+  //           iconPadding: EdgeInsets.zero,
+  //           insetPadding: EdgeInsets.zero,
+  //           actionsPadding: EdgeInsets.zero,
+  //           buttonPadding: EdgeInsets.zero,
+  //           content: Stack(
+  //             children: [
+  //               Align(
+  //                   alignment: Alignment.center,
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.all(8.0),
+  //                     child: Image.asset(
+  //                         "${CommonConstant.assetsImageDialog}dialog_$dialogNumber.png"),
+  //                   )),
+  //               Align(
+  //                 alignment: Alignment.center,
+  //                 child: SizedBox(
+  //                     width: 80,
+  //                     height: 80,
+  //                     child: assetsName != "" ? Image.asset(assetsName) : null),
+  //               ),
+  //               Align(
+  //                 alignment: Alignment.center,
+  //                 child: Padding(
+  //                   padding: EdgeInsets.only(
+  //                     top: MediaQuery.of(context).size.height / 2 - 300,
+  //                   ),
+  //                   child: Text(
+  //                     text,
+  //                     style: const TextStyle(color: Colors.black),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget dropDownButton() => DropdownButtonFormField<Language>(
         decoration: const InputDecoration(
@@ -154,6 +155,7 @@ class GameAlert {
             //  Navigator.of(context).pop();
           },
           child: AlertDialog(
+            shadowColor: Colors.transparent,
             backgroundColor: Colors.transparent,
             titlePadding: EdgeInsets.zero,
             contentPadding: EdgeInsets.zero,
@@ -230,7 +232,11 @@ class GameAlert {
                     title: '앱 정보',
                     imageName: 'info',
                     onTap: () {
-                      showInfoDialog('게임 정보', '게임 정보입니당');
+                      showInfoDialog(
+                        title: '게임 정보',
+                        contents: '게임 정보입니당',
+                        color: Color.fromRGBO(200, 139, 251, 1),
+                      );
                     }),
                 buttonWidget(
                     title: '초기화',
@@ -265,7 +271,8 @@ class GameAlert {
                             Uri.parse(APPLE_APP_STORE_LINK))) {
                           await launchUrl(Uri.parse(APPLE_APP_STORE_LINK));
                         } else {
-                          await launchUrl(Uri.parse(APPLE_APP_STORE_WEB_LINK));
+                          await launchUrl(
+                              Uri.parse(APPLE_APP_STORE_WEB_LINK));
                         }
                       } else {
                         if (await canLaunchUrl(
@@ -350,13 +357,15 @@ class GameAlert {
         });
   }
 
-  Future<void> showInfoDialog(String title, String contents) {
+  Future<void> showInfoDialog(
+      {String title = '', String contents = '',String? assetsName = "", required Color color}) {
     return showDialog<void>(
         context: navigatorKey.currentContext!,
         barrierDismissible: true, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: Color.fromRGBO(200, 139, 251, 1),
+            // Color.fromRGBO(200, 139, 251, 1),
+            backgroundColor: color,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
             //Dialog Main Title
@@ -371,9 +380,19 @@ class GameAlert {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                assetsName == ""?const SizedBox():Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Image.asset(assetsName??"")),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 Align(alignment: Alignment.center, child: Text(contents)),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -393,6 +412,7 @@ class GameAlert {
 
   Future<void> showShopDialog(MarimoWorldGame game) async {
     return showDialog<void>(
+      barrierColor: Colors.transparent,
       context: navigatorKey.currentContext!,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -403,7 +423,8 @@ class GameAlert {
         }
 
         return AlertDialog(
-          backgroundColor: CommonColor.green,
+          shadowColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
           titlePadding: EdgeInsets.zero,
           contentPadding: EdgeInsets.zero,
           iconPadding: EdgeInsets.zero,
@@ -414,13 +435,19 @@ class GameAlert {
               stream: sc.stream,
               initialData: "marimo",
               builder: (context, snapshot) {
-                if(!snapshot.hasData || snapshot.hasError){
+                if (!snapshot.hasData || snapshot.hasError) {
                   return Container();
-                }else{
-                  return SizedBox(
+                } else {
+                  return Container(
                       width: 350,
                       height: 500,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.5),
+
+                               borderRadius: BorderRadius.circular(5),
+                            ),
                       child: Stack(
+                        alignment: Alignment.center,
                         children: [
                           Positioned(
                             top: 5,
@@ -439,76 +466,106 @@ class GameAlert {
                               ),
                             ),
                           ),
+                          // Positioned(
+                          //   top: 80,
+                          //   child: Image.asset(
+                          //     "${CommonConstant.assetsImageShop}shop_bg.png",
+                          //     width: 350,
+                          //   ),
+                          // ),
                           Positioned(
-                            top: 80,
-                            child: Image.asset(
-                              "${CommonConstant.assetsImageShop}shop_bg.png",
-                              width: 350,
+                            top: 30,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                    height: 50,
+                                    child: CommonButton(
+                                      imageName: 'green',
+                                      haveMessage: true,
+                                      buttonName: "마리모 용품",
+                                      onTap: () => getShopCategory("marimo"),
+                                    )),
+                                SizedBox(
+                                    height: 50,
+                                    child: CommonButton(
+                                      imageName: 'yellow',
+                                      haveMessage: true,
+                                      buttonName: "수질 관리",
+                                      onTap: () =>
+                                          getShopCategory("environment"),
+                                    )),
+                              ],
                             ),
                           ),
                           Positioned(
-                            top: 130,
-                            left: 80,
-                            child: SizedBox(
-                                width: 80,
-                                child: CommonButton(
-                                  imageName: 'shop_red',
-                                  haveMessage: true,
-                                  onTap: () => getShopCategory("grocery"),
-                                )),
+                            top: 90,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                    height: 50,
+                                    child: CommonButton(
+                                      imageName: 'red',
+                                      haveMessage: true,
+                                      buttonName: "어항 꾸미기",
+                                      onTap: () => getShopCategory("deco"),
+                                    )),
+                                SizedBox(
+                                    height: 50,
+                                    child: CommonButton(
+                                      imageName: 'pupple',
+                                      haveMessage: true,
+                                      buttonName: "코인 구매",
+                                      onTap: () => getShopCategory("coin"),
+                                    )),
+                                SizedBox(
+                                    height: 50,
+                                    child: CommonButton(
+                                      imageName: 'sky',
+                                      haveMessage: true,
+                                      buttonName: "잡화점",
+                                      onTap: () => getShopCategory("grocery"),
+                                    )),
+                              ],
+                            ),
                           ),
                           Positioned(
-                            top: 130,
-                            right: 70,
-                            child: SizedBox(
-                                width: 70,
-                                child: CommonButton(
-                                  imageName: 'shop_green',
-                                  haveMessage: true,
-                                  onTap: () => getShopCategory("marimo"),
-                                )),
-                          ),
-                          Positioned(
-                            top: 50,
-                            left: 100,
-                            child: SizedBox(
-                                width: 55,
-                                child: CommonButton(
-                                  imageName: 'shop_sky_s',
-                                  haveMessage: true,
-                                  onTap: () => getShopCategory("environment"),
-                                )),
-                          ),
-                          Positioned(
-                            top: 45,
-                            right: 45,
-                            child: SizedBox(
-                                width: 70,
-                                child: CommonButton(
-                                  imageName: 'shop_sky',
-                                  haveMessage: true,
-                                  onTap: () => getShopCategory("deco"),
-                                )),
-                          ),
-                          Positioned(
-                            top: 55,
-                            left: 55,
-                            child: SizedBox(
-                                width: 40,
-                                child: CommonButton(
-                                  imageName: 'shop_orange',
-                                  haveMessage: true,
-                                  onTap: () => getShopCategory("coin"),
-                                )),
-                          ),
-                          Positioned(
-                            top: 250,
+                            top: 140,
                             child: SizedBox(
                               width: 350,
-                              height: 200,
+                              height: 250,
                               child: ShopPage(
                                 game: game,
                                 categoryName: snapshot.requireData,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 400,
+                            child: SizedBox(
+                              width: 350,
+                              height: 80,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Positioned(
+                                      top: 0,
+                                      child: Image.asset(
+                                        "${CommonConstant.assetsImageShop}add_coin.png",
+                                        height: 90,
+                                      )),
+                                  Positioned(
+                                    top: 30,
+                                    right: 52,
+                                    child: CommonButton(
+                                      imageName: 'go',
+                                      height: 30,
+                                      onTap: () {
+                                        //  Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

@@ -103,8 +103,8 @@ class _MainViewState extends State<MainView> {
 
     print("여기 temp 체크 ==> ${temperature.runtimeType.toString()}");
     print("여기 humidity 체크 ==> ${humidity.runtimeType.toString()}");
-    environmentTemperatureBloc.updateState(temperature);
-    environmentHumidityBloc.updateState(humidity);
+    environmentTemperatureBloc.updateState(double.parse(temperature.toString()));
+    environmentHumidityBloc.updateState(int.parse(humidity.toString()));
   }
 
   getMyEnvironment() async {

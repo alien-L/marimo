@@ -39,7 +39,15 @@ class MarimoWorldGame extends FlameGame
   late MarinAnimal marinAnimalsComponent;
 
   late EnvironmentStateBar environmentStateBar;
-  late EffectComponent coinEffectComponent;
+  late CoinEffectComponent coinEffectComponent;
+
+  // =
+  // CoinEffectComponent(
+  //     componentSize: Vector2.all(16),
+  //     componentPosition: Vector2(65, 50),
+  //     movePostion: Vector2(65, 20),
+  //     imageName: 'coin');
+
   late HpEffectComponent hpEffectComponent;
   late ExpEffectComponent expEffectComponent;
   late ShopBloc shopBloc;
@@ -61,14 +69,13 @@ class MarimoWorldGame extends FlameGame
 
   final EnemyBloc enemyBloc;
 
-  late Timer bulletCreator;
   final List<Coin> _coinList = List<Coin>.empty(growable: true);
   final List<MoldyComponent> moldyList =
       List<MoldyComponent>.empty(growable: true);
 
   final CoinCollector _coinCollector = CoinCollector();
-  final MarimoHpBar _marimoHpBar = MarimoHpBar();
-  final MarimoExpBar _marimoExpBar = MarimoExpBar();
+  late MarimoHpBar _marimoHpBar;
+  late MarimoExpBar _marimoExpBar;
 
   //final coin = CoinDecoComponent();
 
@@ -141,11 +148,20 @@ class MarimoWorldGame extends FlameGame
           marimoComponent = Marimo(
               levelName: marimoLevel.name, emotionName: marimoEmotion.name),
           environmentStateBar = EnvironmentStateBar(),
+          _marimoExpBar = MarimoExpBar(size),
+          _marimoHpBar = MarimoHpBar(size),
+          coinEffectComponent =
+          CoinEffectComponent(
+              componentSize: Vector2.all(16),
+              componentPosition: Vector2(65, 50),
+              movePostion: Vector2(65, 20), imageName: 'coin',
+              ),
           MarimoController(),
           ItemController(),
           EnemyController(),
           CoinController(),
           HpController(),
+          ExpController(),
         ],
       ),
     );
@@ -178,8 +194,8 @@ class MarimoWorldGame extends FlameGame
     // }
 
     // 동전 남아있게 만들기
-    add(_marimoHpBar); // 마리모 상태바
-    add(_marimoExpBar);
+    //add(_marimoHpBar); // 마리모 상태바
+    //add(_marimoExpBar);
 
     marimoComponent.position = Vector2(100, 300);
     soundBloc.bgmPlay();

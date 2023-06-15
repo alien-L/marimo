@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
@@ -258,10 +260,17 @@ class Marimo extends SpriteAnimationComponent
 
 levelUpMarimo(MarimoWorldGame game, level) async {
   game.soundBloc.effectSoundPlay('/music/popup.mp3');
-  await GameAlert().showMyDialog(
-    text: Environment().config.constant.levelUpMsg,
-    assetsName: "assets/images/one_marimo.png",
-    dialogNumber: "04"
+  // await GameAlert().showMyDialog(
+  //   text: Environment().config.constant.levelUpMsg,
+  //   assetsName: "assets/images/one_marimo.png",
+  //   dialogNumber: "04"
+  // );
+
+  GameAlert().showInfoDialog(
+    title: "Level up!!!",
+    contents: Environment().config.constant.levelUpMsg,
+    assetsName: 'assets/images/one_marimo.png',
+    color: Color.fromRGBO(200, 139, 251, 1),
   );
 
   game.marimoExpBloc.initState();

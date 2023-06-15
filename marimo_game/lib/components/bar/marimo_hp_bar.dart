@@ -1,46 +1,35 @@
 import 'package:flame/components.dart';
+import 'package:flame/experimental.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/const/constant.dart';
 import '../../bloc/marimo_bloc/marimo_hp_bloc.dart';
 import '../../marimo_game_world.dart';
+import '../alert/game_alert.dart';
 import '../effects/effects_component.dart';
 
-class MarimoHpBar extends PositionComponent with HasGameRef<MarimoWorldGame> {
-  MarimoHpBar() {
+class MarimoHpBar extends SpriteComponent with HasGameRef<MarimoWorldGame>, TapCallbacks {
+  MarimoHpBar(Vector2 worldSize) {
     positionType = PositionType.viewport;
+    position = Vector2(worldSize.x - 110, 12);
   }
 
-  late TextComponent _scoreTextComponent;
-  late SpriteComponent _spriteComponent;
+  @override
+  void onTapUp(TapUpEvent event) {
+    GameAlert().showInfoDialog(title:"체력",
+        contents:"${game.marimoHpBloc.state}/100",color:Color.fromRGBO(224, 112, 178,1) );
+  }
+
+
 
   @override
   Future<void>? onLoad() async {
-    final marimoHpBloc = game.marimoHpBloc;
-    final lifeBarSprite = await game.loadSprite(
-        '${CommonConstant.assetsImageBar}life_bar_${marimoHpBloc.changeLifeCycleToHp().name}.png');
+    final hpSprite = await game.images.load(
+        '${CommonConstant.assetsImageBar}life_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel).name}.png');
 
-    _scoreTextComponent = TextComponent(
-      text: "hp",
-      textRenderer: TextPaint(
-        style: const TextStyle(
-            fontFamily: 'NeoDunggeunmoPro',
-            fontSize: 12,
-            color: Colors.black,
-            locale: Locale('ko', 'KO')),
-      ),
-      anchor: Anchor.center,
-      position: Vector2(game.size.x - 110, 20), //game.size.x - (60)
+    sprite = Sprite(
+      hpSprite,
     );
-
-    _spriteComponent = SpriteComponent(
-      sprite: lifeBarSprite,
-      position: Vector2(game.size.x - 70, 20),
-      anchor: Anchor.center,
-    );
-
-    add(_scoreTextComponent);
-    add(_spriteComponent);
 
     return super.onLoad();
   }
@@ -48,7 +37,7 @@ class MarimoHpBar extends PositionComponent with HasGameRef<MarimoWorldGame> {
   @override
   Future<void> update(double dt) async {
     if (game.marimoHpBloc.changeLifeCycleToHp().name != "die") {
-      _spriteComponent.sprite = await game.loadSprite(
+      sprite = await game.loadSprite(
           '${CommonConstant.assetsImageBar}life_bar_${game.marimoHpBloc.changeLifeCycleToHp().name}.png');
     }
     super.update(dt);
@@ -82,8 +71,8 @@ class HpController extends Component
     parent?.add(gameRef.hpEffectComponent = HpEffectComponent(
       imageName: name,
       componentSize: Vector2.all(16),
-      componentPosition: Vector2(game.size.x - 95, 50),
-      movePostion: Vector2(game.size.x - 95, 20),
+      componentPosition: Vector2(game.size.x - 110, 25),
+      movePostion: Vector2(game.size.x - 110, 15),
     ));
   }
 }

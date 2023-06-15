@@ -25,7 +25,7 @@ class CommonConstant{
  static String  assetsImageBackground ="background/";
  static String  assetsImageBar ="bar/";
  static String  assetsImageButtons ="assets/images/buttons/";
- static String  assetsImageDialog ="assets/images/dialog/";
+ //static String  assetsImageDialog ="assets/images/dialog/";
  static String  assetsImageEnemy ="assets/images/enemy/";
  static String  assetsImageMain ="assets/images/main/";
  static String  assetsImageMarimo = "assets/images/marimo/";
@@ -59,7 +59,7 @@ class KoreanConstant extends Constant{
   String get bgmOnOff => "배경음";
 
   @override
-  String get nameValidationCheckMsg => """닉네임은 1~10 글자 까지 가능합니다.\n공백 및 특수기호는 사용할 수 없습니다.""";
+  String get nameValidationCheckMsg => """닉네임은 1~10 글자 까지 가능합니다. 공백 및 특수기호는 사용할 수 없습니다.""";
 
   @override
   String get coinUnit => "원";

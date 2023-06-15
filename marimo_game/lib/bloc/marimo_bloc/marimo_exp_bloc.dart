@@ -1,6 +1,9 @@
+import 'package:flame/components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../app_manage/local_repository.dart';
+import '../../components/effects/effects_component.dart';
+import '../../marimo_game_world.dart';
 import 'marimo_bloc.dart';
 enum MarimoExpState{level1,level2,level3,level4,level5}
 

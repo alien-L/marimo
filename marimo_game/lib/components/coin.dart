@@ -41,24 +41,22 @@ class Coin extends SpriteComponent
 class CoinController extends Component
     with HasGameRef<MarimoWorldGame>, FlameBlocListenable<CoinBloc, int> {
   CoinController();
-
+  late bool isIncreasing;
   @override
   bool listenWhen(int previousState, int newState) {
+    isIncreasing = previousState < newState;
     return previousState != newState;
   }
 
-  @override
-  void onRemove() {
-    // TODO: implement onRemove
-    super.onRemove();
-  }
 
   @override
   void onNewState(int state) {
-    parent?.add(gameRef.coinEffectComponent = CoinEffectComponent(
-        componentSize: Vector2.all(16),
-        componentPosition: Vector2(65, 50),
-        movePostion: Vector2(65, 20),
-        imageName: 'coin'));
+    if(isIncreasing){
+      parent?.add(gameRef.coinEffectComponent = CoinEffectComponent(
+          componentSize: Vector2.all(16),
+          componentPosition: Vector2(65, 50),
+          movePostion: Vector2(65, 20),
+          imageName: 'coin'));
+    }
   }
 }

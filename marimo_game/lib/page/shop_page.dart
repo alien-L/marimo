@@ -19,7 +19,8 @@ import '../style/color.dart';
 //enum shopCategory
 
 class ShopPage extends StatelessWidget {
-  const ShopPage({Key? key, required this.game, required this.categoryName }) : super(key: key);
+  const ShopPage({Key? key, required this.game, required this.categoryName})
+      : super(key: key);
   final MarimoWorldGame game;
   final String categoryName;
 
@@ -32,17 +33,28 @@ class ShopPage extends StatelessWidget {
           .then((jsonStr) => jsonStr);
       final data = await json.decode(dynamicButtonList);
       list = data["data"];
-      result=  list.where((element) => element["category"] == categoryName);
+      result = list.where((element) => element["category"] == categoryName);
     } catch (e) {
       log(e.toString());
     }
     return result.toList();
   }
 
+  Future<void> setLocalItem(String key) async => await LocalRepository()
+      .setKeyValue(key: key, value: "true");
+
+  Future<bool> checkHaveMyItem(String key) async {
+  String? _name = await LocalRepository().getValue(key: key);
+
+   bool result = await LocalRepository().getValue(key: key) == "1";
+  print("$_name----$result");
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     var controller = PrimaryScrollController.of(context);
-   // controller?.jumpTo(0);
+    // controller?.jumpTo(0);
     return Center(
         child: FutureBuilder<List<dynamic>>(
             future: getData(),
@@ -64,19 +76,32 @@ class ShopPage extends StatelessWidget {
                   var stateScore = list[index]["state_score"];
                   var expScore = list[index]["exp_score"];
                   bool isEnabled = list[index]["enabled"] == "true";
-                  var bought = list[index]["bought"];
+                //  var bought = checkHaveMyItem(name); // 로컬에서 체크
                   var category = list[index]["category"];
                   var enemy_name = list[index]["enemy_name"];
                   var image_name = list[index]["image_name"];
                   var environment_category =
                       list[index]["environment_category"];
 
+
+
                   onClickEvent() async {
-                    if (!game.coinBloc.canBuyCoinState(int.parse(price))) {
-                      GameAlert().showMyDialog(
-                          text: "돈이 없어요...~~ㅠ_ㅠ",
-                          assetsName: 'assets/images/cry_marimo.png',
-                          dialogNumber: '02');
+                  //  final checkHaveMyItem = await LocalRepository().getValue(key: name) ;
+                    if(!isEnabled){
+                      GameAlert().showInfoDialog(
+                        title: "ㅠㅠ...",
+                        contents: "곧 만나요.....~~ㅠ_ㅠ",
+                        assetsName: 'assets/images/cry_marimo.png',
+                        color: Colors.indigo,
+                      );
+                    }
+                    else if (!game.coinBloc.canBuyCoinState(int.parse(price))) {
+                      GameAlert().showInfoDialog(
+                        title: "ㅠㅠ...",
+                        contents: "돈이 없어요...~~ㅠ_ㅠ",
+                        assetsName: 'assets/images/cry_marimo.png',
+                        color: Color.fromRGBO(200, 139, 251, 1),
+                      );
                     } else {
                       game.soundBloc.effectSoundPlay('/music/click.mp3');
                       game.coinBloc.subtractCoin(int.parse(price));
@@ -92,14 +117,15 @@ class ShopPage extends StatelessWidget {
                       final isCheckedEnemy = await LocalRepository()
                               .getValue(key: "isCheckedEnemy") ==
                           "1";
+
                       if (isPulledExp && isCheckedEnemy) {
                         await levelUpMarimo(
                             game, game.marimoBloc.state.marimoLevel);
                       }
 
                       if (environment_category == "humidity") {
-                        game.environmentHumidityBloc.updateState(40);
-                        //곰팡이 유무 체크
+                        game.environmentHumidityBloc
+                            .updateState(40); //곰팡이 유무 체크
                       } else if (environment_category == "temperature") {
                         game.environmentTemperatureBloc.updateState(15);
                       } else if (environment_category == "food") {
@@ -109,7 +135,7 @@ class ShopPage extends StatelessWidget {
                       if (category == "enemy") {
                         final name =
                             game.enemyComponent.getEnemyInfoMap()["name"];
-
+                        print("$name 여기 !!!$enemy_name");
                         if (name == enemy_name) {
                           game.enemyComponent.removeFromParent();
                           game.enemyBloc.hideEnemy();
@@ -117,172 +143,214 @@ class ShopPage extends StatelessWidget {
                               .add(MarimoEmotionChanged(MarimoEmotion.normal));
                         }
                       } else if (category == "deco") {
-                        print("여기 !!!");
-                        game.shopBloc.add(BuyEvent(
-                            name: name, isCheckedMoving: isCheckedMoving));
+                       final checkHaveMyItem = await LocalRepository().getValue(key: name) ;
+                            //== "true";
+                       print("test $checkHaveMyItem , $name ");
+                        if(checkHaveMyItem =="1"){
+                          GameAlert().showInfoDialog(
+                            title: "ㅠㅠ...",
+                            contents: "이미 구매 했어유 .....~~ㅠ_ㅠ",
+                            assetsName: 'assets/images/cry_marimo.png',
+                            color: Colors.indigo,
+                          );
+                        }else{
+                          game.shopBloc.add(BuyEvent(
+                              name: name, isCheckedMoving: isCheckedMoving));
+                          setLocalItem(name);
+                          GameAlert().showInfoDialog(
+                            title: "아이템 구매",
+                            contents: name + Environment().config.constant.getItemMsg,
+                            assetsName: "${CommonConstant.assetsImageShop}/$image_name",
+                            color: Color.fromRGBO(200, 139, 251, 1),
+                          );
+                        }
                       }
-
-                      GameAlert().showMyDialog(
-                          text: name + Environment().config.constant.getItemMsg,
-                          assetsName: "${CommonConstant.assetsImageShop}/$image_name",
-                          dialogNumber: "01");
+                      // setLocalItem(name);
+                      // GameAlert().showInfoDialog(
+                      //   title: "아이템 구매",
+                      //   contents: name + Environment().config.constant.getItemMsg,
+                      //   assetsName: "${CommonConstant.assetsImageShop}/$image_name",
+                      //   color: Color.fromRGBO(200, 139, 251, 1),
+                      // );
                     }
                   }
 
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                     // shape: BoxShape.,
-                      color: isEnabled
-                          ? Colors.white.withOpacity(0.5)
-                          : Colors.black26,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 5,
-                        ),
-                        image_name == ""
-                            ? Container()
-                            : Container(
-                                width: 45,
-                                 height: 70,
-                                child: Image.asset(
-                                    "assets/images/shop/$image_name")),
-                        //  Align(
-                        //      alignment: Alignment.topLeft,
-                        //        child:
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10,
-                                      right: 3.0,
-                                      top: 3.0,
-                                      bottom: 3.0),
-                                  child: Row(
+                  return
+                    FutureBuilder<bool>(
+                      future: checkHaveMyItem(name),
+                      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                        if (!snapshot.hasData || snapshot.hasError) {
+                          return   Container();
+                        } else {
+                              final isLocalEnabled = !snapshot.requireData;
+                              print("퓨쳐빌더 $isLocalEnabled");
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.black,
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              // shape: BoxShape.,
+                              color: isEnabled && isLocalEnabled
+                                  ? Colors.white.withOpacity(0.8)
+                              //Color.fromRGBO(1, 113,163, 1)
+                              //Colors.white.withOpacity(0.5)
+                                  : Colors.black26,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                image_name == ""
+                                    ? Container()
+                                    : Container(
+                                    width: 45,
+                                    height: 70,
+                                    child: Image.asset(
+                                        "assets/images/shop/$image_name")),
+                                //  Align(
+                                //      alignment: Alignment.topLeft,
+                                //        child:
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "$name",
-                                        style: TextStyle(
-                                            fontFamily: 'NeoDunggeunmoPro',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15),
-                                        //  textAlign: TextAlign.left,
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 10,
+                                              right: 3.0,
+                                              top: 3.0,
+                                              bottom: 3.0),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "$name",
+                                                style: TextStyle(
+                                                    fontFamily: 'NeoDunggeunmoPro',
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15),
+                                                //  textAlign: TextAlign.left,
+                                              ),
+                                              Text(
+                                                "  +$stateScore",
+                                                style: TextStyle(
+                                                    fontFamily: 'NeoDunggeunmoPro',
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13,
+                                                    color: Colors.red),
+                                                //  textAlign: TextAlign.left,
+                                              ),
+                                              Text(
+                                                "  +$expScore",
+                                                style: TextStyle(
+                                                    fontFamily: 'NeoDunggeunmoPro',
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13,
+                                                    color: Colors.blueAccent),
+                                                //  textAlign: TextAlign.left,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        "  +$stateScore",
-                                        style: TextStyle(
-                                            fontFamily: 'NeoDunggeunmoPro',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                            color: Colors.red),
-                                        //  textAlign: TextAlign.left,
-                                      ),
-                                      Text(
-                                        "  +$expScore",
-                                        style: TextStyle(
-                                            fontFamily: 'NeoDunggeunmoPro',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                            color: Colors.blueAccent),
-                                        //  textAlign: TextAlign.left,
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              isEnabled&&isLocalEnabled
+                                                  ? "$price ${Environment().config.constant.coinUnit}"
+                                                  : "",
+                                              style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 14,
+                                                fontFamily: 'NeoDunggeunmoPro',
+                                              ),
+                                              //  textAlign: TextAlign.left,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 30,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 10, bottom: 5),
+                                              child: ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                  MaterialStateProperty.resolveWith(
+                                                          (states) {
+                                                        // If the button is pressed, return green, otherwise blue
+                                                        if (states.contains(
+                                                            MaterialState.pressed)) {
+                                                          return isEnabled&&isLocalEnabled
+                                                              ? Color.fromRGBO(
+                                                              17, 220, 252, 1)
+                                                          //   Color.fromRGBO(21, 253, 15, 1)
+                                                              : Colors.black26;
+                                                        }
+                                                        return isEnabled&&isLocalEnabled
+                                                            ? Color.fromRGBO(
+                                                            17, 220, 252, 1)
+                                                        //Color.fromRGBO(21, 253, 15, 1)
+                                                            : Colors.black26;
+                                                      }),
+                                                ),
+                                                onPressed: () => onClickEvent(),
+                                                child: Text(
+                                                  isEnabled&&isLocalEnabled
+                                                      ? Environment()
+                                                      .config
+                                                      .constant
+                                                      .buyItem
+                                                      : Environment()
+                                                      .config
+                                                      .constant
+                                                      .comingSoon,
+                                                  style: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontFamily: 'NeoDunggeunmoPro',
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 12),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Text(
-                                      isEnabled
-                                          ? "$price ${Environment().config.constant.coinUnit}"
-                                          : "",
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 14,
-                                        fontFamily: 'NeoDunggeunmoPro',
-                                      ),
-                                      //  textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 30,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 10, bottom: 5),
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.resolveWith(
-                                                  (states) {
-                                            // If the button is pressed, return green, otherwise blue
-                                            if (states.contains(
-                                                MaterialState.pressed)) {
-                                              return isEnabled
-                                                  ? Colors.green
-                                                  : Colors.black26;
-                                            }
-                                            return isEnabled
-                                                ? CommonColor.green
-                                                : Colors.black26;
-                                          }),
-                                        ),
-                                        onPressed: () => onClickEvent(),
-                                        child: Text(
-                                          isEnabled
-                                              ? Environment()
-                                                  .config
-                                                  .constant
-                                                  .buyItem
-                                              : Environment()
-                                                  .config
-                                                  .constant
-                                                  .comingSoon,
-                                          style: TextStyle(
-                                              fontFamily: 'NeoDunggeunmoPro',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                              ],
+                            ),
+                          );
+                        }
+
+                      },
+                    );
                 });
 
-                child =
-                GridView.count(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                primary: false,
-                padding: const EdgeInsets.all(10),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 2,
-                children: listView);
+                child = GridView.count(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    primary: false,
+                    padding: const EdgeInsets.all(10),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 2,
+                    children: listView);
               }
 
               return SingleChildScrollView(
-                  controller: controller,
-                  child: child);
+                  controller: controller, child: child);
             }));
   }
 }

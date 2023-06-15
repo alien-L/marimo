@@ -50,11 +50,12 @@ class InitSettingPage extends StatelessWidget {
                     name.isEmpty ||
                     name == "" ||
                     gap) {
-                  GameAlert().showMyDialog(
-                      text:
-                      Environment().config.constant.nameValidationCheckMsg,
-                      assetsName: 'assets/images/one_marimo.png',
-                      dialogNumber: '01');
+                  GameAlert().showInfoDialog(
+                    title: "",
+                    contents: Environment().config.constant.nameValidationCheckMsg,
+                    assetsName: 'assets/images/one_marimo.png',
+                    color: Color.fromRGBO(200, 139, 251, 1),
+                  );
                 } else {
                   LocalRepository localRepository = LocalRepository();
                   await localRepository.setKeyValue(

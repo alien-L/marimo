@@ -8,12 +8,15 @@ import 'package:marimo_game/bloc/component_bloc/sound_bloc.dart';
 import '../../const/constant.dart';
 
 class CommonButton extends StatelessWidget {
-  CommonButton({Key? key,
-    this.width,
-    this.height,
-    required this.imageName,
-    this.onTap,
-    this.haveMessage = false})
+  CommonButton(
+      {Key? key,
+      this.width,
+      this.height,
+      required this.imageName,
+      this.onTap,
+      this.haveMessage = false,
+      this.buttonName
+      })
       : super(key: key);
   final double? width;
   final double? height;
@@ -21,6 +24,7 @@ class CommonButton extends StatelessWidget {
   final controller = StreamController<bool>.broadcast();
   final GestureTapCallback? onTap;
   final bool haveMessage;
+  final String? buttonName;
 
 //assets/images/buttons/
   Widget buttonWidget() {
@@ -35,39 +39,37 @@ class CommonButton extends StatelessWidget {
               onPointerDown: (details) => controller.add(true),
               onPointerUp: (event) => controller.add(false),
               child: GestureDetector(
-                  onTap: onTap,
-                  child: Center(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children:[
-                    Positioned(
-                    child: Image(
-                    fit: BoxFit.fill,
-                      image: AssetImage(snapshot.requireData
-                          ? "assets/images/buttons/${imageName}_on.png"
-                          : "assets/images/buttons/${imageName}_off.png"),
-                      width: width,
-                      height: height,
-                    ),
-                  ),
-                  haveMessage ? Positioned(
-                    top: 0,
-                    child: Image(
-                      fit: BoxFit.fill,
-                      image: AssetImage(snapshot.requireData
-                          ? "${CommonConstant.assetsImageShop}speech_bubble_${imageName}.png"
-                          : "assets/images/zero.png"),
-                      width: 40,
-                      height: 20,
-                    ),
-                  ):Container(),
-              ],
-            ),)
-          ,
-          )
-          ,
-          );
-        }
+                onTap: onTap,
+                child: Center(
+                  child: haveMessage
+                      ? Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Positioned(
+                              child: Image(
+                                fit: BoxFit.fill,
+                                image: AssetImage(snapshot.requireData
+                                    ? "assets/images/buttons/${imageName}_on.png"
+                                    : "assets/images/buttons/${imageName}_off.png"),
+                                width: width,
+                                height: height,
+                              ),
+                            ),
+                            Positioned(child: Text(buttonName??"",style: TextStyle(fontSize: 15),)),
+                          ],
+                        )
+                      : Image(
+                          fit: BoxFit.fill,
+                          image: AssetImage(snapshot.requireData
+                              ? "assets/images/buttons/${imageName}_on.png"
+                              : "assets/images/buttons/${imageName}_off.png"),
+                          width: width,
+                          height: height,
+                        ),
+                ),
+              ),
+            );
+          }
         });
   }
 
@@ -89,21 +91,21 @@ class CommonButton extends StatelessWidget {
                   child: Center(
                     child: state
                         ? Image(
-                      fit: BoxFit.fill,
-                      image: AssetImage(snapshot.requireData
-                          ? "assets/images/buttons/music_on.png"
-                          : "assets/images/buttons/music_off.png"),
-                      width: width,
-                      height: height,
-                    )
+                            fit: BoxFit.fill,
+                            image: AssetImage(snapshot.requireData
+                                ? "assets/images/buttons/music_on.png"
+                                : "assets/images/buttons/music_off.png"),
+                            width: width,
+                            height: height,
+                          )
                         : Image(
-                      fit: BoxFit.fill,
-                      image: AssetImage(snapshot.requireData
-                          ? "assets/images/buttons/stop_on.png"
-                          : "assets/images/buttons/stop_off.png"),
-                      width: width,
-                      height: height,
-                    ),
+                            fit: BoxFit.fill,
+                            image: AssetImage(snapshot.requireData
+                                ? "assets/images/buttons/stop_on.png"
+                                : "assets/images/buttons/stop_off.png"),
+                            width: width,
+                            height: height,
+                          ),
                   ),
                 ),
               );

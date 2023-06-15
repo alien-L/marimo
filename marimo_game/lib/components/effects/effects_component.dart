@@ -35,7 +35,6 @@ class ExpEffectComponent extends EffectComponent {
     // TODO: implement update
     if (y < 21) {
       game.coinEffectComponent.removeFromParent();
-      position = Vector2(70, 50);
     }
   }
 }
@@ -64,7 +63,7 @@ abstract class EffectComponent extends SpriteComponent
   final Vector2 movePostion; //Vector2(65, 20)
 
   EffectComponent({
-    this.imageName,
+    required this.imageName,
     required this.componentSize,
     required this.componentPosition,
     required this.movePostion,
@@ -72,6 +71,7 @@ abstract class EffectComponent extends SpriteComponent
 
   @override
   Future<void> onLoad() async {
+ //   String name  = imageName == null?'zero.png':'main/$imageName.png';
     final spriteImage = await game.images.load('main/$imageName.png');
     sprite = Sprite(spriteImage);
 

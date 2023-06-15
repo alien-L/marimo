@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
-import 'package:marimo_game/page/game_setting_page.dart';
 import 'package:marimo_game/page/init_setting_page.dart';
 import 'package:marimo_game/page/shop_page.dart';
 import 'app_manage/app_status_observer.dart';
@@ -69,8 +68,8 @@ Future<void> main() async {
     BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"] ?? "0"))), //ok
     BlocProvider<SoundBloc>(create: (_) => SoundBloc(false)),     // ok null 또는 0이면 true , 1이면 false
     BlocProvider<EnvironmentTrashBloc>(create: (_) => EnvironmentTrashBloc(isCheckedOnOffSound)), // ok  null 또는 0이면 true , 1이면 false
-    BlocProvider<EnvironmentHumidityBloc>(create: (_) => EnvironmentHumidityBloc(int.parse(marimoItemsMap["humidity"] ?? "50"))),
-    BlocProvider<EnvironmentTemperatureBloc>(create: (_) => EnvironmentTemperatureBloc(double.parse(marimoItemsMap["temperature"] ?? "16"))), //ok
+    BlocProvider<EnvironmentHumidityBloc>(create: (_) => EnvironmentHumidityBloc(50)),
+    BlocProvider<EnvironmentTemperatureBloc>(create: (_) => EnvironmentTemperatureBloc(16)), //ok
   ],
       child: RestartWidget(
         child: App(

@@ -51,11 +51,17 @@ class EnemyController extends Component
       emotionName: game.marimoBloc.state.marimoEmotion.name,
     ));
     game.soundBloc.effectSoundPlay('music/villain.mp3');
-    await GameAlert().showMyDialog(
-        text: "꺅!!!빌런이 나타났어요!!!!!",
-        assetsName:
-            "${CommonConstant.assetsImageEnemy}${enemy.getEnemyInfoMap()["name"]}.png",
-        dialogNumber: "02");
+    // await GameAlert().showMyDialog(
+    //     text: "꺅!!!빌런이 나타났어요!!!!!",
+    //     assetsName:
+    //         "${CommonConstant.assetsImageEnemy}${enemy.getEnemyInfoMap()["name"]}.png",
+    //     dialogNumber: "02");
+    GameAlert().showInfoDialog(
+      title: "빌런 출몰",
+      contents: "꺅!!!빌런이 나타났어요!!!!!",
+      assetsName: "${CommonConstant.assetsImageEnemy}${enemy.getEnemyInfoMap()["name"]}.png",
+      color: Color.fromRGBO(200, 139, 251, 1),
+    );
   }
 }
 
@@ -111,10 +117,16 @@ class Enemy extends SpriteComponent
 
   @override
   void onTapUp(TapUpEvent event) {
-    GameAlert().showMyDialog(
-        text: getEnemyInfoMap()["message"],
-        assetsName: "${CommonConstant.assetsImageEnemy}${getEnemyInfoMap()["name"]}.png",
-        dialogNumber: "02");
+    // GameAlert().showMyDialog(
+    //     text: getEnemyInfoMap()["message"],
+    //     assetsName: "${CommonConstant.assetsImageEnemy}${getEnemyInfoMap()["name"]}.png",
+    //     dialogNumber: "02");
+    GameAlert().showInfoDialog(
+      title: "",
+      contents:  getEnemyInfoMap()["message"],
+      assetsName: "${CommonConstant.assetsImageEnemy}${getEnemyInfoMap()["name"]}.png",
+      color: Color.fromRGBO(200, 139, 251, 1),
+    );
   }
 
   @override
