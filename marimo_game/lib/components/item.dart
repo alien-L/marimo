@@ -5,6 +5,7 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../marimo_game_world.dart';
+import '../app_manage/local_data_manager.dart';
 import '../bloc/shop_bloc.dart';
 import 'marin_animal.dart';
 
@@ -20,11 +21,8 @@ class ItemController extends Component
   @override
   Future<void> onNewState(ItemState state) async {
     // 로컬 저장소 값 비교 레벨
-    final dynamicButtonList = await rootBundle
-        .loadString('assets/marimo_shop.json')
-        .then((jsonStr) => jsonStr);
-    final data = await json.decode(dynamicButtonList);
-    List<dynamic> list = data["data"];
+
+    final list = await LocalDataManager().getShopData();
     print(list);
     Map<String, dynamic> _map =
         list.firstWhere((element) => element["name"] == state.name);

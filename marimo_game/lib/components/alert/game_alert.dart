@@ -9,7 +9,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../app_manage/environment/environment.dart';
 import '../../app_manage/language.dart';
-import '../../app_manage/local_repository.dart';
 import '../../const/constant.dart';
 import '../../main.dart';
 import '../../page/shop_page.dart';
@@ -244,7 +243,7 @@ class GameAlert {
                     onTap: () {
                       showMiniDialog('초기화', '게임을 초기화 하겠습니까??\n앱이 자동으로 꺼집니다.',
                           () {
-                        LocalRepository().getSecureStorage().deleteAll();
+                     //   LocalRepository().getSecureStorage().deleteAll();
                         Navigator.pop(context);
                         //RestartWidget.restartApp(navigatorKey.currentContext!, Language.ko);
                         exit(0);

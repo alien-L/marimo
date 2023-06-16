@@ -1,5 +1,18 @@
 {
-  "data": [
+  "language": "ko",
+  "lastDay": false,
+  "background": "normal",
+  "marimoLevel": "baby",
+  "marimoHp": 40,
+  "marimoExp": 0,
+  "coin": 0,
+  "isCheckedOnOffSound": true,
+  "isCleanTrash": true,
+  "humidity": 50,
+  "temperature": 16.00,
+  "isCheckedEnemy": true,
+  "marimoEmotion" : "normal",
+  "shopData": [
     {
       "name": "꽃",
       "name_en": "flower",
@@ -12,7 +25,7 @@
       "category": "deco",
       "image_name": "flower.png",
       "isCheckedMoving": "false",
-       "position_x": "270",
+      "position_x": "270",
       "position_y": "150",
       "size": "50"
     },
@@ -80,7 +93,10 @@
       "position_y": "150",
       "size": "300",
       "screenSize": "30",
-      "totalNum": [6,11]
+      "totalNum": [
+        6,
+        11
+      ]
     },
     {
       "name": "마리모 밥",
@@ -132,7 +148,7 @@
       "bought": "false",
       "category": "grocery",
       "category_m": "enemy",
-       "enemy_name": "cat",
+      "enemy_name": "cat",
       "image_name": "fish.png",
       "isCheckedMoving": "false"
     },
@@ -313,7 +329,7 @@
       "bought": "false",
       "category": "deco",
       "image_name": "turtle.png",
-      "isCheckedMoving":"true",
+      "isCheckedMoving": "true",
       "totalNum": 5,
       "size": "48"
     },

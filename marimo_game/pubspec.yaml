@@ -16,17 +16,15 @@ dependencies:
 
   flame: ^1.7.0
   permission_handler: 10.2.0
-  flutter_secure_storage: 8.0.0
   connectivity: 3.0.6
   http: 0.13.5
   geolocator: ^9.0.2
-  flutter_native_splash: ^2.2.19
   flame_bloc: ^1.8.3
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
   flame_audio: ^2.0.2
-  flame_splash_screen: ^0.1.0
   url_launcher: ^6.1.11
+  shared_preferences: ^2.1.2
 
 dev_dependencies:
   flutter_test:

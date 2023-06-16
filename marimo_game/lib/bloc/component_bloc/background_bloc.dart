@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../app_manage/local_repository.dart';
-
 enum BackgroundState { normal, red, }
 //
 //  물 , 온도 갈아주기  상태 관리
@@ -23,12 +21,12 @@ class BackgroundBloc extends Cubit<BackgroundState> {
         result = "background_01_red";
         break;
     }
-    _updateLocalBg();
+   // _updateLocalBg();
     return result;
   }
 
-  Future<void> _updateLocalBg() async {
-    await LocalRepository().setKeyValue(
-        key: "background", value: state.toString());
-  }
+  // Future<void> _updateLocalBg() async {
+  //   await LocalRepository().setKeyValue(
+  //       key: "background", value: state.toString());
+  // }
 }

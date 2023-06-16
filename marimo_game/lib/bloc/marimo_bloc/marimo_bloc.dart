@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../app_manage/local_repository.dart';
-
 enum MarimoLevel { zero, baby, child, child2, teenager, adult, oldMan }
 
 enum MarimoEmotion { normal, cry }
@@ -23,11 +21,11 @@ class MarimoBloc extends Bloc<MarimoEvent, MarimoState> {
   }
 
   Future<void> updateLocalLevel(String level) async {
-    await LocalRepository().setKeyValue(key: "marimoLevel", value: level);
+  //  await LocalRepository().setKeyValue(key: "marimoLevel", value: level);
   }
 
   Future<void> updateEmotion(String emotion) async {
-    await LocalRepository().setKeyValue(key: "marimoEmotion", value: emotion);
+  //  await LocalRepository().setKeyValue(key: "marimoEmotion", value: emotion);
   }
 }
 

@@ -1,9 +1,8 @@
-
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../app_manage/local_repository.dart';
+import '../../app_manage/local_data_manager.dart';
 
 class TimeCheckBloc extends Cubit<bool>{
   TimeCheckBloc(super.initialState);
@@ -16,12 +15,13 @@ class TimeCheckBloc extends Cubit<bool>{
   Future<void> checkForTomorrow() async {
     // 하루만 넘었는지 안넘었는지 체크
     // day가 똑같으면 false , 다르면 무조건 true
-    String? isFirstInstall = await LocalRepository().getValue(key: "firstInstall");
-    if(isFirstInstall == null){
+    bool? isFirstInstall = await LocalDataManager().getIsFirstInstall();
+    if(isFirstInstall){
       emit(true);
     }else{
       final startDay = DateTime.now().day.toString();
-      final endDay = await LocalRepository().getValue(key: "lastDay");
+      final endDay = "";
+      //await LocalRepository().getValue(key: "lastDay");
       if(endDay == null){
         emit(true);
       }else{
@@ -34,10 +34,10 @@ class TimeCheckBloc extends Cubit<bool>{
   }
 
   Future<void> updateLocalLastTime(DateTime dateTime) async {
-    final endDay = await LocalRepository().getValue(key: "lastDay");
-    final value = dateTime.day.toString() == endDay ? "0":"1";
-    await LocalRepository().setKeyValue(
-        key:"lastDay", value: value);
+    // final endDay = await LocalRepository().getValue(key: "lastDay");
+    // final value = dateTime.day.toString() == endDay ? "0":"1";
+    // await LocalRepository().setKeyValue(
+    //     key:"lastDay", value: value);
   }
 
 }

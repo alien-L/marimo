@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../app_manage/local_repository.dart';
 
 class ShopBloc extends Bloc<ShopEvent, ItemState> {
   ShopBloc(super.initialState) {
@@ -16,8 +15,8 @@ class ShopBloc extends Bloc<ShopEvent, ItemState> {
   // 초기에 설정 해주기 world에
   // 값이 null이 아니면 shop disabled 처리하기
   Future<void> updateLocalItemValue(String name) async {
-    await LocalRepository()
-        .setKeyValue(key: name, value: "1"); // 1 존재함
+    // await LocalRepository()
+    //     .setKeyValue(key: name, value: "1"); // 1 존재함
   }
 }
 

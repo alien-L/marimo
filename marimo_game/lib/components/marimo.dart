@@ -1,12 +1,10 @@
 import 'dart:ui';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
-import 'package:marimo_game/app_manage/local_repository.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
 import '../bloc/marimo_bloc/marimo_bloc.dart';
 import '../helpers/direction.dart';
@@ -145,7 +143,8 @@ class Marimo extends SpriteAnimationComponent
     bool isPulledExp =
         game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==
             MarimoExpState.level5;
-    final isCheckedEnemy = await LocalRepository().getValue(key: "isCheckedEnemy") == "1";
+    final isCheckedEnemy = true;
+        //await LocalRepository().getValue(key: "isCheckedEnemy") == "1";
     if (isPulledExp && isCheckedEnemy) {
       await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
     }
@@ -160,10 +159,7 @@ class Marimo extends SpriteAnimationComponent
       other.removeFromParent();
     //  game.marimoExpBloc.addScore(game.marimoBloc.state.marimoLevel, 10);
    //   game.coinBloc.addCoin();
-      int totalCoinCount = await game.coinBloc.getTotalCoinCount();
-      totalCoinCount--;
      // tempCoin++;
-      game.coinBloc.updateLocaltotalCoinCount(totalCoinCount);
      await getCoin();
       // bool isPulledExp =
       //     game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==

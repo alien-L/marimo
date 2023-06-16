@@ -167,9 +167,7 @@ class MarimoWorldGame extends FlameGame
     );
 
     add(_coinCollector);
-    //add(CoinDecoComponent(size));
-    int totalCoinCount = await coinBloc.getTotalCoinCount();
-    int num = timeCheckBloc.state ? 20 : totalCoinCount;
+    int num = 20;
 
     for (var i = 0; i < num; i++) {
       final tempCoin = Coin(size);

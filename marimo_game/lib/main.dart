@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/page/init_setting_page.dart';
-import 'package:marimo_game/page/shop_page.dart';
 import 'app_manage/app_status_observer.dart';
 import 'app_manage/environment/environment.dart';
 import 'app_manage/language.dart';
-import 'app_manage/local_repository.dart';
 import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
 import 'bloc/component_bloc/background_bloc.dart';
@@ -23,7 +22,7 @@ import 'bloc/marimo_bloc/marimo_hp_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
 import 'bloc/component_bloc/time_check_bloc.dart';
 import 'marimo_game_world.dart';
-import 'model/marimo_items.dart';
+import 'model/game_data_info.dart';
 import 'page/main_game_page.dart';
 import 'main_view.dart';
 
@@ -31,46 +30,77 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
- // await Flame.device.fullScreen();
-  final marimoItems = await getInitLocalMarimoItems();
-  final marimoItemsMap = marimoItems.toJson();
-  String? firstInstall = await LocalRepository().getValue(key: "firstInstall");
-  String? marimoName = await LocalRepository().getValue(key: "marimoName");
-  String initRoute = firstInstall != null ? '/main_scene' : '/init_setting';
+  late dynamic gameDataInfoMap;
+  late String initRoute;
+  String marimoName = "";
+  final localDataManager = LocalDataManager();
+  final isFirstInstall = await localDataManager.getIsFirstInstall();  // 첫 설치 유무 체크
 
- // print("marimoItems ===> ${marimoItems.toJson()}");
+ //if (isFirstInstall) {
+    gameDataInfoMap = await localDataManager.getInitGameDataInfo();
+    initRoute = '/init_setting';
+    // 세팅해주기 로컬 저장소
+  // } else {
+  //   gameDataInfoMap = await localDataManager.getGameDataInfo();
+  //   initRoute = '/main_scene';
+  //   marimoName = await localDataManager.getValue<String>(key: 'marimoName');
+  // }
+
+  print("marimoItems ===> ${gameDataInfoMap}");
   final backgroundValue = BackgroundState.values.firstWhere(
-      (element) => element.name == marimoItemsMap["background"],
+      (element) => element.name == gameDataInfoMap["background"],
       orElse: () => BackgroundState.normal);
   final languageManageValue = Language.values.firstWhere(
-      (element) => element.name == marimoItemsMap["language"],
+      (element) => element.name == gameDataInfoMap["language"],
       orElse: () => Language.ko);
   final marimoLevelValue = MarimoLevel.values.firstWhere(
-      (element) => element.name == marimoItemsMap["marimoLevel"],
+      (element) => element.name == gameDataInfoMap["marimoLevel"],
       orElse: () => MarimoLevel.baby);
-  final marimoEmotionValue =MarimoEmotion.values.firstWhere(
-          (element) => element.name == marimoItemsMap["marimoEmotion"],
+  final marimoEmotionValue = MarimoEmotion.values.firstWhere(
+      (element) => element.name == gameDataInfoMap["marimoEmotion"],
       orElse: () => MarimoEmotion.normal);
-  final isCheckedOnOffSound = marimoItemsMap["isCheckedOnOffSound"] == null?false:marimoItemsMap["isCheckedOnOffSound"] != 1;
-  final isCheckedEnemy = marimoItemsMap["isCheckedEnemy"] == null?false:marimoItemsMap["isCheckedEnemy"] != 1;
+  // final isCheckedOnOffSound = gameDataInfoMap["isCheckedOnOffSound"] == null?false:gameDataInfoMap["isCheckedOnOffSound"] != 1;
+  // final isCheckedEnemy = gameDataInfoMap["isCheckedEnemy"] == null?false:gameDataInfoMap["isCheckedEnemy"] != 1;
 
   Environment().initConfig(languageManageValue); // 언어 환경 세팅
   runApp(MultiBlocProvider(
       providers: [
-    BlocProvider<ShopBloc>(create: (_) => ShopBloc(const ItemState())),
-    BlocProvider<EnemyBloc>(create: (_) => EnemyBloc(isCheckedEnemy)),
-    BlocProvider<LanguageManageBloc>(create: (_) => LanguageManageBloc(languageManageValue)),
-    BlocProvider<TimeCheckBloc>(create: (_) => TimeCheckBloc(marimoItemsMap["lastDay"] != "1")), /// 체크 초기값 설정 고민 해보자 marimoItemsMap["lastDay"]??
-    BlocProvider<BackgroundBloc>(create: (_) => BackgroundBloc(backgroundValue)), //marimoItemsMap["background"]??"
-    BlocProvider<MarimoBloc>(create: (_) => MarimoBloc(MarimoState(marimoLevel: marimoLevelValue, marimoEmotion: marimoEmotionValue))),
-    BlocProvider<MarimoHpBloc>(create: (_) => MarimoHpBloc(int.parse(marimoItemsMap["marimoHp"] ?? "40"))),
-    BlocProvider<MarimoExpBloc>(create: (_) => MarimoExpBloc(int.parse(marimoItemsMap["marimoExp"] ?? "0"))), //ok
-    BlocProvider<CoinBloc>(create: (_) => CoinBloc(int.parse(marimoItemsMap["coin"] ?? "0"))), //ok
-    BlocProvider<SoundBloc>(create: (_) => SoundBloc(false)),     // ok null 또는 0이면 true , 1이면 false
-    BlocProvider<EnvironmentTrashBloc>(create: (_) => EnvironmentTrashBloc(isCheckedOnOffSound)), // ok  null 또는 0이면 true , 1이면 false
-    BlocProvider<EnvironmentHumidityBloc>(create: (_) => EnvironmentHumidityBloc(50)),
-    BlocProvider<EnvironmentTemperatureBloc>(create: (_) => EnvironmentTemperatureBloc(16)), //ok
-  ],
+        BlocProvider<ShopBloc>(create: (_) => ShopBloc(const ItemState())),
+        BlocProvider<EnemyBloc>(
+            create: (_) => EnemyBloc(gameDataInfoMap["isCheckedEnemy"])),
+        BlocProvider<LanguageManageBloc>(
+            create: (_) => LanguageManageBloc(languageManageValue)),
+        BlocProvider<TimeCheckBloc>(
+            create: (_) => TimeCheckBloc(gameDataInfoMap["lastDay"])),
+
+        /// 체크 초기값 설정 고민 해보자 marimoItemsMap["lastDay"]??
+        BlocProvider<BackgroundBloc>(
+            create: (_) => BackgroundBloc(backgroundValue)),
+        //marimoItemsMap["background"]??"
+        BlocProvider<MarimoBloc>(
+            create: (_) => MarimoBloc(MarimoState(
+                marimoLevel: marimoLevelValue,
+                marimoEmotion: marimoEmotionValue))),
+        BlocProvider<MarimoHpBloc>(
+            create: (_) => MarimoHpBloc(gameDataInfoMap["marimoHp"])),
+        BlocProvider<MarimoExpBloc>(
+            create: (_) => MarimoExpBloc(gameDataInfoMap["marimoExp"])),
+        //ok
+        BlocProvider<CoinBloc>(
+            create: (_) => CoinBloc(gameDataInfoMap["coin"])),
+        //ok
+        BlocProvider<SoundBloc>(create: (_) => SoundBloc(true)),
+        // ok null 또는 0이면 true , 1이면 false
+        BlocProvider<EnvironmentTrashBloc>(
+            create: (_) =>
+                EnvironmentTrashBloc(gameDataInfoMap["isCheckedOnOffSound"])),
+        // ok  null 또는 0이면 true , 1이면 false
+        BlocProvider<EnvironmentHumidityBloc>(
+            create: (_) => EnvironmentHumidityBloc(50)),
+        BlocProvider<EnvironmentTemperatureBloc>(
+            create: (_) => EnvironmentTemperatureBloc(16)),
+        //ok
+      ],
       child: RestartWidget(
         child: App(
           initRoute: initRoute,
@@ -82,9 +112,10 @@ Future<void> main() async {
 }
 
 class App extends StatelessWidget {
-  App({Key? key, required this.initRoute, required this.marimoName}) : super(key: key);
+  App({Key? key, required this.initRoute, required this.marimoName})
+      : super(key: key);
   final String initRoute;
-  final String? marimoName;
+  final String marimoName;
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +155,13 @@ class App extends StatelessWidget {
         initialRoute: initRoute,
         routes: {
           '/main_scene': (context) => MainGamePage(
-             marimoName: marimoName??"",
+                marimoName: marimoName,
                 game: game,
               ),
           '/init_setting': (context) => InitSettingPage(),
         },
         home: MainGamePage(
-          marimoName: marimoName??"",
+          marimoName: marimoName,
           game: game,
         ),
         navigatorKey: navigatorKey,

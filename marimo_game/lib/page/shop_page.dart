@@ -4,13 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
+import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/bloc/component_bloc/enemy_bloc.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/components/alert/game_alert.dart';
 import 'package:marimo_game/const/constant.dart';
-
-import '../app_manage/local_repository.dart';
 import '../bloc/marimo_bloc/marimo_exp_bloc.dart';
 import '../components/marimo.dart';
 import '../marimo_game_world.dart';
@@ -25,30 +24,27 @@ class ShopPage extends StatelessWidget {
   final String categoryName;
 
   Future<List<dynamic>> getData() async {
-    List<dynamic> list = [];
     Iterable<dynamic> result = [];
     try {
-      final dynamicButtonList = await rootBundle
-          .loadString('assets/marimo_shop.json')
-          .then((jsonStr) => jsonStr);
-      final data = await json.decode(dynamicButtonList);
-      list = data["data"];
+      final list = await LocalDataManager().getShopData();
       result = list.where((element) => element["category"] == categoryName);
+      print("data ===> ${list["shopData"]}");
     } catch (e) {
       log(e.toString());
     }
     return result.toList();
   }
 
-  Future<void> setLocalItem(String key) async => await LocalRepository()
-      .setKeyValue(key: key, value: "true");
+  Future<void> setLocalItem(String key) async =>{};
+  //await LocalRepository()
+   //   .setKeyValue(key: key, value: "true");
 
   Future<bool> checkHaveMyItem(String key) async {
-  String? _name = await LocalRepository().getValue(key: key);
+ // String? _name = await LocalRepository().getValue(key: key);
 
-   bool result = await LocalRepository().getValue(key: key) == "1";
-  print("$_name----$result");
-    return result;
+  // bool result = await LocalRepository().getValue(key: key) == "1";
+  //print("$_name----$result");
+    return true;
   }
 
   @override
@@ -66,6 +62,7 @@ class ShopPage extends StatelessWidget {
               } else {
                 controller.jumpTo(0);
                 List<dynamic> list = snapshot.requireData;
+                print("list");
                 List<Widget> listView = List.generate(list.length, (index) {
                   var name = list[index]["name"];
                   var isCheckedMoving =
@@ -114,9 +111,10 @@ class ShopPage extends StatelessWidget {
                               .changeLifeCycleToExp(
                                   game.marimoBloc.state.marimoLevel) ==
                           MarimoExpState.level5;
-                      final isCheckedEnemy = await LocalRepository()
-                              .getValue(key: "isCheckedEnemy") ==
-                          "1";
+                      final isCheckedEnemy = true;
+                          // await LocalRepository()
+                          //     .getValue(key: "isCheckedEnemy") ==
+                          // "1";
 
                       if (isPulledExp && isCheckedEnemy) {
                         await levelUpMarimo(
@@ -143,7 +141,8 @@ class ShopPage extends StatelessWidget {
                               .add(MarimoEmotionChanged(MarimoEmotion.normal));
                         }
                       } else if (category == "deco") {
-                       final checkHaveMyItem = await LocalRepository().getValue(key: name) ;
+                       final checkHaveMyItem = true;
+                       //await LocalRepository().getValue(key: name) ;
                             //== "true";
                        print("test $checkHaveMyItem , $name ");
                         if(checkHaveMyItem =="1"){
@@ -157,6 +156,7 @@ class ShopPage extends StatelessWidget {
                           game.shopBloc.add(BuyEvent(
                               name: name, isCheckedMoving: isCheckedMoving));
                           setLocalItem(name);
+                          list[index]["enabled"] = "false";
                           GameAlert().showInfoDialog(
                             title: "아이템 구매",
                             contents: name + Environment().config.constant.getItemMsg,

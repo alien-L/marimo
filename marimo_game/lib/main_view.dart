@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'app_manage/local_repository.dart';
 import 'package:http/http.dart' as http;
 
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
@@ -27,7 +26,6 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   late PermissionStatus statusTest;
-  LocalRepository localRepository = LocalRepository();
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
@@ -126,12 +124,6 @@ class _MainViewState extends State<MainView> {
       } else {
         checkPermissionForAos();
       }
-     // final isFirstInstallApp = await _getFirstInstallStatus();
-    //  if (!mounted) return;
-      // if (isFirstInstallApp) {
-      //   getMyEnvironment();
-      //   // 첫 앱 설치
-      // }
     });
   }
 
@@ -141,19 +133,6 @@ class _MainViewState extends State<MainView> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Future<bool> _getFirstInstallStatus() async {
-    LocalRepository localRepository = LocalRepository(); // 로컬 저장소
-    final isFirst = await localRepository.getValue(key: "firstInstall");
-    if (isFirst == null) {
-      await localRepository.setKeyValue(key: 'firstInstall', value: '1');
-      print("첫 앱 설치 ");
-      return true;
-    } else {
-      print("아니다 ");
-      return false;
-    }
   }
 
   /// iOS 권한 체크 메소드

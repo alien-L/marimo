@@ -1,7 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../app_manage/local_repository.dart';
-
 class EnvironmentTemperatureBloc extends Cubit<double>{
   EnvironmentTemperatureBloc(super.initialState);
 
@@ -16,8 +13,8 @@ class EnvironmentTemperatureBloc extends Cubit<double>{
   // 20-23사이 , 35도 넘으면 죽음 )
  // 얼음 추가  - 더운물
   Future<void> updateLocalValue() async {
-    await LocalRepository().setKeyValue(
-        key: "temperature", value: state.toString());
+    // await LocalRepository().setKeyValue(
+    //     key: "temperature", value: state.toString());
   }
 
 }

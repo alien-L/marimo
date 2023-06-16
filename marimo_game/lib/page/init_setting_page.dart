@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/style/color.dart';
-import '../app_manage/local_repository.dart';
+import '../app_manage/local_data_manager.dart';
 import '../components/button/common_button.dart';
 import '../components/alert/game_alert.dart';
 
 class InitSettingPage extends StatelessWidget {
   InitSettingPage({Key? key}) : super(key: key);
   final TextEditingController controller = TextEditingController();
+  LocalDataManager localDataManager = LocalDataManager();
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +58,8 @@ class InitSettingPage extends StatelessWidget {
                     color: Color.fromRGBO(200, 139, 251, 1),
                   );
                 } else {
-                  LocalRepository localRepository = LocalRepository();
-                  await localRepository.setKeyValue(
-                      key: 'marimoName', value: name);
-                  await localRepository.setKeyValue(
-                      key: 'firstInstall', value: "1");
+                  localDataManager.setIsFirstInstall();
+                  localDataManager.setValue<String>(key: "marimoName", value: name);
                   Navigator.pushNamed(context, "/main_scene");
                 }
               },
@@ -82,7 +80,7 @@ class InitSettingPage extends StatelessWidget {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(
+            const Center(
               child: Image(
                   width: 100,
                   height: 100,
