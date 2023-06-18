@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame_bloc/flame_bloc.dart';
@@ -7,25 +6,20 @@ import 'package:marimo_game/app_manage/language.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/coin_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/time_check_bloc.dart';
-import 'package:marimo_game/bloc/component_bloc/enemy_bloc.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/components/bar/marimo_exp_bar.dart';
 import 'bloc/environment_bloc/environment_humity_bloc.dart';
 import 'bloc/environment_bloc/environment_temperature_bloc.dart';
-import 'bloc/environment_bloc/environment_trash_bloc.dart';
 import 'bloc/component_bloc/language_manage_bloc.dart';
 import 'bloc/marimo_bloc/marimo_exp_bloc.dart';
 import 'bloc/marimo_bloc/marimo_bloc.dart';
-import 'bloc/marimo_bloc/marimo_hp_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
 import 'components/bar/coin_collector_bar.dart';
 import 'components/bar/environment_state_bar.dart';
-import 'components/bar/marimo_hp_bar.dart';
 import 'components/effects/effects_component.dart';
 import 'components/marin_animal.dart';
 import 'components/moldy.dart';
 import 'components/item.dart';
-import 'components/enemy.dart';
 import 'components/world.dart' as marimoWorld;
 import 'helpers/direction.dart';
 import 'components/coin.dart';
@@ -34,32 +28,23 @@ import 'components/marimo.dart';
 class MarimoWorldGame extends FlameGame
     with PanDetector, HasCollisionDetection {
   late Marimo marimoComponent;
-  late Enemy enemyComponent;
   late Item shopComponent;
   late MarinAnimal marinAnimalsComponent;
 
   late EnvironmentStateBar environmentStateBar;
   late CoinEffectComponent coinEffectComponent;
 
-  // =
-  // CoinEffectComponent(
-  //     componentSize: Vector2.all(16),
-  //     componentPosition: Vector2(65, 50),
-  //     movePostion: Vector2(65, 20),
-  //     imageName: 'coin');
-
-  late HpEffectComponent hpEffectComponent;
   late ExpEffectComponent expEffectComponent;
   late ShopBloc shopBloc;
 
   final MarimoBloc marimoBloc;
-  final MarimoHpBloc marimoHpBloc;
+ // final MarimoHpBloc marimoHpBloc;
   final MarimoExpBloc marimoExpBloc;
 
   final LanguageManageBloc languageManageBloc;
   final EnvironmentHumidityBloc environmentHumidityBloc;
   final EnvironmentTemperatureBloc environmentTemperatureBloc;
-  final EnvironmentTrashBloc environmentTrashBloc;
+ // final EnvironmentTrashBloc environmentTrashBloc;
 
   final BackgroundBloc backgroundBloc;
 
@@ -67,32 +52,31 @@ class MarimoWorldGame extends FlameGame
   final CoinBloc coinBloc;
   final TimeCheckBloc timeCheckBloc;
 
-  final EnemyBloc enemyBloc;
+  //final EnemyBloc enemyBloc;
 
   final List<Coin> _coinList = List<Coin>.empty(growable: true);
   final List<MoldyComponent> moldyList =
       List<MoldyComponent>.empty(growable: true);
 
   final CoinCollector _coinCollector = CoinCollector();
-  late MarimoHpBar _marimoHpBar;
+
   late MarimoExpBar _marimoExpBar;
 
-  //final coin = CoinDecoComponent();
 
   MarimoWorldGame({
     required this.shopBloc,
     required this.marimoExpBloc,
     required this.languageManageBloc,
-    required this.marimoHpBloc,
+   // required this.marimoHpBloc,
     required this.marimoBloc,
     required this.environmentHumidityBloc,
     required this.environmentTemperatureBloc,
-    required this.environmentTrashBloc,
+    //required this.environmentTrashBloc,
     required this.soundBloc,
     required this.coinBloc,
     required this.backgroundBloc,
     required this.timeCheckBloc,
-    required this.enemyBloc,
+  //  required this.enemyBloc,
   });
 
   void onJoypadDirectionChanged(Direction direction) {
@@ -124,9 +108,9 @@ class MarimoWorldGame extends FlameGame
           FlameBlocProvider<MarimoBloc, MarimoState>.value(
             value: marimoBloc,
           ),
-          FlameBlocProvider<MarimoHpBloc, int>.value(
-            value: marimoHpBloc,
-          ),
+          // FlameBlocProvider<MarimoHpBloc, int>.value(
+          //   value: marimoHpBloc,
+          // ),
           FlameBlocProvider<MarimoExpBloc, int>.value(
             value: marimoExpBloc,
           ),
@@ -136,9 +120,9 @@ class MarimoWorldGame extends FlameGame
           FlameBlocProvider<EnvironmentHumidityBloc, int>.value(
             value: environmentHumidityBloc,
           ),
-          FlameBlocProvider<EnvironmentTrashBloc, bool>.value(
-            value: environmentTrashBloc,
-          ),
+          // FlameBlocProvider<EnvironmentTrashBloc, bool>.value(
+          //   value: environmentTrashBloc,
+          // ),
           FlameBlocProvider<SoundBloc, bool>.value(value: soundBloc),
           FlameBlocProvider<CoinBloc, int>.value(value: coinBloc),
           FlameBlocProvider<TimeCheckBloc, bool>.value(value: timeCheckBloc),
@@ -149,7 +133,6 @@ class MarimoWorldGame extends FlameGame
               levelName: marimoLevel.name, emotionName: marimoEmotion.name),
           environmentStateBar = EnvironmentStateBar(),
           _marimoExpBar = MarimoExpBar(size),
-          _marimoHpBar = MarimoHpBar(size),
           coinEffectComponent =
           CoinEffectComponent(
               componentSize: Vector2.all(16),
@@ -158,9 +141,7 @@ class MarimoWorldGame extends FlameGame
               ),
           MarimoController(),
           ItemController(),
-          EnemyController(),
           CoinController(),
-          HpController(),
           ExpController(),
         ],
       ),
@@ -183,17 +164,6 @@ class MarimoWorldGame extends FlameGame
       }
     }
 
-    // if (!environmentTrashBloc.state) {
-    //   for (var i = 0; i < 10; i++) {
-    //     final tempTrash = TrashComponent(size);
-    //     trashList.add(tempTrash);
-    //     add(tempTrash);
-    //   }
-    // }
-
-    // 동전 남아있게 만들기
-    //add(_marimoHpBar); // 마리모 상태바
-    //add(_marimoExpBar);
 
     marimoComponent.position = Vector2(100, 300);
     soundBloc.bgmPlay();

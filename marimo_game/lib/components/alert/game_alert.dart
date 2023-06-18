@@ -1,18 +1,13 @@
 import 'dart:async';
 import 'dart:io';
-
-import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:marimo_game/app_manage/restart_widget.dart';
+import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/marimo_game_world.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../app_manage/environment/environment.dart';
 import '../../app_manage/language.dart';
 import '../../const/constant.dart';
 import '../../main.dart';
 import '../../page/shop_page.dart';
-import '../../style/color.dart';
 import '../button/common_button.dart';
 
 class GameAlert {
@@ -82,8 +77,6 @@ class GameAlert {
           labelStyle: TextStyle(fontSize: 15, color: Color(0xffcfcfcf)),
         ),
         onChanged: (Language? newValue) {
-          //RestartWidget.restartApp(navigatorKey.currentContext!, newValue!);
-          print(newValue);
         },
         items: [Language.en, Language.jp, Language.ko]
             .map<DropdownMenuItem<Language>>((Language i) {
@@ -177,6 +170,7 @@ class GameAlert {
                           imageName: 'x',
                           height: 20,
                           onTap: () {
+                       //     game.paused = false;
                             Navigator.of(context).pop();
                           },
                         ),
@@ -196,18 +190,16 @@ class GameAlert {
                   imageName: "music",
                   onTap: () {
                     bool isSwitched = game.soundBloc.state;
-                    //  String soundImageName = game.soundBloc.state?"music":"stop";
+                    String soundImageName = game.soundBloc.state?"music":"stop";
 
                     if (isSwitched) {
                       game.soundBloc.onBgmSound();
-                      print("여기");
                     } else {
-                      print("여기 1");
                       game.soundBloc.offBgmSound();
                     }
 
-                    ///    game.soundBloc.onOffSound(!game.soundBloc.state);
-                    // showInfoDialog('사운드 재생', '게임 정보입니당');
+                    game.soundBloc.onOffSound(!game.soundBloc.state);
+                   // showInfoDialog('사운드 재생', '게임 정보입니당');
                   },
                   isSoundButton: true,
                 ), // 소리 체크해서 위젯 편집 하기
@@ -224,7 +216,6 @@ class GameAlert {
                         await launchUrl(Uri.parse(INSTAGRAM_LINK));
                       } else {
                         await launchUrl(Uri.parse(INSTAGRAM_WEB_LINK));
-                        print("여기");
                       }
                     }),
                 buttonWidget(
@@ -243,9 +234,8 @@ class GameAlert {
                     onTap: () {
                       showMiniDialog('초기화', '게임을 초기화 하겠습니까??\n앱이 자동으로 꺼집니다.',
                           () {
-                     //   LocalRepository().getSecureStorage().deleteAll();
+                        LocalDataManager().resetMyGameData();
                         Navigator.pop(context);
-                        //RestartWidget.restartApp(navigatorKey.currentContext!, Language.ko);
                         exit(0);
                       });
                     }),
@@ -270,8 +260,7 @@ class GameAlert {
                             Uri.parse(APPLE_APP_STORE_LINK))) {
                           await launchUrl(Uri.parse(APPLE_APP_STORE_LINK));
                         } else {
-                          await launchUrl(
-                              Uri.parse(APPLE_APP_STORE_WEB_LINK));
+                          await launchUrl(Uri.parse(APPLE_APP_STORE_WEB_LINK));
                         }
                       } else {
                         if (await canLaunchUrl(
@@ -357,7 +346,10 @@ class GameAlert {
   }
 
   Future<void> showInfoDialog(
-      {String title = '', String contents = '',String? assetsName = "", required Color color}) {
+      {String title = '',
+      String contents = '',
+      String? assetsName = "",
+      required Color color}) {
     return showDialog<void>(
         context: navigatorKey.currentContext!,
         barrierDismissible: true, // user must tap button!
@@ -379,13 +371,15 @@ class GameAlert {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                assetsName == ""?const SizedBox():Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image.asset(assetsName??"")),
-                ),
+                assetsName == ""
+                    ? const SizedBox()
+                    : Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: Image.asset(assetsName ?? "")),
+                      ),
                 SizedBox(
                   height: 5,
                 ),
@@ -440,11 +434,10 @@ class GameAlert {
                   return Container(
                       width: 350,
                       height: 500,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.5),
-
-                               borderRadius: BorderRadius.circular(5),
-                            ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                       child: Stack(
                         alignment: Alignment.center,
                         children: [

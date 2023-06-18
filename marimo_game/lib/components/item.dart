@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../marimo_game_world.dart';
 import '../app_manage/local_data_manager.dart';
 import '../bloc/shop_bloc.dart';
@@ -22,7 +18,7 @@ class ItemController extends Component
   Future<void> onNewState(ItemState state) async {
     // 로컬 저장소 값 비교 레벨
 
-    final list = await LocalDataManager().getShopData();
+    final list = await LocalDataManager().getLocalData(key: 'shopData');
     print(list);
     Map<String, dynamic> _map =
         list.firstWhere((element) => element["name"] == state.name);

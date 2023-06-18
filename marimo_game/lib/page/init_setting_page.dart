@@ -11,6 +11,7 @@ class InitSettingPage extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
   LocalDataManager localDataManager = LocalDataManager();
 
+
   @override
   Widget build(BuildContext context) {
     Widget textFormField() {
@@ -30,7 +31,6 @@ class InitSettingPage extends StatelessWidget {
               ),
             ),
             onChanged: (value) {
-              //    print(value);
             },
           ),
           Padding(

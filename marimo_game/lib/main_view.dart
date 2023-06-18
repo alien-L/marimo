@@ -80,7 +80,6 @@ class _MainViewState extends State<MainView> {
       Uri myUri = Uri.parse(url);
       final response = await http.get(myUri);
       final responseJson = json.decode(utf8.decode(response.bodyBytes));
-      print("url ===> 🦄 $responseJson");
       return WeatherInfo.fromJson(responseJson);
     } on SocketException {
       print('No Internet connection 😑');
@@ -93,14 +92,10 @@ class _MainViewState extends State<MainView> {
   }
 
   checkEnvironment(Map<String, dynamic> data) async {
-    print("여기 날씨 ");
     final temperature = data["temp"];
     final humidity = data["humidity"];
     final environmentTemperatureBloc = BlocProvider.of<EnvironmentTemperatureBloc>(context);
     final environmentHumidityBloc = BlocProvider.of<EnvironmentHumidityBloc>(context);
-
-    print("여기 temp 체크 ==> ${temperature.runtimeType.toString()}");
-    print("여기 humidity 체크 ==> ${humidity.runtimeType.toString()}");
     environmentTemperatureBloc.updateState(double.parse(temperature.toString()));
     environmentHumidityBloc.updateState(int.parse(humidity.toString()));
   }

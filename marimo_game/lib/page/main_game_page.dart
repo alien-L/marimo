@@ -22,7 +22,7 @@ class MainGamePage extends StatelessWidget {
   final String marimoName;
 
   Future<String?> getMarimoName() async {
-    final result = await localDataManager.getValue(key: "marimoName");
+    final result = await localDataManager.getValue<String>(key: "marimoName");
     return result;
   }
 
@@ -39,8 +39,8 @@ class MainGamePage extends StatelessWidget {
               children: [
                 TextButton(
                     onPressed: () async {
-                      // await  LocalRepository().setKeyValue(
-                      //     key: "coin", value: "1000000");
+                      await  LocalDataManager().setValue<int>(
+                          key: "coin", value: 1000000);
                       game.coinBloc.emit(1000000);
                     },
                     child: Container(
@@ -49,8 +49,7 @@ class MainGamePage extends StatelessWidget {
                         child: Text('코인 ++ '))),
                 TextButton(
                     onPressed: () {
-
-                      //localRepository.getSecureStorage().deleteAll();
+                      LocalDataManager().resetMyGameData();
                     },
                     child: Container(
                         height: 20, color: Colors.green, child: Text('reset'))),
@@ -60,32 +59,12 @@ class MainGamePage extends StatelessWidget {
               children: [
                 TextButton(
                     onPressed: () async {
-                      game.marimoHpBloc.subtractScore(10);
-                    },
-                    child: Container(
-                        height: 20, color: Colors.green, child: Text('hp --'))),
-                TextButton(
-                    onPressed: () async {
-                      game.marimoHpBloc.addScore(10);
-                    },
-                    child: Container(
-                        height: 20, color: Colors.green, child: Text('hp ++'))),
-                TextButton(
-                    onPressed: () async {
                       game.environmentTemperatureBloc.updateState(25);
                     },
                     child: Container(
                         height: 20,
                         color: Colors.green,
                         child: Text('온도 올라감'))),
-                TextButton(
-                    onPressed: () async {
-                      game.environmentTrashBloc.updateState(false);
-                    },
-                    child: Container(
-                        height: 20,
-                        color: Colors.green,
-                        child: Text('쓰레기 투척'))),
                 TextButton(
                     onPressed: () async {
                       String userJson =
@@ -199,6 +178,7 @@ class MainGamePage extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 3.0),
                   child: topButtonWidget("/game_setting",
                       "${CommonConstant.assetsImageMain}setting.png", 20, () {
+                    //game.paused = true;
                     GameAlert().showSettingsDialog(game);
                   }),
                 ),

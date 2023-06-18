@@ -26,7 +26,7 @@ class CommonConstant{
  static String  assetsImageBar ="bar/";
  static String  assetsImageButtons ="assets/images/buttons/";
  //static String  assetsImageDialog ="assets/images/dialog/";
- static String  assetsImageEnemy ="assets/images/enemy/";
+ //static String  assetsImageEnemy ="assets/images/enemy/";
  static String  assetsImageMain ="assets/images/main/";
  static String  assetsImageMarimo = "assets/images/marimo/";
  static String  assetsImageWaterManagement ="water_management/";

@@ -13,13 +13,17 @@ class MarimoExpBar extends SpriteComponent
     with HasGameRef<MarimoWorldGame>, TapCallbacks {
   MarimoExpBar(Vector2 worldSize) {
     positionType = PositionType.viewport;
-    position = Vector2(worldSize.x - 185, 12);
+    position = Vector2(worldSize.x - 110, 12);
+    //  position = Vector2(worldSize.x - 185, 12);
   }
 
   @override
   void onTapUp(TapUpEvent event) {
-    GameAlert().showInfoDialog(title: "경험치",
-       contents: "${game.marimoExpBloc.state}/${game.marimoExpBloc.getExpMaxCount(game.marimoBloc.state.marimoLevel)}",color:Color.fromRGBO(93,164,255,1) );
+    GameAlert().showInfoDialog(
+        title: "경험치",
+        contents:
+            "${game.marimoExpBloc.state}/${game.marimoExpBloc.getExpMaxCount(game.marimoBloc.state.marimoLevel)}",
+        color: Color.fromRGBO(93, 164, 255, 1));
   }
 
   @override
@@ -69,8 +73,10 @@ class ExpController extends Component
     parent?.add(gameRef.expEffectComponent = ExpEffectComponent(
       imageName: name,
       componentSize: Vector2.all(16),
-      componentPosition: Vector2(game.size.x - 190, 25),
-      movePostion: Vector2(game.size.x - 190, 15),
+      componentPosition: Vector2(game.size.x - 110, 25),
+      movePostion: Vector2(game.size.x - 110, 15),
+      // componentPosition: Vector2(game.size.x - 190, 25),
+      // movePostion: Vector2(game.size.x - 190, 15),
     ));
   }
 }

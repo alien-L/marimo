@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../app_manage/local_data_manager.dart';
 import 'marimo_bloc.dart';
 enum MarimoExpState{level1,level2,level3,level4,level5}
 
@@ -35,8 +36,7 @@ class MarimoExpBloc extends Cubit<int>{
   }
   // local 저장소에 갱신하기
   Future<void> updateLocalScore() async {
-    // await LocalRepository().setKeyValue(
-    //     key: "marimoExp", value: state.toString());
+    await LocalDataManager().setValue<int>(key: "marimoExp", value: state);
 
   }
 

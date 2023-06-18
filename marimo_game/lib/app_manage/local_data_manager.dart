@@ -10,43 +10,35 @@ import '../model/marimo_shop.dart';
 class LocalDataManager {
 
   // 초기 데이터 가져오기
-  Future<dynamic> getInitGameDataInfo() async {
+  Future<dynamic> getInitLocalData({required String path, required String key}) async {
     final dynamicButtonList = await rootBundle
-        .loadString('assets/local_game_info.json')
+        .loadString(path) //'assets/local_game_info.json'
         .then((jsonStr) => jsonStr);
     final data = await json.decode(dynamicButtonList);
-       print("🍎 data==> $data");
-    saveGameData<GameDataInfo>(data);
+    saveLocalData(data: data,key: key);
     return data;
   }
 
   // 로컬에 데이터 저장하기
-  Future<void> saveGameData<T>(data) async {
-    if(T is GameDataInfo){
-      final gameDataInfo = GameDataInfo.fromJson(data);
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('gameDataInfo', jsonEncode(gameDataInfo));
-      print("savedata ${jsonEncode(gameDataInfo)},,,${jsonEncode(gameDataInfo).runtimeType}");
-    }else if(T is Shop){
-      final shopData = Shop.fromJson(data);
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('shop', jsonEncode(shopData));
-      print("savedata // shopData ${jsonEncode(shopData)},,,${jsonEncode(shopData).runtimeType}");
-    }
+  Future<void> saveLocalData({dynamic data, required String key}) async {
+    final gameDataInfo = GameDataInfo.fromJson(data);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, jsonEncode(gameDataInfo));
+    //'gameDataInfo' , shopdata
   }
 
   //로컬에 저장된 데이터 가져오기
-  Future<dynamic> getGameDataInfo() async {
+  Future<dynamic> getLocalData({required String key}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     Map<String, dynamic> gameDataInfoMap = {};
-    final String? gameDataInfoStr = prefs.getString('gameDataInfo');
+    final String? gameDataInfoStr = prefs.getString(key);
     if (gameDataInfoStr != null) {
       gameDataInfoMap = jsonDecode(gameDataInfoStr) as Map<String, dynamic>;
     }
 
     final gameDataInfo = GameDataInfo.fromJson(gameDataInfoMap);
-    print(gameDataInfo);
+  //  print(gameDataInfo);
    // final data = await json.decode(gameDataInfo);
     return gameDataInfoMap;
   }
@@ -85,23 +77,26 @@ class LocalDataManager {
     }
   }
 
-  Future<dynamic> getShopData() async {
-    final dynamicButtonList = await rootBundle
-        .loadString('assets/shop.json')
-        .then((jsonStr) => jsonStr);
-    final data = await json.decode(dynamicButtonList);
-    print("🍎 data==> $data");
-    saveGameData<Shop>(data);
-    return data;
+  // Future<dynamic> getShopData() async {
+  //   final data = await getInitLocalData('assets/shop.json',"shopData");
+  //   return data["shopData"];
+  // }
+
+
+  dynamic getJsonData({required String key}) async {
+    final data = await getLocalData(key: key);
+   return data[key];
   }
 
-
+  // 첫실행 세팅
   Future<bool> getIsFirstInstall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final result = prefs.getBool("isFirstInstall");
     return result ?? true;
   }
 
+
+  // 첫실행 세팅
   Future<bool> setIsFirstInstall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final result = prefs.setBool("isFirstInstall", false);
@@ -109,13 +104,10 @@ class LocalDataManager {
     return result;
   }
 
-  dynamic getJsonData({required String key}) async {
-    final data = await getGameDataInfo();
-   return data[key];
+  // 게임 데이터 삭제 및 리셋
+  Future<void> resetMyGameData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 
-//  setJsonData({})
-
- // readFile() {}
- // writeFile() {}
 }

@@ -3,66 +3,67 @@ class GameDataInfo {
   // 앱을 처음 구동할때 불러와서 로컬에 있나 없나 체크 하기
   GameDataInfo(
       {required this.language,
-      required this.lastDay,
+      required this.endDay,
       required this.background,
       required this.marimoLevel,
-      required this.marimoEmotion,
-      required this.marimoHp,
+    //  required this.marimoEmotion,
+   //   required this.marimoHp,
       required this.marimoExp,
       required this.coin,
       required this.isCheckedOnOffSound,
-      required this.isCleanTrash,
+   //   required this.isCleanTrash,
       required this.humidity,
       required this.temperature,
-      required this.isCheckedEnemy,
-      required this.shopData});
+     // required this.isCheckedEnemy,
+      required this.isToday
+      });
 
-  bool? isCheckedEnemy;
+ // bool? isCheckedEnemy;
+  bool? isToday;
   String? language;
-  bool? lastDay;
+  int? endDay;
   String? background;
   String? marimoLevel;
-  int? marimoHp;
+//  int? marimoHp;
   int? marimoExp;
   int? coin;
   bool? isCheckedOnOffSound;
-  bool? isCleanTrash;
+//  bool? isCleanTrash;
   int? humidity;
   double? temperature;
-  String? marimoEmotion;
-  List<Map<String,dynamic>> shopData;
+ // String? marimoEmotion;
 
   factory GameDataInfo.fromJson(Map<String, dynamic> json) => GameDataInfo(
         language: json['language'] as String?,
-        lastDay: json['lastDay'] as bool?,
+        isToday: json['isToday'] as bool?,
+        endDay: json['endDay'] as int?,
         background: json['background'] as String?,
         marimoLevel: json['marimoLevel'] as String?,
-        marimoHp: json['marimoHp'] as int?,
+        //marimoHp: json['marimoHp'] as int?,
         marimoExp: json['marimoExp'] as int?,
         coin: json['coin'] as int?,
         isCheckedOnOffSound: json['isCheckedOnOffSound'] as bool?,
-        isCleanTrash: json['isCleanTrash'] as bool?,
+       // isCleanTrash: json['isCleanTrash'] as bool?,
         humidity: json['humidity'] as int?,
         temperature: json['temperature'] as double?,
-        isCheckedEnemy: json['isCheckedEnemy'] as bool?,
-        shopData: json['isCheckedEnemy'] as   List<Map<String,dynamic>>,
-        marimoEmotion: json['marimoEmotion'] as String?,
+       // isCheckedEnemy: json['isCheckedEnemy'] as bool?,
+      //  marimoEmotion: json['marimoEmotion'] as String?,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'language': language,
-        'lastDay': lastDay,
+        'endDay': endDay,
+        'isToday': isToday,
         'background': background,
         'marimoLevel': marimoLevel,
-        'marimoHp': marimoHp,
+       // 'marimoHp': marimoHp,
         'marimoExp': marimoExp,
         'coin': coin,
         'isCheckedOnOffSound': isCheckedOnOffSound,
-        'isCleanTrash': isCleanTrash,
+      //  'isCleanTrash': isCleanTrash,
         'humidity': humidity,
         'temperature': temperature,
-        'isCheckedEnemy': isCheckedEnemy,
-        'shopData': shopData,
-        'marimoEmotion': marimoEmotion,
+      //  'isCheckedEnemy': isCheckedEnemy,
+     //   'marimoEmotion': marimoEmotion,
       };
 }

@@ -68,23 +68,16 @@ class Marimo extends SpriteAnimationComponent
 
   @override
   Future<void> onTapUp(TapUpEvent event) async {
-    print("event ==> $event");
+
     await getCoin();
-    //coin.removeFromParent();
-    // 동전 추가해서 넣기
-    // Do something in response to a tap event
   }
 
   @override
   void onTapDown(TapDownEvent event) {
-    // TODO: implement onTapDown
- //   parent?.remove(coin);
     super.onTapDown(event);
   }
   @override
   void onTapCancel(TapCancelEvent event) {
-    // TODO: implement onTapCancel
-    //parent?.remove(coin);
     super.onTapCancel(event);
   }
   @override
@@ -143,9 +136,8 @@ class Marimo extends SpriteAnimationComponent
     bool isPulledExp =
         game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==
             MarimoExpState.level5;
-    final isCheckedEnemy = true;
-        //await LocalRepository().getValue(key: "isCheckedEnemy") == "1";
-    if (isPulledExp && isCheckedEnemy) {
+   // final isCheckedEnemy = await LocalDataManager().getValue<bool>(key: "isCheckedEnemy");
+    if (isPulledExp) {
       await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
     }
     game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
@@ -157,18 +149,7 @@ class Marimo extends SpriteAnimationComponent
     super.onCollision(points, other);
     if (other is Coin) {
       other.removeFromParent();
-    //  game.marimoExpBloc.addScore(game.marimoBloc.state.marimoLevel, 10);
-   //   game.coinBloc.addCoin();
-     // tempCoin++;
      await getCoin();
-      // bool isPulledExp =
-      //     game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==
-      //         MarimoExpState.level5;
-      // final isCheckedVillain = await LocalRepository().getValue(key: "isCheckedVillain") == "1";
-      // if (isPulledExp && isCheckedVillain) {
-      //   await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
-      // }
-      // game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
     }
   }
 
@@ -255,39 +236,44 @@ class Marimo extends SpriteAnimationComponent
 }
 
 levelUpMarimo(MarimoWorldGame game, level) async {
-  game.soundBloc.effectSoundPlay('/music/popup.mp3');
-  // await GameAlert().showMyDialog(
-  //   text: Environment().config.constant.levelUpMsg,
-  //   assetsName: "assets/images/one_marimo.png",
-  //   dialogNumber: "04"
-  // );
+  // if(game.marimoBloc.state.marimoEmotion == MarimoEmotion.cry){
+  //   return;
+  // }else{
+    game.soundBloc.effectSoundPlay('/music/popup.mp3');
+    // await GameAlert().showMyDialog(
+    //   text: Environment().config.constant.levelUpMsg,
+    //   assetsName: "assets/images/one_marimo.png",
+    //   dialogNumber: "04"
+    // );
 
-  GameAlert().showInfoDialog(
-    title: "Level up!!!",
-    contents: Environment().config.constant.levelUpMsg,
-    assetsName: 'assets/images/one_marimo.png',
-    color: Color.fromRGBO(200, 139, 251, 1),
-  );
+    GameAlert().showInfoDialog(
+      title: "Level up!!!",
+      contents: Environment().config.constant.levelUpMsg,
+      assetsName: 'assets/images/one_marimo.png',
+      color: Color.fromRGBO(200, 139, 251, 1),
+    );
 
-  game.marimoExpBloc.initState();
+    game.marimoExpBloc.initState();
 
-  switch (level) {
-    case MarimoLevel.baby: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
-      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.child));
-      break;
-    case MarimoLevel.child:
-      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.child2));
-      break;
-    case MarimoLevel.child2:
-      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.teenager));
-      break;
-    case MarimoLevel.teenager:
-      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.adult));
-      break;
-    case MarimoLevel.adult:
-      game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.oldMan));
-      break;
-    case MarimoLevel.oldMan:
-      break;
+    switch (level) {
+      case MarimoLevel.baby: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
+        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.child));
+        break;
+      case MarimoLevel.child:
+        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.child2));
+        break;
+      case MarimoLevel.child2:
+        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.teenager));
+        break;
+      case MarimoLevel.teenager:
+        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.adult));
+        break;
+      case MarimoLevel.adult:
+        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.oldMan));
+        break;
+      case MarimoLevel.oldMan:
+        break;
+   // }
   }
+
 }

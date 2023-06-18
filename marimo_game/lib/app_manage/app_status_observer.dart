@@ -18,7 +18,6 @@ class _AppStatusObserverState extends State<AppStatusObserver> with WidgetsBindi
   @override
   void initState() {
     super.initState();
-    print("여기 처음 시작 ");
     widget.timeCheckBloc.checkForTomorrow();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -33,14 +32,14 @@ class _AppStatusObserverState extends State<AppStatusObserver> with WidgetsBindi
         // 종료했을때 시간체크 close time
         break;
       case AppLifecycleState.resumed:
-        print("resumed 포그라운드  상태 ");
+       print("resumed 포그라운드  상태 ");
        widget.timeCheckBloc.checkForTomorrow();
         // 시작 했을때 시간체크 start time current time
         break;
       case AppLifecycleState.detached:
       // 종료했을때 시간체크 close time
         widget.timeCheckBloc.updateLocalLastTime(DateTime.now());
-        print("detached 상태 앱 종료 ");
+      print("detached 상태 앱 종료 ");
         // 앱 종료 상태
         break;
       case AppLifecycleState.inactive:

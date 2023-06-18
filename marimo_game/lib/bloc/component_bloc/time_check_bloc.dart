@@ -6,7 +6,7 @@ import '../../app_manage/local_data_manager.dart';
 
 class TimeCheckBloc extends Cubit<bool>{
   TimeCheckBloc(super.initialState);
-
+  LocalDataManager localDataManager = LocalDataManager();
   // 시간차 계산하는 로직 추가 -- 하루 출석 체크 나중에
 
   // 코인 , 환경변화 체크
@@ -15,29 +15,26 @@ class TimeCheckBloc extends Cubit<bool>{
   Future<void> checkForTomorrow() async {
     // 하루만 넘었는지 안넘었는지 체크
     // day가 똑같으면 false , 다르면 무조건 true
-    bool? isFirstInstall = await LocalDataManager().getIsFirstInstall();
+    bool? isFirstInstall = await localDataManager.getIsFirstInstall();
     if(isFirstInstall){
       emit(true);
     }else{
-      final startDay = DateTime.now().day.toString();
-      final endDay = "";
-      //await LocalRepository().getValue(key: "lastDay");
+      final startDay = DateTime.now().day;
+      final endDay = await localDataManager.getValue<int>(key: "endDay");
       if(endDay == null){
         emit(true);
       }else{
         final result = startDay != endDay;
         emit(result);
-        print("$startDay , $endDay , result 시간 ==$result");
       }
     }
     //2번 불러지는 것도 체크
   }
 
   Future<void> updateLocalLastTime(DateTime dateTime) async {
-    // final endDay = await LocalRepository().getValue(key: "lastDay");
-    // final value = dateTime.day.toString() == endDay ? "0":"1";
-    // await LocalRepository().setKeyValue(
-    //     key:"lastDay", value: value);
+    final endDay =  await localDataManager.getValue<int>(key:"endDay");
+    final value = dateTime.day == endDay;
+     await localDataManager.setValue<bool>(key: "isToday", value: value);
   }
 
 }

@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/app_manage/local_data_manager.dart';
-import 'package:marimo_game/bloc/component_bloc/enemy_bloc.dart';
-import 'package:marimo_game/bloc/marimo_bloc/marimo_bloc.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/components/alert/game_alert.dart';
 import 'package:marimo_game/const/constant.dart';
@@ -26,18 +23,18 @@ class ShopPage extends StatelessWidget {
   Future<List<dynamic>> getData() async {
     Iterable<dynamic> result = [];
     try {
-      final list = await LocalDataManager().getShopData();
+      final list = await LocalDataManager().getLocalData(key: 'shopData');
       result = list.where((element) => element["category"] == categoryName);
-      print("data ===> ${list["shopData"]}");
     } catch (e) {
       log(e.toString());
     }
     return result.toList();
   }
 
-  Future<void> setLocalItem(String key) async =>{};
-  //await LocalRepository()
-   //   .setKeyValue(key: key, value: "true");
+  Future<void> setLocalItem(String key) async =>{
+    //await LocalRepository()
+    //   .setKeyValue(key: key, value: "true");
+  };
 
   Future<bool> checkHaveMyItem(String key) async {
  // String? _name = await LocalRepository().getValue(key: key);
@@ -62,7 +59,6 @@ class ShopPage extends StatelessWidget {
               } else {
                 controller.jumpTo(0);
                 List<dynamic> list = snapshot.requireData;
-                print("list");
                 List<Widget> listView = List.generate(list.length, (index) {
                   var name = list[index]["name"];
                   var isCheckedMoving =
@@ -75,7 +71,7 @@ class ShopPage extends StatelessWidget {
                   bool isEnabled = list[index]["enabled"] == "true";
                 //  var bought = checkHaveMyItem(name); // 로컬에서 체크
                   var category = list[index]["category"];
-                  var enemy_name = list[index]["enemy_name"];
+                 // var enemy_name = list[index]["enemy_name"];
                   var image_name = list[index]["image_name"];
                   var environment_category =
                       list[index]["environment_category"];
@@ -102,7 +98,7 @@ class ShopPage extends StatelessWidget {
                     } else {
                       game.soundBloc.effectSoundPlay('/music/click.mp3');
                       game.coinBloc.subtractCoin(int.parse(price));
-                      game.marimoHpBloc.addScore(int.parse(stateScore));
+                     // game.marimoHpBloc.addScore(int.parse(stateScore));
                       game.marimoExpBloc.addScore(
                           game.marimoBloc.state.marimoLevel,
                           int.parse(expScore));
@@ -111,12 +107,12 @@ class ShopPage extends StatelessWidget {
                               .changeLifeCycleToExp(
                                   game.marimoBloc.state.marimoLevel) ==
                           MarimoExpState.level5;
-                      final isCheckedEnemy = true;
+                     // final isCheckedEnemy = true;
                           // await LocalRepository()
                           //     .getValue(key: "isCheckedEnemy") ==
                           // "1";
 
-                      if (isPulledExp && isCheckedEnemy) {
+                      if (isPulledExp ) {
                         await levelUpMarimo(
                             game, game.marimoBloc.state.marimoLevel);
                       }
@@ -126,25 +122,27 @@ class ShopPage extends StatelessWidget {
                             .updateState(40); //곰팡이 유무 체크
                       } else if (environment_category == "temperature") {
                         game.environmentTemperatureBloc.updateState(15);
-                      } else if (environment_category == "food") {
-                        game.environmentTrashBloc.updateState(true);
-                      } else {}
+                      }
+                      // else if (environment_category == "food") {
+                      //   game.environmentTrashBloc.updateState(true);
+                      // } else {}
 
-                      if (category == "enemy") {
-                        final name =
-                            game.enemyComponent.getEnemyInfoMap()["name"];
-                        print("$name 여기 !!!$enemy_name");
-                        if (name == enemy_name) {
-                          game.enemyComponent.removeFromParent();
-                          game.enemyBloc.hideEnemy();
-                          game.marimoBloc
-                              .add(MarimoEmotionChanged(MarimoEmotion.normal));
-                        }
-                      } else if (category == "deco") {
+                      // if (category == "enemy") {
+                      //   final name =
+                      //       game.enemyComponent.getEnemyInfoMap()["name"];
+                      // //  print("$name 여기 !!!$enemy_name");
+                      //   if (name == enemy_name) {
+                      //     game.enemyComponent.removeFromParent();
+                      //     game.enemyBloc.hideEnemy();
+                      //     game.marimoBloc
+                      //         .add(MarimoEmotionChanged(MarimoEmotion.normal));
+                      //   }
+                      // } else
+                        if (category == "deco") {
                        final checkHaveMyItem = true;
                        //await LocalRepository().getValue(key: name) ;
                             //== "true";
-                       print("test $checkHaveMyItem , $name ");
+                   //    print("test $checkHaveMyItem , $name ");
                         if(checkHaveMyItem =="1"){
                           GameAlert().showInfoDialog(
                             title: "ㅠㅠ...",
@@ -183,7 +181,7 @@ class ShopPage extends StatelessWidget {
                           return   Container();
                         } else {
                               final isLocalEnabled = !snapshot.requireData;
-                              print("퓨쳐빌더 $isLocalEnabled");
+                         //     print("퓨쳐빌더 $isLocalEnabled");
                           return Container(
                             decoration: BoxDecoration(
                               border: Border.all(

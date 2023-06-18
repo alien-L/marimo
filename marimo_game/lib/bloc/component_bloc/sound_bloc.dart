@@ -1,11 +1,12 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../app_manage/local_data_manager.dart';
+
 class SoundBloc extends Cubit<bool> {
   SoundBloc(super.initialState){
     FlameAudio.bgm.initialize();
   }
-
 
   void isAllStopSound(bool value) => emit(value);
 
@@ -37,8 +38,9 @@ class SoundBloc extends Cubit<bool> {
   }
 
   Future<void> _updateLocalsoundState() async {
-    // await LocalRepository().setKeyValue(
-    //     key: "isCheckedOnOffSound",  value: state?"0":"1");  // null 또는 0이면 true , 1이면 false
+    await LocalDataManager().setValue<bool>(
+        key: "isCheckedOnOffSound",  value: state);  // null 또는 0이면 true , 1이면 false
+
   }
 
 }

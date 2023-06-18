@@ -2,7 +2,6 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import '../../app_manage/environment/environment.dart';
-import '../../const/constant.dart';
 import '../../marimo_game_world.dart';
 
 class EnvironmentStateBar extends PositionComponent
@@ -21,12 +20,12 @@ class EnvironmentStateBar extends PositionComponent
 
   late TextComponent _humidityTextComponent;
   late TextComponent _temperatureTextComponent;
-  late SpriteComponent _trashChangedSpriteComponent;
+ // late SpriteComponent _trashChangedSpriteComponent;
   final constant = Environment().config.constant;
 
   @override
   Future<void>? onLoad() async {
-    final bool isCleanTrash = game.environmentTrashBloc.state;
+    //final bool isCleanTrash = game.environmentTrashBloc.state;
     final int humidity = game.environmentHumidityBloc.state;
     final double temperature = game.environmentTemperatureBloc.state;
 
@@ -36,15 +35,15 @@ class EnvironmentStateBar extends PositionComponent
     _humidityTextComponent = _textComponent(constant.humidity+humidity.toString()+constant.percent, Vector2(150, 40));
     add(_humidityTextComponent);
 
-    final foodTrashSprite = await game.loadSprite('${CommonConstant.assetsImageWaterManagement}${!isCleanTrash ?  "dirty":"clean" }.png');
-    add(_textComponent(constant.environment,Vector2(205, 40),));
-    _trashChangedSpriteComponent  =  SpriteComponent(
-      sprite: foodTrashSprite,
-      position: Vector2(250, 40),
-      size: Vector2(30, 30),
-      anchor: Anchor.center,
-    );
-    add(_trashChangedSpriteComponent);
+    // final foodTrashSprite = await game.loadSprite('${CommonConstant.assetsImageWaterManagement}${!isCleanTrash ?  "dirty":"clean" }.png');
+    // add(_textComponent(constant.environment,Vector2(205, 40),));
+    // _trashChangedSpriteComponent  =  SpriteComponent(
+    //   sprite: foodTrashSprite,
+    //   position: Vector2(250, 40),
+    //   size: Vector2(30, 30),
+    //   anchor: Anchor.center,
+    // );
+    // add(_trashChangedSpriteComponent);
 
     return super.onLoad();
   }
@@ -75,7 +74,7 @@ class EnvironmentStateBar extends PositionComponent
 
     _temperatureTextComponent.text = constant.temperature+game.environmentTemperatureBloc.state.toString()+constant.celsius;
     _humidityTextComponent.text = constant.humidity+game.environmentHumidityBloc.state.toString()+constant.percent;
-    _trashChangedSpriteComponent.sprite = await game.loadSprite('water_management/${!game.environmentTrashBloc.state?  "dirty":"clean" }.png');
+  //  _trashChangedSpriteComponent.sprite = await game.loadSprite('water_management/${!game.environmentTrashBloc.state?  "dirty":"clean" }.png');
     super.update(dt);
   }
 }
