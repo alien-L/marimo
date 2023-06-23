@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
+import 'package:marimo_game/model/game_data_info.dart';
 import 'package:marimo_game/page/init_setting_page.dart';
 import 'package:marimo_game/page/intro_page.dart';
 import 'package:video_player/video_player.dart';
@@ -20,7 +21,9 @@ import 'bloc/marimo_bloc/marimo_exp_bloc.dart';
 import 'bloc/marimo_bloc/marimo_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
 import 'bloc/component_bloc/time_check_bloc.dart';
+import 'bloc/marimo_bloc/marimo_level_bloc.dart';
 import 'marimo_game_world.dart';
+import 'model/marimo_shop.dart';
 import 'page/main_game_page.dart';
 import 'main_view.dart';
 
@@ -29,21 +32,19 @@ final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   late dynamic gameDataInfoMap;
+  late dynamic shopDataMap;
   late String initRoute;
-  String marimoName = "";
   final localDataManager = LocalDataManager();
-  final isFirstInstall = await localDataManager.getIsFirstInstall();  // 첫 설치 유무 체크
+  final isFirstInstall =
+      await localDataManager.getIsFirstInstall(); // 첫 설치 유무 체크
 
- if (isFirstInstall) {
-    gameDataInfoMap = await localDataManager.getInitLocalData(path: 'assets/local_game_info.json', key: 'gameDataInfo');
-    await localDataManager.getInitLocalData(path: 'assets/shop.json', key: 'shopData');
-    initRoute = '/intro';
-    // 세팅해주기 로컬 저장소
-  } else {
-    gameDataInfoMap = await localDataManager.getLocalData(key: 'gameDataInfo');
-    initRoute = '/main_scene';
-    marimoName = await localDataManager.getValue<String>(key: 'marimoName');
-  }
+  gameDataInfoMap = await localDataManager.getLocalGameData(
+      key: 'gameDataInfo', isFirstInstall: isFirstInstall);
+  shopDataMap = await localDataManager.getShopData(isFirstInstall);
+  initRoute = isFirstInstall ? '/intro' : '/main_scene';
+
+  String marimoName =
+      await localDataManager.getValue<String>(key: 'marimoName') ?? "";
 
   //print("marimoItems ===> ${gameDataInfoMap}");
   final backgroundValue = BackgroundState.values.firstWhere(
@@ -52,9 +53,9 @@ Future<void> main() async {
   final languageManageValue = Language.values.firstWhere(
       (element) => element.name == gameDataInfoMap["language"],
       orElse: () => Language.ko);
-  final marimoLevelValue = MarimoLevel.values.firstWhere(
-      (element) => element.name == gameDataInfoMap["marimoLevel"],
-      orElse: () => MarimoLevel.baby);
+  final marimoAppearanceState = MarimoAppearanceState.values.firstWhere(
+      (element) => element.name == gameDataInfoMap["marimoAppearanceState"],
+      orElse: () => MarimoAppearanceState.baby);
   final marimoEmotionValue = MarimoEmotion.values.firstWhere(
       (element) => element.name == gameDataInfoMap["marimoEmotion"],
       orElse: () => MarimoEmotion.normal);
@@ -73,12 +74,14 @@ Future<void> main() async {
             create: (_) => BackgroundBloc(backgroundValue)),
         BlocProvider<MarimoBloc>(
             create: (_) => MarimoBloc(MarimoState(
-                marimoLevel: marimoLevelValue,
+                marimoAppearanceState: marimoAppearanceState,
                 marimoEmotion: marimoEmotionValue))),
         // BlocProvider<MarimoHpBloc>(
         //     create: (_) => MarimoHpBloc(gameDataInfoMap["marimoHp"])),
         BlocProvider<MarimoExpBloc>(
             create: (_) => MarimoExpBloc(gameDataInfoMap["marimoExp"])),
+        BlocProvider<MarimoLevelBloc>(
+            create: (_) => MarimoLevelBloc(gameDataInfoMap["marimoLevel"]??1)),
         //ok
         BlocProvider<CoinBloc>(
             create: (_) => CoinBloc(gameDataInfoMap["coin"])),
@@ -97,6 +100,7 @@ Future<void> main() async {
       ],
       child: RestartWidget(
         child: App(
+          shopData: shopDataMap,
           initRoute: initRoute,
           marimoName: marimoName,
         ),
@@ -106,16 +110,33 @@ Future<void> main() async {
 }
 
 class App extends StatelessWidget {
-  App({Key? key, required this.initRoute, required this.marimoName})
+  App(
+      {Key? key,
+      required this.initRoute,
+      required this.marimoName,
+      required this.shopData})
       : super(key: key);
   final String initRoute;
   final String marimoName;
+  final dynamic shopData;
 
   @override
   Widget build(BuildContext context) {
     Widget initWidget(Widget child) => AppStatusObserver(
+        marimoLevelBloc: context.read<MarimoLevelBloc>(),
+        languageManageBloc: context.read<LanguageManageBloc>(),
+        backgroundBloc: context.read<BackgroundBloc>(),
+        environmentHumidityBloc: context.read<EnvironmentHumidityBloc>(),
+        environmentTemperatureBloc: context.read<EnvironmentTemperatureBloc>(),
+        //  environmentTrashBloc: context.read<EnvironmentTrashBloc>(),
+        soundBloc: context.read<SoundBloc>(),
+        coinBloc: context.read<CoinBloc>(),
+        //  marimoHpBloc: context.read<MarimoHpBloc>(),
+        marimoBloc: context.read<MarimoBloc>(),
         timeCheckBloc: context.read<TimeCheckBloc>(),
-        // 앱 백그라운드 , 포그라운드 상태 체크
+        marimoExpBloc: context.read<MarimoExpBloc>(),
+        //  enemyBloc: context.read<EnemyBloc>(),
+        shopBloc: context.read<ShopBloc>(),
         child: NetWorkCheckWidget(
           //네트워크 상태 체크
           MainView(
@@ -124,22 +145,23 @@ class App extends StatelessWidget {
         ));
 
     final game = MarimoWorldGame(
+      marimoLevelBloc: context.read<MarimoLevelBloc>(),
       languageManageBloc: context.read<LanguageManageBloc>(),
       backgroundBloc: context.read<BackgroundBloc>(),
       environmentHumidityBloc: context.read<EnvironmentHumidityBloc>(),
       environmentTemperatureBloc: context.read<EnvironmentTemperatureBloc>(),
-    //  environmentTrashBloc: context.read<EnvironmentTrashBloc>(),
+      //  environmentTrashBloc: context.read<EnvironmentTrashBloc>(),
       soundBloc: context.read<SoundBloc>(),
       coinBloc: context.read<CoinBloc>(),
-    //  marimoHpBloc: context.read<MarimoHpBloc>(),
+      //  marimoHpBloc: context.read<MarimoHpBloc>(),
       marimoBloc: context.read<MarimoBloc>(),
       timeCheckBloc: context.read<TimeCheckBloc>(),
       marimoExpBloc: context.read<MarimoExpBloc>(),
-    //  enemyBloc: context.read<EnemyBloc>(),
+      //  enemyBloc: context.read<EnemyBloc>(),
       shopBloc: context.read<ShopBloc>(),
     );
-    final VideoPlayerController controller = VideoPlayerController.asset('assets/videos/intro.mp4');
-
+    final VideoPlayerController controller =
+        VideoPlayerController.asset('assets/videos/intro.mp4');
 
     return initWidget(
       MaterialApp(
@@ -154,8 +176,12 @@ class App extends StatelessWidget {
                 marimoName: marimoName,
                 game: game,
               ),
-          '/intro': (context) =>  IntroPage(controller: controller,),
-          '/init_setting': (context) =>  InitSettingPage(),
+          '/intro': (context) => IntroPage(
+                videoController: controller,
+              ),
+          '/init_setting': (context) => InitSettingPage(
+                videoPlayerController: controller,
+              ),
         },
         home: MainGamePage(
           marimoName: marimoName,
@@ -186,9 +212,9 @@ class MyHttpOverrides extends HttpOverrides {
 //앱 시작 타입      : 강제 업데이트 , 운영 , 정기점검
 
 // 서버 개발
-void checkAppVersion(){} // 앱 버전 체크 => 앱 스토어로 이동
+void checkAppVersion() {} // 앱 버전 체크 => 앱 스토어로 이동
 
-void checkSystemMaintenance(){} // 앱 정기점검
+void checkSystemMaintenance() {} // 앱 정기점검
 
 // 앱 접근 권한 추가
 // 네트워크 체크
