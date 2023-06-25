@@ -2,14 +2,15 @@
   "language": "ko",
   "lastDay": false,
   "background": "normal",
-  "marimoLevel": "baby",
+  "marimoAppearanceState": "baby",
   "marimoHp": 40,
   "marimoExp": 0,
   "coin": 0,
-  "isCheckedOnOffSound": true,
+  "isCheckedOnOffSound": false,
   "isCleanTrash": true,
   "humidity": 50,
   "temperature": 16.00,
   "isCheckedEnemy": true,
-  "marimoEmotion" : "normal"
+  "marimoEmotion" : "normal",
+  "marimoLevel": 1
 }

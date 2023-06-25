@@ -4,9 +4,9 @@ import 'package:video_player/video_player.dart';
 
 import '../components/button/common_button.dart';
 class IntroPage extends StatefulWidget {
-  final VideoPlayerController controller;
-  IntroPage({super.key, required this.controller}){
-    controller.play();
+  final VideoPlayerController videoController;
+  IntroPage({super.key, required this.videoController}){
+    videoController.play();
   }
 
   @override
@@ -17,15 +17,20 @@ class _IntroPageState extends State<IntroPage> {
   @override
   void initState() {
     super.initState();
-    widget.controller.initialize().then((value) => {
-            widget.controller.addListener(() {
+    widget.videoController.initialize().then((value) => {
+            widget.videoController.addListener(() {
               setState(() {
-                if (!widget.controller.value.isPlaying &&
-                    widget.controller.value.isInitialized &&
-                    (widget.controller.value.duration ==
-                        widget.controller.value.position)) {
+                if (!widget.videoController.value.isPlaying &&
+                    widget.videoController.value.isInitialized &&
+                    (widget.videoController.value.duration ==
+                        widget.videoController.value.position)) {
                   setState(() {
-                    Navigator.pushNamed(context, "/init_setting");
+               //    widget.videoController.removeListener(() {
+                     print("여기여기여기기ㅕㅣ");
+                     Navigator.pushNamed(context, "/init_setting");
+                     widget.videoController.pause();
+                  //   widget.videoController.dispose();
+             //      });
                   });
                 }
               });
@@ -41,8 +46,8 @@ class _IntroPageState extends State<IntroPage> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Center(
-            child: widget.controller.value.isInitialized
-                ? VideoPlayer(widget.controller)
+            child: widget.videoController.value.isInitialized
+                ? VideoPlayer(widget.videoController)
                 : Container(),
           ),
         ),
@@ -52,7 +57,12 @@ class _IntroPageState extends State<IntroPage> {
           child: CommonButton(
           width: 70,
           imageName: 'skip',
-          onTap: () =>   Navigator.pushNamed(context, "/init_setting"),
+          onTap: () {
+            Navigator.pushNamed(context, "/init_setting");
+             widget.videoController.pause();
+         //     widget.videoController.dispose();
+
+             }
           ),
         ),
       ]
@@ -62,6 +72,8 @@ class _IntroPageState extends State<IntroPage> {
   @override
   void dispose() {
     super.dispose();
-    widget.controller.dispose();
+    widget.videoController.pause();
+   widget.videoController.dispose();
+    print("dispose@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   }
 }

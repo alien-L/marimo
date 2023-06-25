@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app_manage/local_data_manager.dart';
+import '../../model/game_data_info.dart';
 
 enum BackgroundState { normal, red, }
 //
@@ -23,12 +27,38 @@ class BackgroundBloc extends Cubit<BackgroundState> {
         result = "bg_red";
         break;
     }
-    updateLocalBg();
+   // updateLocalBg();
     return result;
   }
 
   Future<void> updateLocalBg() async {
-    await LocalDataManager().setValue<String>(
-        key: "background", value: state.toString());
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    GameDataInfo gameDataInfo = GameDataInfo();
+    gameDataInfo.background = state.toString();
+   // gameDataInfo.endDay =
+   //  gameDataInfo.endDay =
+   //  gameDataInfo.marimoAppearanceState =
+   //  gameDataInfo.marimoExp =
+   //  gameDataInfo.coin =
+   //  gameDataInfo.isCheckedOnOffSound =
+   //  gameDataInfo.humidity =
+   //  gameDataInfo.temperature =
+   //  gameDataInfo.isToday =
+   //  gameDataInfo.marimoLevel =
+    prefs.setString("gameDataInfo", json.encode(gameDataInfo));
+    // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //
+    // Map<String, dynamic> gameDataInfoMap = {};
+    // final String? gameDataInfoStr = prefs.getString('gameDataInfo');
+    // if (gameDataInfoStr != null) {
+    //   gameDataInfoMap = jsonDecode(gameDataInfoStr) as Map<String, dynamic>;
+    //  // gameDataInfoMap["background"] =
+    // }
+    // await LocalDataManager().setValue<String>(
+    //    key: 'gameDataInfo', value: state.toString());
+  //  final SharedPreferences prefs = await SharedPreferences.getInstance();
+   // prefs.
+   // GameDataInfo.fromJson(json);
+    //await prefs.setString(key, jsonEncode(modelData));
   }
 }

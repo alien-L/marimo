@@ -3,9 +3,13 @@ import 'package:flame/game.dart';
 
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../marimo_game_world.dart';
 
 
-class MarinAnimal extends SpriteAnimationComponent with HasGameRef {
+class MarinAnimal extends SpriteAnimationComponent with HasGameRef<MarimoWorldGame>
+{
   final double speed = 0.8;
   final double changeInterval = 2.5;
   final _time = DateTime.now().millisecondsSinceEpoch / 1000.0;
@@ -23,12 +27,13 @@ class MarinAnimal extends SpriteAnimationComponent with HasGameRef {
   late Vector2 _worldSize;
 
   MarinAnimal(
-      {required Vector2 worldSize,
+      { Key? key,
+        required Vector2 worldSize,
       required this.animalName,
       required this.screenSize,
       required this.imageSize,
       required this.totalNum,
-      }) : super(size: screenSize,) {
+      }) : super(size: screenSize) {
     _worldSize = worldSize;
     _lastChangeDir = _time;
 

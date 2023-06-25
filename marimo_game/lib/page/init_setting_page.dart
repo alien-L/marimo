@@ -2,23 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/style/color.dart';
+import 'package:video_player/video_player.dart';
 import '../app_manage/local_data_manager.dart';
 import '../components/button/common_button.dart';
 import '../components/alert/game_alert.dart';
 
 class InitSettingPage extends StatelessWidget {
-  InitSettingPage({Key? key}) : super(key: key);
-  final TextEditingController controller = TextEditingController();
+  InitSettingPage({Key? key, required this.videoPlayerController}){
+   videoPlayerController.dispose();
+  }
+  final TextEditingController txtController = TextEditingController();
   LocalDataManager localDataManager = LocalDataManager();
-
+  final VideoPlayerController videoPlayerController;
 
   @override
   Widget build(BuildContext context) {
+    
     Widget textFormField() {
       return Column(
         children: [
           TextField(
-            controller: controller,
+            controller: txtController,
             decoration: const InputDecoration(
               labelStyle: TextStyle(color: CommonColor.green),
               hintText: 'please input your marimo name.',
@@ -39,7 +43,7 @@ class InitSettingPage extends StatelessWidget {
               imageName: 'play',
               height: 50,
               onTap: () async {
-                final name = controller.value.text;
+                final name = txtController.value.text;
                 bool specialChar = name.contains(RegExp(r'''
   ^!#%&@`:;-.<>,~\\(\\)\\{\\}\\^\\[\\][*][+][$][|][']["]
   '''));

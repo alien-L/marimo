@@ -3,7 +3,10 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame_bloc/flame_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:marimo_game/components/alert/game_alert.dart';
+import '../../app_manage/environment/environment.dart';
+import '../../bloc/marimo_bloc/marimo_bloc.dart';
 import '../../bloc/marimo_bloc/marimo_exp_bloc.dart';
 import '../../const/constant.dart';
 import '../../marimo_game_world.dart';
@@ -22,15 +25,15 @@ class MarimoExpBar extends SpriteComponent
     GameAlert().showInfoDialog(
         title: "경험치",
         contents:
-            "${game.marimoExpBloc.state}/${game.marimoExpBloc.getExpMaxCount(game.marimoBloc.state.marimoLevel)}",
+            """레벨:${game.marimoLevelBloc.state} \n${game.marimoExpBloc.state}/${game.marimoExpBloc.maxExp(game.marimoLevelBloc.state)}""",
         color: Color.fromRGBO(93, 164, 255, 1));
   }
 
   @override
   Future<void>? onLoad() async {
-    final lifeBarSprite = await game.images.load(
-        '${CommonConstant.assetsImageBar}exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel).name}.png');
-
+    final name = '${CommonConstant.assetsImageBar}exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state).name}.png';
+    final lifeBarSprite = await game.images.load(name);
+     //   print("name => $name");
     sprite = Sprite(
       lifeBarSprite,
     );
@@ -40,8 +43,8 @@ class MarimoExpBar extends SpriteComponent
 
   @override
   Future<void> update(double dt) async {
-    sprite = await game.loadSprite(
-        '${CommonConstant.assetsImageBar}exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel).name}.png');
+    final name = '${CommonConstant.assetsImageBar}exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state).name}.png';
+    sprite = await game.loadSprite(name);
     super.update(dt);
   }
 }
@@ -59,6 +62,23 @@ class ExpController extends Component
     } else {
       name = 'exp_minus';
     }
+
+    if (newState >= game.marimoExpBloc.maxExp(game.marimoLevelBloc.state)) {
+      game.marimoLevelBloc.levelUp();
+      game.marimoExpBloc.initState();
+
+      if(game.marimoLevelBloc.state == 21){
+        levelUpMarimo();
+        // 테스트 필요
+      }else{
+        int previousLevel = game.marimoLevelBloc.state -1;
+        int newLevel = game.marimoLevelBloc.state;
+        GameAlert()
+            .showInfoDialog(color: Colors.indigoAccent, title: "마리모 레벨 [$previousLevel -> $newLevel]", contents: "얏호 >_< ! 마리모 level up!!");
+      }
+
+    }
+
     return previousState != newState;
   }
 
@@ -66,6 +86,25 @@ class ExpController extends Component
   void onRemove() {
     // TODO: implement onRemove
     super.onRemove();
+  }
+
+ Future<void> levelUpMarimo() async {
+    game.soundBloc.effectSoundPlay('/music/popup.mp3');
+    GameAlert().showInfoDialog(
+      title: "마리모 성장",
+      contents: Environment().config.constant.levelUpMsg,
+      assetsName: 'assets/images/one_marimo.png',
+      color: Color.fromRGBO(200, 139, 251, 1),
+    );
+
+    game.marimoExpBloc.initState();
+
+    //  switch (marimoLevel) {
+    //  case 21: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
+    game.marimoBloc
+        .add(const MarimoAppearanceStateChanged(MarimoAppearanceState.child));
+    //     break;
+    //  }
   }
 
   @override

@@ -117,6 +117,7 @@ class GameAlert {
               ),
             ),
           ),
+
           isSoundButton
               ? Container(
                   width: 100,
@@ -126,7 +127,8 @@ class GameAlert {
                     onTap: onTap,
                   ).buttonWidget1(),
                 )
-              : Container(
+              :
+          Container(
                   width: 100,
                   child: CommonButton(
                     imageName: imageName,
@@ -189,16 +191,17 @@ class GameAlert {
                   title: '사운드 재생',
                   imageName: "music",
                   onTap: () {
-                    bool isSwitched = game.soundBloc.state;
+                    print("${game.soundBloc.state}");
+                    bool isSwitched = !game.soundBloc.state;
                     String soundImageName = game.soundBloc.state?"music":"stop";
 
                     if (isSwitched) {
-                      game.soundBloc.onBgmSound();
-                    } else {
                       game.soundBloc.offBgmSound();
+                    } else {
+                      game.soundBloc.onBgmSound();
                     }
-
-                    game.soundBloc.onOffSound(!game.soundBloc.state);
+                    //
+                     //game.soundBloc.onOffSound(!game.soundBloc.state);
                    // showInfoDialog('사운드 재생', '게임 정보입니당');
                   },
                   isSoundButton: true,
@@ -415,6 +418,22 @@ class GameAlert {
           sc.add(categoryName);
         }
 
+    Widget  btn ()=>  ElevatedButton(
+          style:  ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith(
+                    (states) {
+                  // If the button is pressed, return green, otherwise blue
+                  if (states.contains(
+                      MaterialState.pressed)) {
+                    return  const Color.fromRGBO(
+                        17, 220, 252, 1);
+                  }
+                  return const Color.fromRGBO(
+                      17, 220, 252, 1);
+                }),
+          ),
+          onPressed:  () => getShopCategory("marimo"), child: Text("마리모 용품"),);
+
         return AlertDialog(
           shadowColor: Colors.transparent,
           backgroundColor: Colors.transparent,
@@ -469,63 +488,89 @@ class GameAlert {
                             top: 30,
                             child: Row(
                               children: [
-                                SizedBox(
-                                    height: 50,
-                                    child: CommonButton(
-                                      imageName: 'green',
+                               SizedBox(
+                                   width: 110,
+                                   height: 50,
+                                    child:
+                                    CommonButton(
+                                      imageName: 'pupple',
                                       haveMessage: true,
                                       buttonName: "마리모 용품",
                                       onTap: () => getShopCategory("marimo"),
+                                      textStyle: TextStyle(fontSize: 14),
                                     )),
                                 SizedBox(
+                                    width: 110,
                                     height: 50,
                                     child: CommonButton(
-                                      imageName: 'yellow',
+                                      imageName: 'pupple',
                                       haveMessage: true,
                                       buttonName: "수질 관리",
                                       onTap: () =>
                                           getShopCategory("environment"),
+                                      textStyle: TextStyle(fontSize: 14),
+                                    )),
+                                SizedBox(
+                                    width: 110,
+                                    height: 50,
+                                    child: CommonButton(
+                                      imageName: 'pupple',
+                                      haveMessage: true,
+                                      buttonName: "어항 꾸미기",
+                                      onTap: () => getShopCategory("deco"),
+                                      textStyle: TextStyle(fontSize: 14),
                                     )),
                               ],
                             ),
                           ),
                           Positioned(
-                            top: 90,
+                            top: 80,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(
-                                    height: 50,
-                                    child: CommonButton(
-                                      imageName: 'red',
-                                      haveMessage: true,
-                                      buttonName: "어항 꾸미기",
-                                      onTap: () => getShopCategory("deco"),
-                                    )),
-                                SizedBox(
+                                Container(
+                               //   color: Colors.black,
+                                   width: 110,
                                     height: 50,
                                     child: CommonButton(
                                       imageName: 'pupple',
                                       haveMessage: true,
                                       buttonName: "코인 구매",
                                       onTap: () => getShopCategory("coin"),
+                                      textStyle: TextStyle(fontSize: 14),
                                     )),
-                                SizedBox(
+                                Container(
+                                 //   color: Colors.red,
+                                    width: 110,
                                     height: 50,
                                     child: CommonButton(
-                                      imageName: 'sky',
+                                      imageName: 'pupple',
                                       haveMessage: true,
                                       buttonName: "잡화점",
                                       onTap: () => getShopCategory("grocery"),
+                                      textStyle: TextStyle(fontSize: 14),
                                     )),
+                                Container(
+                               //     color: Colors.blue,
+                                    width: 110,
+                                    height: 50,
+                                    // child: CommonButton(
+                                    //   imageName: 'pupple',
+                                    //   haveMessage: true,
+                                    //   buttonName: "광고",
+                                    //   onTap: () => getShopCategory("grocery"),
+                                    //   textStyle: TextStyle(fontSize: 14),
+                                    // )
+                                ),
                               ],
                             ),
                           ),
                           Positioned(
-                            top: 140,
+                            top: 130,
                             child: SizedBox(
-                              width: 350,
-                              height: 250,
+                              width: 345,
+                              height: 280,
                               child: ShopPage(
                                 game: game,
                                 categoryName: snapshot.requireData,
@@ -533,7 +578,7 @@ class GameAlert {
                             ),
                           ),
                           Positioned(
-                            top: 400,
+                            top: 410,
                             child: SizedBox(
                               width: 350,
                               height: 80,

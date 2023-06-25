@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../marimo_game_world.dart';
 import '../app_manage/local_data_manager.dart';
 import '../bloc/shop_bloc.dart';
@@ -11,53 +16,71 @@ class ItemController extends Component
 
   @override
   bool listenWhen(ItemState previousState, ItemState newState) {
+    print("${previousState != newState}");
     return previousState != newState;
   }
 
   @override
   Future<void> onNewState(ItemState state) async {
-    // 로컬 저장소 값 비교 레벨
-
-    final list = await LocalDataManager().getLocalData(key: 'shopData');
-    print(list);
-    Map<String, dynamic> _map =
-        list.firstWhere((element) => element["name"] == state.name);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final shopData = await LocalDataManager().getValue<String>(key: "shopData");
+    List list = json.decode(shopData).cast<Map<String,dynamic>>().toList();
+    Map<String, dynamic> _map = list.firstWhere((element) => element["name"] == state.name);
 
     if(_map["name_en"] == "bubble"){
-      for (var i = 0; i < 3; i++) {
+      parent?.add(gameRef.marinAnimalsComponent = MarinAnimal(
+          worldSize: gameRef.size,
+          animalName: _map["name_en"],
+          screenSize:
+          Vector2.all(30),
+          imageSize: Vector2.all(300),
+          totalNum: 6,
+         key: UniqueKey(),
+      ));
         parent?.add(gameRef.marinAnimalsComponent = MarinAnimal(
             worldSize: gameRef.size,
             animalName: _map["name_en"],
             screenSize:
-            Vector2.all(double.parse(_map["screenSize"] ?? _map["size"])),
-            imageSize: Vector2.all(double.parse(_map["size"])),
-            totalNum: _map["totalNum"][0]));
-        parent?.add(gameRef.marinAnimalsComponent = MarinAnimal(
-            worldSize: gameRef.size,
-            animalName: _map["name_en"],
-            screenSize:
-            Vector2.all(double.parse(_map["screenSize"] ?? _map["size"])),
-            imageSize: Vector2.all(double.parse(_map["size"])),
-            totalNum: _map["totalNum"][1]));
-      }
+            Vector2.all(30),
+            imageSize: Vector2.all(300),
+            totalNum: 11,
+            key: UniqueKey(),
+        ));
+    } else{
+      // print(" _map ==>  ${ _map["image_name"]}");
+      // marinAnimalsComponent = MarinAnimal(
+      //     worldSize: gameRef.size,
+      //     animalName: _map["image_name"],
+      //     screenSize:
+      //     Vector2.all(double.parse(_map["screenSize"].toString())),
+      //     imageSize: Vector2.all(double.parse(_map["size"].toString())),
+      //     totalNum: _map["totalNum"]);
+      // gameRef.marinAnimalsComponent.add( marinAnimalsComponent);
 
-    } else if (state.isCheckedMoving ?? false) {
+      print("여기");
       parent?.add(gameRef.marinAnimalsComponent = MarinAnimal(
           worldSize: gameRef.size,
           animalName: _map["image_name"],
           screenSize:
-              Vector2.all(double.parse(_map["screenSize"] ?? _map["size"])),
-          imageSize: Vector2.all(double.parse(_map["size"])),
-          totalNum: _map["totalNum"]));
-    } else {
-      parent?.add(gameRef.shopComponent = Item(
-          name: _map["image_name"],
-          componentPosition: Vector2(double.parse(_map["position_x"]),
-              game.size.y - double.parse(_map["position_y"])),
-          componentSize: Vector2.all(double.parse(_map["size"]))));
+              Vector2.all(double.parse(_map["screenSize"].toString())),
+          imageSize: Vector2.all(double.parse(_map["size"].toString())),
+          totalNum: _map["totalNum"],
+         key: UniqueKey(),
+      ));
+      // parent?.add(gameRef.shopComponent = Item(
+      //     name: _map["image_name"],
+      //     componentPosition: Vector2(double.parse(_map["position_x"].toString()),
+      //         game.size.y - double.parse(_map["position_y"].toString())),
+      //     componentSize: Vector2.all(double.parse(_map["size"].toString()))));
+    }
+    _map["bought"] = true;
+    _map["su"] = _map["su"]+1;
+    int index =  list.indexWhere((element) => element["name"] == state.name);
+    list[index] = _map;
+    await prefs.setString("shopData", jsonEncode(list));
     }
   }
-}
+
 
 class Item extends PositionComponent
     with HasGameRef<MarimoWorldGame>, FlameBlocListenable<ShopBloc, ItemState> {

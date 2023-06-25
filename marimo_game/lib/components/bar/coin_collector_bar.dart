@@ -19,7 +19,7 @@ class CoinCollector extends PositionComponent with HasGameRef<MarimoWorldGame> {
         style: const TextStyle(
           fontFamily: 'NeoDunggeunmoPro',
           fontSize: 13,
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
       anchor: Anchor.center,

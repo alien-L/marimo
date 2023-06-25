@@ -2,28 +2,28 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app_manage/local_data_manager.dart';
-enum MarimoLevel { zero, baby, child, child2, teenager, adult, oldMan }
-
+enum MarimoAppearanceState { zero, baby, child, }
+//child2, teenager, adult, oldMan
 enum MarimoEmotion { normal, cry }
 
 //enum EnemyLevel { cat, shrimp, snail, dog, shark, marooMarimo }
 
 class MarimoBloc extends Bloc<MarimoEvent, MarimoState> {
   MarimoBloc(super.initialState) {
-    on<MarimoLevelChanged>((event, emit) {
+    on<MarimoAppearanceStateChanged>((event, emit) {
       emit(MarimoState(
-          marimoLevel: event.marimoLevel, marimoEmotion: state.marimoEmotion));
-      updateLocalLevel(event.marimoLevel.name);
+          marimoAppearanceState: event.marimoAppearanceState, marimoEmotion: state.marimoEmotion));
+      updateLocalMarimoAppearance(event.marimoAppearanceState.name);
     });
     on<MarimoEmotionChanged>((event, emit) {
       emit(MarimoState(
-          marimoLevel: state.marimoLevel, marimoEmotion: event.marimoEmotion));
+          marimoAppearanceState: state.marimoAppearanceState, marimoEmotion: event.marimoEmotion));
       updateEmotion(event.marimoEmotion.name);
     });
   }
 
-  Future<void> updateLocalLevel(String level) async {
-  await LocalDataManager().setValue<String>(key: "marimoLevel", value: level);
+  Future<void> updateLocalMarimoAppearance(String marimoAppearanceState) async {
+  await LocalDataManager().setValue<String>(key: "marimoAppearanceState", value: marimoAppearanceState);
   }
 
   Future<void> updateEmotion(String emotion) async {
@@ -32,30 +32,30 @@ class MarimoBloc extends Bloc<MarimoEvent, MarimoState> {
 }
 
 class MarimoState extends Equatable {
-  final MarimoLevel marimoLevel;
+  final MarimoAppearanceState marimoAppearanceState;
   final MarimoEmotion marimoEmotion;
 
   const MarimoState({
-    required this.marimoLevel,
+    required this.marimoAppearanceState,
     required this.marimoEmotion,
   });
 
   @override
-  List<Object?> get props => [marimoLevel, marimoEmotion];
+  List<Object?> get props => [marimoAppearanceState, marimoEmotion];
 }
 
 abstract class MarimoEvent extends Equatable {
   const MarimoEvent();
 }
 
-class MarimoLevelChanged extends MarimoEvent {
+class MarimoAppearanceStateChanged extends MarimoEvent {
 
-  final MarimoLevel marimoLevel;
+  final MarimoAppearanceState marimoAppearanceState;
 
-  const MarimoLevelChanged(this.marimoLevel);
+  const MarimoAppearanceStateChanged(this.marimoAppearanceState);
 
   @override
-  List<Object?> get props => [marimoLevel];
+  List<Object?> get props => [marimoAppearanceState];
 }
 
 class MarimoEmotionChanged extends MarimoEvent {

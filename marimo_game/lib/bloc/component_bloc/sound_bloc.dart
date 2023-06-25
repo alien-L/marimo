@@ -13,13 +13,13 @@ class SoundBloc extends Cubit<bool> {
   void onOffSound(bool value) => emit(value);
 
   void bgmPlay(){
-    if(state){
+    if(!state){
       FlameAudio.bgm.play('/music/bg_3.mp3');
     }
   }
 
   void effectSoundPlay(String mp3Name){
-    if(state){
+    if(!state){
       FlameAudio.play(mp3Name);
     }
   }
@@ -27,13 +27,13 @@ class SoundBloc extends Cubit<bool> {
   void offBgmSound(){
     FlameAudio.bgm.pause();
     FlameAudio.audioCache.clearAll();
-    emit(false);
+    emit(true);
     _updateLocalsoundState();
   }
 
   void onBgmSound(){
     FlameAudio.bgm.resume();
-    emit(true);
+    emit(false);
     _updateLocalsoundState();
   }
 

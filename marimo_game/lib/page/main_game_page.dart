@@ -59,7 +59,7 @@ class MainGamePage extends StatelessWidget {
               children: [
                 TextButton(
                     onPressed: () async {
-                      game.environmentTemperatureBloc.updateState(25);
+                    //  game.environmentTemperatureBloc.updateState(25);
                     },
                     child: Container(
                         height: 20,
@@ -67,15 +67,15 @@ class MainGamePage extends StatelessWidget {
                         child: Text('온도 올라감'))),
                 TextButton(
                     onPressed: () async {
-                      String userJson =
-                          json.encode("assets/local_game_info.json");
-
+                      // String userJson =
+                      //     json.encode("assets/local_game_info.json");
+                      game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 100);
                       //  game.environmentTrashBloc.updateState(false);
                     },
                     child: Container(
                         height: 20,
                         color: Colors.green,
-                        child: Text('json 제어 '))),
+                        child: Text('경험치 테스 '))),
               ],
             ),
           ],

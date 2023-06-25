@@ -29,7 +29,7 @@ class MarimoController extends Component
     // 로컬 저장소 값 비교 레벨
     game.marimoComponent.removeFromParent();
     parent?.add(gameRef.marimoComponent =
-        Marimo(levelName: state.marimoLevel.name, emotionName: state.marimoEmotion.name,));
+        Marimo(marimoAppearanceStateName: state.marimoAppearanceState.name, emotionName: state.marimoEmotion.name,));
   }
 }
 
@@ -55,9 +55,9 @@ class Marimo extends SpriteAnimationComponent
   Direction _collisionDirection = Direction.none;
   bool _hasCollided = false;
   final String? emotionName;
-  final String? levelName;
+  final String? marimoAppearanceStateName;
 
-  Marimo({required this.levelName,required this.emotionName})
+  Marimo({required this.marimoAppearanceStateName,required this.emotionName})
       : super(size: Vector2.all(64.0), position: Vector2(100, 500)) {
     add(RectangleComponent());
     add(RectangleHitbox());
@@ -85,7 +85,7 @@ class Marimo extends SpriteAnimationComponent
     await super.onLoad();
     // final
       _spriteSheet = SpriteSheet(
-        image: await game.images.load('marimo/marimo_${levelName}_$emotionName.png'),
+        image: await game.images.load('marimo/marimo_${marimoAppearanceStateName}_$emotionName.png'),
         srcSize: Vector2(64.0, 64.0),
       ); 
 
@@ -131,15 +131,15 @@ class Marimo extends SpriteAnimationComponent
   }
 
   getCoin() async {
-    game.marimoExpBloc.addScore(game.marimoBloc.state.marimoLevel, 10);
+    game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
     game.coinBloc.addCoin();
-    bool isPulledExp =
-        game.marimoExpBloc.changeLifeCycleToExp(game.marimoBloc.state.marimoLevel) ==
-            MarimoExpState.level5;
-   // final isCheckedEnemy = await LocalDataManager().getValue<bool>(key: "isCheckedEnemy");
-    if (isPulledExp) {
-      await levelUpMarimo(game, game.marimoBloc.state.marimoLevel);
-    }
+   //  bool isPulledExp =
+   //      game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) ==
+   //          MarimoExpState.exp5;
+   // // final isCheckedEnemy = await LocalDataManager().getValue<bool>(key: "isCheckedEnemy");
+   //  if (isPulledExp) {
+   //    await levelUpMarimo(game, game.marimoBloc.state.marimoAppearanceState);
+   //  }
     game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
   }
 
@@ -235,45 +235,22 @@ class Marimo extends SpriteAnimationComponent
   }
 }
 
-levelUpMarimo(MarimoWorldGame game, level) async {
-  // if(game.marimoBloc.state.marimoEmotion == MarimoEmotion.cry){
-  //   return;
-  // }else{
-    game.soundBloc.effectSoundPlay('/music/popup.mp3');
-    // await GameAlert().showMyDialog(
-    //   text: Environment().config.constant.levelUpMsg,
-    //   assetsName: "assets/images/one_marimo.png",
-    //   dialogNumber: "04"
-    // );
-
-    GameAlert().showInfoDialog(
-      title: "Level up!!!",
-      contents: Environment().config.constant.levelUpMsg,
-      assetsName: 'assets/images/one_marimo.png',
-      color: Color.fromRGBO(200, 139, 251, 1),
-    );
-
-    game.marimoExpBloc.initState();
-
-    switch (level) {
-      case MarimoLevel.baby: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
-        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.child));
-        break;
-      case MarimoLevel.child:
-        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.child2));
-        break;
-      case MarimoLevel.child2:
-        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.teenager));
-        break;
-      case MarimoLevel.teenager:
-        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.adult));
-        break;
-      case MarimoLevel.adult:
-        game.marimoBloc.add(const MarimoLevelChanged(MarimoLevel.oldMan));
-        break;
-      case MarimoLevel.oldMan:
-        break;
-   // }
-  }
-
-}
+// levelUpMarimo(MarimoWorldGame game,int level) async {
+//
+//     game.soundBloc.effectSoundPlay('/music/popup.mp3');
+//     GameAlert().showInfoDialog(
+//       title: "마리모가 어린이 마리모로 성장했어요 ㅎㅎ",
+//       contents: Environment().config.constant.levelUpMsg,
+//       assetsName: 'assets/images/one_marimo.png',
+//       color: Color.fromRGBO(200, 139, 251, 1),
+//     );
+//
+//     game.marimoExpBloc.initState();
+//
+//     switch (level) {
+//       case 21: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
+//         game.marimoBloc.add(const MarimoAppearanceStateChanged(MarimoAppearanceState.child));
+//         break;
+//   }
+//
+// }

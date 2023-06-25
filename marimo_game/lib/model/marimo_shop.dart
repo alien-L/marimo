@@ -3,17 +3,20 @@ class Shop {
   String? name;
   String? nameEn;
   String? nameJp;
-  String? price;
-  String? stateScore;
-  String? expScore;
-  String? enabled;
-  String? bought;
+  int? price;
+  int? stateScore;
+  int? expScore;
+  bool? enabled;
+  bool? bought;
   String? category;
   String? imageName;
-  String? isCheckedMoving;
-  String? positionX;
-  String? positionY;
-  String? size;
+  bool? isCheckedMoving;
+  double? positionX;
+  double? positionY;
+  int? size;
+  int? screenSize;
+  int? su;
+  dynamic totalNum;
 
   Shop(
       {this.name,
@@ -29,7 +32,11 @@ class Shop {
       this.isCheckedMoving,
       this.positionX,
       this.positionY,
-      this.size});
+      this.size,
+      this.screenSize,
+      this.totalNum,
+      this.su
+      });
 
   factory Shop.fromJson(Map<String, dynamic> json) => Shop(
         name: json['name'],
@@ -46,10 +53,13 @@ class Shop {
         positionX: json['position_x'],
         positionY: json['position_y'],
         size: json['size'],
+        screenSize: json['screenSize'],
+        totalNum: json['totalNum'],
+        su: json["su"]
       );
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['name'] = name;
     data['name_en'] = nameEn;
     data['name_jp'] = nameJp;
@@ -64,6 +74,10 @@ class Shop {
     data['position_x'] = positionX;
     data['position_y'] = positionY;
     data['size'] = size;
+    data['screenSize'] = screenSize;
+    data['totalNum'] = totalNum;
+    data["su"] = su;
     return data;
   }
 }
+

@@ -7,16 +7,12 @@ class ShopBloc extends Bloc<ShopEvent, ItemState> {
     on<BuyEvent>((event, emit) {
       emit(ItemState(
           name: event.name,
-          isCheckedMoving: event.isCheckedMoving));
-      updateLocalItemValue(event.name);
-    });
-  }
+          isCheckedMoving: event.isCheckedMoving,
+          buyItem: event.buyItem,
+          key: event.key
+      ));
 
-  // 초기에 설정 해주기 world에
-  // 값이 null이 아니면 shop disabled 처리하기
-  Future<void> updateLocalItemValue(String name) async {
-    // await LocalRepository()
-    //     .setKeyValue(key: name, value: "1"); // 1 존재함
+    });
   }
 }
 
@@ -26,17 +22,19 @@ class ItemState extends Equatable {
   final Vector2? size;
   final bool? isCheckedMoving;
   final bool? buyItem;
+  final dynamic key;
 
-  const ItemState( {
+  const ItemState({
     this.name,
     this.position,
     this.size,
     this.isCheckedMoving,
     this.buyItem,
+    this.key,
   });
 
   @override
-  List<Object?> get props => [name, position, size, isCheckedMoving,buyItem];
+  List<Object?> get props => [name, position, size, isCheckedMoving,buyItem,key];
 }
 
 abstract class ShopEvent extends Equatable {
@@ -46,11 +44,15 @@ abstract class ShopEvent extends Equatable {
 class BuyEvent extends ShopEvent {
   BuyEvent(
       {required this.name,
-      required this.isCheckedMoving});
+      required this.isCheckedMoving,
+        required this.buyItem,
+        required this.key, });
 
   final String name;
   final bool isCheckedMoving;
+  final bool? buyItem;
+  final dynamic key;
 
   @override
-  List<Object?> get props => [name,  isCheckedMoving];
+  List<Object?> get props => [name,isCheckedMoving,buyItem,key];
 }

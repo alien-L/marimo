@@ -15,7 +15,8 @@ class CommonButton extends StatelessWidget {
       required this.imageName,
       this.onTap,
       this.haveMessage = false,
-      this.buttonName
+      this.buttonName,
+      this.textStyle
       })
       : super(key: key);
   final double? width;
@@ -25,6 +26,7 @@ class CommonButton extends StatelessWidget {
   final GestureTapCallback? onTap;
   final bool haveMessage;
   final String? buttonName;
+  final TextStyle? textStyle;
 
 //assets/images/buttons/
   Widget buttonWidget() {
@@ -46,16 +48,20 @@ class CommonButton extends StatelessWidget {
                           alignment: Alignment.center,
                           children: [
                             Positioned(
-                              child: Image(
-                                fit: BoxFit.fill,
-                                image: AssetImage(snapshot.requireData
-                                    ? "assets/images/buttons/${imageName}_on.png"
-                                    : "assets/images/buttons/${imageName}_off.png"),
+                              child: SizedBox(
                                 width: width,
                                 height: height,
+                                child: Image(
+                                  fit: BoxFit.fill,
+                                  image: AssetImage(snapshot.requireData
+                                      ? "assets/images/buttons/${imageName}_on.png"
+                                      : "assets/images/buttons/${imageName}_off.png",),
+                                  width: width,
+                                  height: height,
+                                ),
                               ),
                             ),
-                            Positioned(child: Text(buttonName??"",style: TextStyle(fontSize: 15),)),
+                            Positioned(child: Text(buttonName??"",style: textStyle,)),
                           ],
                         )
                       : Image(
@@ -119,3 +125,4 @@ class CommonButton extends StatelessWidget {
     return buttonWidget();
   }
 }
+
