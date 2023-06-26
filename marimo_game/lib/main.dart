@@ -11,7 +11,6 @@ import 'app_manage/environment/environment.dart';
 import 'app_manage/language.dart';
 import 'app_manage/network_check_widget.dart';
 import 'app_manage/restart_widget.dart';
-import 'bloc/buy_bloc.dart';
 import 'bloc/component_bloc/background_bloc.dart';
 import 'bloc/component_bloc/coin_bloc.dart';
 import 'bloc/component_bloc/language_manage_bloc.dart';
@@ -60,7 +59,6 @@ Future<void> main() async {
   Environment().initConfig(languageManageValue); // 언어 환경 세팅
   runApp(MultiBlocProvider(
       providers: [
-        BlocProvider<BuyBloc>(create: (_) => BuyBloc(false)),
         BlocProvider<ShopBloc>(create: (_) => ShopBloc(const ItemState())),
         // BlocProvider<EnemyBloc>(
         //     create: (_) => EnemyBloc(gameDataInfoMap["isCheckedEnemy"]??false)),
@@ -84,7 +82,7 @@ Future<void> main() async {
         BlocProvider<CoinBloc>(
             create: (_) => CoinBloc(gameDataInfoMap["coin"]??0)),
         //ok
-        BlocProvider<SoundBloc>(create: (_) => SoundBloc(gameDataInfoMap["isCheckedOnOffSound"]??false)), //에러
+        BlocProvider<SoundBloc>(create: (_) => SoundBloc(false)), //에러
         // ok null 또는 0이면 true , 1이면 false
         // BlocProvider<EnvironmentTrashBloc>(
         //     create: (_) =>
@@ -120,13 +118,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //soundBloc.bgmPlay();
 
-    // Widget soundCheckWidget(){
-    //
-    //   return BlocListener(listener: listener)
-    // }
-    //
     Widget initWidget(Widget child) => AppStatusObserver(
         marimoLevelBloc: context.read<MarimoLevelBloc>(),
         languageManageBloc: context.read<LanguageManageBloc>(),
@@ -164,7 +156,6 @@ class App extends StatelessWidget {
       marimoExpBloc: context.read<MarimoExpBloc>(),
       //  enemyBloc: context.read<EnemyBloc>(),
       shopBloc: context.read<ShopBloc>(),
-      buyBloc: context.read<BuyBloc>()
     );
     final VideoPlayerController controller =
         VideoPlayerController.asset('assets/videos/intro.mp4');

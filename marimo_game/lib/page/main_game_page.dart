@@ -28,6 +28,8 @@ class MainGamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
     void onJoypadDirectionChanged(Direction direction) {
       game.onJoypadDirectionChanged(direction);
       game.soundBloc.effectSoundPlay('/music/bubble.mp3');

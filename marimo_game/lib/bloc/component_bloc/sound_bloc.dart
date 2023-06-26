@@ -8,19 +8,17 @@ class SoundBloc extends Cubit<bool> {
     FlameAudio.bgm.initialize();
   }
 
-  void isAllStopSound(bool value) => emit(value);
-
-  void onOffSound(bool value) => emit(value);
-
   void bgmPlay(){
     if(!state){
-      FlameAudio.bgm.play('/music/bg_3.mp3');
+      var list = ['1','2','3'];
+      var randomItem = (list..shuffle()).first;
+      FlameAudio.bgm.play('/music/bg_$randomItem.mp3',);
     }
   }
 
   void effectSoundPlay(String mp3Name){
     if(!state){
-      FlameAudio.play(mp3Name);
+      FlameAudio.play(mp3Name,volume: 3);
     }
   }
 
@@ -28,19 +26,10 @@ class SoundBloc extends Cubit<bool> {
     FlameAudio.bgm.pause();
     FlameAudio.audioCache.clearAll();
     emit(true);
-    _updateLocalsoundState();
   }
 
   void onBgmSound(){
     FlameAudio.bgm.resume();
     emit(false);
-    _updateLocalsoundState();
   }
-
-  Future<void> _updateLocalsoundState() async {
-    await LocalDataManager().setValue<bool>(
-        key: "isCheckedOnOffSound",  value: state);  // null 또는 0이면 true , 1이면 false
-
-  }
-
 }

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../marimo_game_world.dart';
 import '../app_manage/local_data_manager.dart';
 import '../bloc/shop_bloc.dart';
+import 'food.dart';
 import 'marin_animal.dart';
 
 class ItemController extends Component
@@ -46,18 +47,12 @@ class ItemController extends Component
             totalNum: 11,
             key: UniqueKey(),
         ));
-    } else{
-      // print(" _map ==>  ${ _map["image_name"]}");
-      // marinAnimalsComponent = MarinAnimal(
-      //     worldSize: gameRef.size,
-      //     animalName: _map["image_name"],
-      //     screenSize:
-      //     Vector2.all(double.parse(_map["screenSize"].toString())),
-      //     imageSize: Vector2.all(double.parse(_map["size"].toString())),
-      //     totalNum: _map["totalNum"]);
-      // gameRef.marinAnimalsComponent.add( marinAnimalsComponent);
-
-      print("여기");
+    }else if(_map["name_en"] == "marimofood"){
+      parent?.add(gameRef.food = Food(
+        gameRef.size,
+        key: UniqueKey(),
+      ));
+    }else{
       parent?.add(gameRef.marinAnimalsComponent = MarinAnimal(
           worldSize: gameRef.size,
           animalName: _map["image_name"],
@@ -67,11 +62,6 @@ class ItemController extends Component
           totalNum: _map["totalNum"],
          key: UniqueKey(),
       ));
-      // parent?.add(gameRef.shopComponent = Item(
-      //     name: _map["image_name"],
-      //     componentPosition: Vector2(double.parse(_map["position_x"].toString()),
-      //         game.size.y - double.parse(_map["position_y"].toString())),
-      //     componentSize: Vector2.all(double.parse(_map["size"].toString()))));
     }
     _map["bought"] = true;
     _map["su"] = _map["su"]+1;

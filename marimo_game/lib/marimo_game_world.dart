@@ -1,12 +1,10 @@
 import 'dart:convert';
-
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:marimo_game/app_manage/language.dart';
-import 'package:marimo_game/bloc/buy_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/coin_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/time_check_bloc.dart';
@@ -14,18 +12,15 @@ import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/components/bar/marimo_exp_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_manage/local_data_manager.dart';
-import 'bloc/environment_bloc/environment_humity_bloc.dart';
-import 'bloc/environment_bloc/environment_temperature_bloc.dart';
 import 'bloc/component_bloc/language_manage_bloc.dart';
 import 'bloc/marimo_bloc/marimo_exp_bloc.dart';
 import 'bloc/marimo_bloc/marimo_bloc.dart';
 import 'bloc/component_bloc/sound_bloc.dart';
 import 'bloc/marimo_bloc/marimo_level_bloc.dart';
 import 'components/bar/coin_collector_bar.dart';
-import 'components/bar/environment_state_bar.dart';
 import 'components/effects/effects_component.dart';
+import 'components/food.dart';
 import 'components/marin_animal.dart';
-import 'components/moldy.dart';
 import 'components/item.dart';
 import 'components/world.dart' as marimoWorld;
 import 'helpers/direction.dart';
@@ -35,6 +30,7 @@ import 'components/marimo.dart';
 class MarimoWorldGame extends FlameGame
     with PanDetector, HasCollisionDetection {
   late Marimo marimoComponent;
+  late Food food;
   late Item shopComponent;
   late MarinAnimal marinAnimalsComponent;
 
@@ -51,7 +47,6 @@ class MarimoWorldGame extends FlameGame
   final LanguageManageBloc languageManageBloc;
 
   final BackgroundBloc backgroundBloc;
-  final BuyBloc buyBloc;
 
   final SoundBloc soundBloc;
   final CoinBloc coinBloc;
@@ -69,7 +64,6 @@ class MarimoWorldGame extends FlameGame
   late MarimoExpBar _marimoExpBar;
 
   MarimoWorldGame({
-    required this.buyBloc,
     required this.marimoLevelBloc,
     required this.shopBloc,
     required this.marimoExpBloc,
@@ -99,10 +93,9 @@ class MarimoWorldGame extends FlameGame
   Future<void> onLoad() async {
     await add(marimoWorld.World(backgroundBloc));
     add(ScreenHitbox());
-
+    soundBloc.bgmPlay();
     final marimoAppearanceState = marimoBloc.state.marimoAppearanceState;
     final marimoEmotion = marimoBloc.state.marimoEmotion;
-
     await add(
       FlameMultiBlocProvider(
         providers: [
@@ -156,6 +149,7 @@ class MarimoWorldGame extends FlameGame
 
     add(_coinCollector);
     int num = 20;
+    // soundBloc.bgmPlay();
 
     for (var i = 0; i < num; i++) {
       final tempCoin = Coin(size);
@@ -163,7 +157,6 @@ class MarimoWorldGame extends FlameGame
       add(tempCoin);
     }
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final shopData = await LocalDataManager().getValue<String>(key: "shopData");
     List list = json.decode(shopData).cast<Map<String, dynamic>>().toList();
 
@@ -191,33 +184,28 @@ class MarimoWorldGame extends FlameGame
               totalNum: 11,
               key: UniqueKey(),
             ));
-          } else {
-            print("map name ${_map["image_name"]} --- ${item["su"]}");
-            add(marinAnimalsComponent = MarinAnimal(
-              worldSize: size,
-              animalName: _map["image_name"],
-              screenSize:
-                  Vector2.all(double.parse(_map["screenSize"].toString())),
-              imageSize: Vector2.all(double.parse(_map["size"].toString())),
-              totalNum: _map["totalNum"],
-              key: UniqueKey(),
-            ));
-            // parent?.add(marinAnimalsComponent = MarinAnimal(
-            //   worldSize: size,
-            //   animalName: _map["image_name"],
-            //   screenSize:
-            //   Vector2.all(double.parse(_map["screenSize"].toString())),
-            //   imageSize: Vector2.all(double.parse(_map["size"].toString())),
-            //   totalNum: _map["totalNum"],
-            //   key: UniqueKey(),
-            // ));
+          }else {
+            if(item["name_en"] == "marimofood"){
+              if(item["su"] < 0){
+                return;
+              }else{
+                print("su   === ${item["su"]}");
+                add(food = Food(size, key: UniqueKey(),));
+              }
+            }else{
+              add(marinAnimalsComponent = MarinAnimal(
+                worldSize: size,
+                animalName: _map["image_name"],
+                screenSize:
+                Vector2.all(double.parse(_map["screenSize"].toString())),
+                imageSize: Vector2.all(double.parse(_map["size"].toString())),
+                totalNum: _map["totalNum"],
+                key: UniqueKey(),
+              ));
+            }
           }
         }
-
-        //  print("_map ==> $_map");
-
         marimoComponent.position = Vector2(100, 300);
-        soundBloc.bgmPlay();
       }
     }
   }

@@ -10,7 +10,7 @@ class GameDataInfo {
       //   required this.marimoHp,
       this.marimoExp,
       this.coin,
-      this.isCheckedOnOffSound,
+     // this.isCheckedOnOffSound,
       //   required this.isCleanTrash,
       this.humidity,
       this.temperature,
@@ -29,7 +29,7 @@ class GameDataInfo {
       int? marimoExp;
       int? coin;
       int? marimoLevel;
-      bool? isCheckedOnOffSound;
+     // bool? isCheckedOnOffSound;
 
     //  bool? isCleanTrash;
       int? humidity;
@@ -46,7 +46,7 @@ class GameDataInfo {
         //marimoHp: json['marimoHp'] as int?,
         marimoExp: json['marimoExp'] as int?,
         coin: json['coin'] as int?,
-        isCheckedOnOffSound: json['isCheckedOnOffSound'] as bool?,
+      //  isCheckedOnOffSound: json['isCheckedOnOffSound'] as bool?,
         // isCleanTrash: json['isCleanTrash'] as bool?,
         humidity: json['humidity'] as int?,
         temperature: json['temperature'] as double?,
@@ -64,7 +64,7 @@ class GameDataInfo {
         // 'marimoHp': marimoHp,
         'marimoExp': marimoExp,
         'coin': coin,
-        'isCheckedOnOffSound': isCheckedOnOffSound,
+       // 'isCheckedOnOffSound': isCheckedOnOffSound,
         //  'isCleanTrash': isCleanTrash,
         'humidity': humidity,
         'temperature': temperature,

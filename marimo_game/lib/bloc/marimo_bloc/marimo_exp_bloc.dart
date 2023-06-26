@@ -10,7 +10,6 @@ class MarimoExpBloc extends Cubit<int>{
   void addScore(int marimoLevel,int addNum){
     emit(state+addNum);
     changeLifeCycleToExp(marimoLevel);
-    updateLocalScore();
   }
 
   void initState()=> emit(0);
@@ -35,16 +34,10 @@ class MarimoExpBloc extends Cubit<int>{
     }
     return result;
   }
-  // local 저장소에 갱신하기
-  Future<void> updateLocalScore() async {
-    await LocalDataManager().setValue<int>(key: "marimoExp", value: state);
-
-  }
 
   _getExpStandardScoreList(int marimoLevel){
     int total = (maxExp(marimoLevel)~/5);
     List<int> resultList = [total*1,total*2,total*3,total*4,total*5];
-    // 계속 반복되는거 체크
     return resultList;
   }
 

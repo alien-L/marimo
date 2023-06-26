@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 
 import '../marimo_game_world.dart';
 
-
 class MarinAnimal extends SpriteAnimationComponent with HasGameRef<MarimoWorldGame>
 {
   final double speed = 0.8;
@@ -117,10 +116,23 @@ class MarinAnimal extends SpriteAnimationComponent with HasGameRef<MarimoWorldGa
       }
     }
 
-    if(_name == "earthworm"){
-      position.x += moveX;
-    }else if(_name == "frog"){
 
+    if(_name == "frog"){
+      position.y = game.size.y -250;
+      position.x += moveX;
+    }
+    else if(_name == "rock"){
+      position.y = game.size.y -90;
+      position.x = 200;
+    }else if(_name == "plant"){
+      position.y = game.size.y -190;
+      position.x = 50;
+    }else if(_name == "mushroom"){
+      position.y = game.size.y -160;
+      position.x = 180;
+    }else if(_name == "snail"){
+      position.y = game.size.y -160;
+      position.x += moveX;
     }else{
       position.x += moveX;
       position.y += moveY;

@@ -10,8 +10,8 @@ import 'package:marimo_game/components/alert/game_alert.dart';
 import 'package:marimo_game/const/constant.dart';
 import 'package:marimo_game/style/color.dart';
 import 'package:marimo_game/style/font.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../marimo_game_world.dart';
+
 class ShopPage extends StatelessWidget {
   ShopPage({Key? key, required this.game, required this.categoryName});
 
@@ -23,7 +23,8 @@ class ShopPage extends StatelessWidget {
     try {
       final shopData =
           await LocalDataManager().getValue<String>(key: "shopData");
-      var list = json.decode(shopData).cast<Map<String, dynamic>>().toList();
+      List list = json.decode(shopData).cast<Map<String, dynamic>>().toList();
+      list.sort((a,b)=>a["price"].compareTo(b["price"]));
       result = list.where((element) => element["category"] == categoryName);
     } catch (e) {
       log(e.toString());

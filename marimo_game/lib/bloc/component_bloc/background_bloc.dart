@@ -27,38 +27,7 @@ class BackgroundBloc extends Cubit<BackgroundState> {
         result = "bg_red";
         break;
     }
-   // updateLocalBg();
     return result;
   }
 
-  Future<void> updateLocalBg() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    GameDataInfo gameDataInfo = GameDataInfo();
-    gameDataInfo.background = state.toString();
-   // gameDataInfo.endDay =
-   //  gameDataInfo.endDay =
-   //  gameDataInfo.marimoAppearanceState =
-   //  gameDataInfo.marimoExp =
-   //  gameDataInfo.coin =
-   //  gameDataInfo.isCheckedOnOffSound =
-   //  gameDataInfo.humidity =
-   //  gameDataInfo.temperature =
-   //  gameDataInfo.isToday =
-   //  gameDataInfo.marimoLevel =
-    prefs.setString("gameDataInfo", json.encode(gameDataInfo));
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //
-    // Map<String, dynamic> gameDataInfoMap = {};
-    // final String? gameDataInfoStr = prefs.getString('gameDataInfo');
-    // if (gameDataInfoStr != null) {
-    //   gameDataInfoMap = jsonDecode(gameDataInfoStr) as Map<String, dynamic>;
-    //  // gameDataInfoMap["background"] =
-    // }
-    // await LocalDataManager().setValue<String>(
-    //    key: 'gameDataInfo', value: state.toString());
-  //  final SharedPreferences prefs = await SharedPreferences.getInstance();
-   // prefs.
-   // GameDataInfo.fromJson(json);
-    //await prefs.setString(key, jsonEncode(modelData));
-  }
 }

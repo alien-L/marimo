@@ -124,8 +124,6 @@ class _AppStatusObserverState extends State<AppStatusObserver>
           listeners: [
             BlocListener<TimeCheckBloc, bool>(
               listener: (context, state) async {
-                // final SharedPreferences prefs = await SharedPreferences.getInstance();
-                //    prefs.setString("gameDataInfo", json.encode(gameDataInfo));
                 setState(() {
                   gameDataInfo.isToday = state;
                 });
@@ -160,24 +158,9 @@ class _AppStatusObserverState extends State<AppStatusObserver>
                 });
               },
             ),
-            // BlocListener<EnvironmentTemperatureBloc, double>(
-            //   listener: (context, state) {
-            //     setState(() {
-            //       gameDataInfo.temperature = state;
-            //     });
-            //   },
-            // ),
-            // BlocListener<EnvironmentHumidityBloc, int>(
-            //   listener: (context, state) {
-            //     setState(() {
-            //       gameDataInfo.humidity = state;
-            //     });
-            //   },
-            // ),
             BlocListener<BackgroundBloc, BackgroundState>(
               listener: (context, state) {
                 setState(() {
-                  print("state ==> $state");
                   gameDataInfo.background = state.name;
                 });
               },
@@ -185,12 +168,7 @@ class _AppStatusObserverState extends State<AppStatusObserver>
             BlocListener<SoundBloc, bool>(
               listener: (context, state) {
                 setState(() {
-                  // gameDataInfo.isCheckedOnOffSound = state;
-                  // if(!state){
-                  //   widget.soundBloc.bgmPlay();
-                  // }else{
-                  //   print("여기 $state");
-                  // }
+           //       gameDataInfo.isCheckedOnOffSound = state;
                 });
               },
             ),
@@ -201,57 +179,9 @@ class _AppStatusObserverState extends State<AppStatusObserver>
                 });
               },
             ),
-            // BlocListener<ShopBloc, ItemState>(
-            //   listener: (context, state) {
-            //     print("shop state==> $state");
-            //     setState(() async {
-            //       final shopData = await LocalDataManager().getValue<String>(key: "shopData");
-            //       List<Shop> list = json.decode(shopData).cast<Map<String,dynamic>>().toList();
-            //       Iterable<dynamic> result = list.where((element) => element.name == state.name);
-            //       //state.name
-            //      // state.buyItem
-            //       print("result ====> ${result.toList()}");
-            //    //   result = list.where((element) => element["category"] == categoryName);
-            //     //  shopDataList.
-            //       // final prefs = await SharedPreferences.getInstance();
-            //       // prefs.setString("gameDataInfo", json.encode(gameDataInfo));
-            //
-            //      // gameDataInfo.isCheckedOnOffSound = state;
-            //     });
-            //   },
-            // ),
           ],
           child: widget.child,
         );
     return result();
   }
 }
-
-// getList() async {
-//   KBox box = KBox(keys: KT_SCODE().toMap().keys.toList());
-//   List<KT_SCODE> data = List<KT_SCODE>();
-//   setState(ViewState.Busy);
-//   // print("--------> ");
-//   total = -1;
-//   data.clear();
-//
-//   dynamic result = await init()
-//       .add(box.map)
-//       .add({
-//     "CLSNAME" : getBean("admin.AdminCP"),
-//     "ACT": "GET_PAGELIST",
-//     "TBL": "T_SCODE",
-//     "CP": cp,
-//     "PageSize": pageSize,
-//     "Order": "scode ASC",
-//     "mcode": "ADJUST"
-//   }).post();
-//
-//   result.forEach((json) {
-//     // print("--------> $json");
-//     if(total == -1)
-//       total = int.parse(json['Total']);
-//     data.add(KT_SCODE.fromJson(json));
-//   });
-//   setState(ViewState.Idle);
-// }

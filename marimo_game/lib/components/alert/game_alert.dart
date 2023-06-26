@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/marimo_game_world.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8,6 +9,7 @@ import '../../app_manage/language.dart';
 import '../../const/constant.dart';
 import '../../main.dart';
 import '../../page/shop_page.dart';
+import '../../style/color.dart';
 import '../button/common_button.dart';
 
 class GameAlert {
@@ -162,7 +164,7 @@ class GameAlert {
               children: [
                 Row(
                   children: [
-                    Expanded(child: Container(width: 100, height: 20)),
+                    Expanded(child: Container(width: 100, height: 20, child: const Text("Ver 1.0.0"),)),
                     //   Container(width: 100,height: 30, color: Colors.amber),
                     Padding(
                       padding: const EdgeInsets.only(right: 20.0),
@@ -222,18 +224,46 @@ class GameAlert {
                       }
                     }),
                 buttonWidget(
-                    title: '앱 정보',
-                    imageName: 'info',
-                    onTap: () {
-                      showInfoDialog(
-                        title: '게임 정보',
-                        contents: '게임 정보입니당',
-                        color: Color.fromRGBO(200, 139, 251, 1),
-                      );
+                    title: '문의하기',
+                    imageName: 'yes',
+                    onTap: () async {
+
+                          final Email email = Email(
+                            body: '',
+                            subject: '[마리모 게임 문의]',
+                            recipients: ['marimo.ceo@gmail.com'],
+                            isHTML: false,
+                          );
+                          try {
+                            await FlutterEmailSender.send(email);
+                          } catch (error) {
+                            String message = "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다. marimo.ceo@gmail.com로 직접 문의 바랍니다.";
+                            showInfoDialog(color: CommonColor.red,title: "",contents: message );
+                          }
+
+                      // showInfoDialog(
+                      //   title: '',
+                      //   contents: '문의하기',
+                      //   color: Color.fromRGBO(200, 139, 251, 1),
+                      //   onTap: () async {
+                      //     final Email email = Email(
+                      //       body: '',
+                      //       subject: '[마리모 게임 문의]',
+                      //       recipients: ['marimo.ceo@gmail.com'],
+                      //       isHTML: false,
+                      //     );
+                      //     try {
+                      //       await FlutterEmailSender.send(email);
+                      //     } catch (error) {
+                      //       String message = "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다. marimo.ceo@gmail.com로 직접 문의 바랍니다.";
+                      //       showInfoDialog(color: CommonColor.red,title: "",contents: message );
+                      //     }
+                      //   }
+                      // );
                     }),
                 buttonWidget(
                     title: '초기화',
-                    imageName: 'yes',
+                    imageName: 'ok',
                     onTap: () {
                       showMiniDialog('초기화', '게임을 초기화 하겠습니까??\n앱이 자동으로 꺼집니다.',
                           () {
@@ -244,7 +274,7 @@ class GameAlert {
                     }),
                 buttonWidget(
                     title: '앱 리뷰쓰기',
-                    imageName: 'ok',
+                    imageName: 'yes',
                     onTap: () async {
                       // 구글 플레이 스토어 링크
                       const GOOGLE_PLAY_STORE_LINK =
@@ -352,6 +382,7 @@ class GameAlert {
       {String title = '',
       String contents = '',
       String? assetsName = "",
+      GestureTapCallback? onTap,
       required Color color}) {
     return showDialog<void>(
         context: navigatorKey.currentContext!,
@@ -396,6 +427,7 @@ class GameAlert {
                     imageName: 'ok',
                     height: 30,
                     onTap: () {
+                      onTap;
                       Navigator.of(context).pop();
                     },
                   ),

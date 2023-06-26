@@ -13,22 +13,13 @@ class MarimoBloc extends Bloc<MarimoEvent, MarimoState> {
     on<MarimoAppearanceStateChanged>((event, emit) {
       emit(MarimoState(
           marimoAppearanceState: event.marimoAppearanceState, marimoEmotion: state.marimoEmotion));
-      updateLocalMarimoAppearance(event.marimoAppearanceState.name);
     });
     on<MarimoEmotionChanged>((event, emit) {
       emit(MarimoState(
           marimoAppearanceState: state.marimoAppearanceState, marimoEmotion: event.marimoEmotion));
-      updateEmotion(event.marimoEmotion.name);
     });
   }
 
-  Future<void> updateLocalMarimoAppearance(String marimoAppearanceState) async {
-  await LocalDataManager().setValue<String>(key: "marimoAppearanceState", value: marimoAppearanceState);
-  }
-
-  Future<void> updateEmotion(String emotion) async {
-   await LocalDataManager().setValue<String>(key: "marimoEmotion", value: emotion);
-  }
 }
 
 class MarimoState extends Equatable {

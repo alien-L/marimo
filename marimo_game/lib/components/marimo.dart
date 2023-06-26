@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -6,11 +8,14 @@ import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:marimo_game/app_manage/environment/environment.dart';
 import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../app_manage/local_data_manager.dart';
 import '../bloc/marimo_bloc/marimo_bloc.dart';
 import '../helpers/direction.dart';
 import '../marimo_game_world.dart';
 import 'coin.dart';
 import 'alert/game_alert.dart';
+import 'food.dart';
 
 class MarimoController extends Component
     with
@@ -133,13 +138,6 @@ class Marimo extends SpriteAnimationComponent
   getCoin() async {
     game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
     game.coinBloc.addCoin();
-   //  bool isPulledExp =
-   //      game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state) ==
-   //          MarimoExpState.exp5;
-   // // final isCheckedEnemy = await LocalDataManager().getValue<bool>(key: "isCheckedEnemy");
-   //  if (isPulledExp) {
-   //    await levelUpMarimo(game, game.marimoBloc.state.marimoAppearanceState);
-   //  }
     game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
   }
 
@@ -150,6 +148,21 @@ class Marimo extends SpriteAnimationComponent
     if (other is Coin) {
       other.removeFromParent();
      await getCoin();
+    }else if(other is Food){
+      other.removeFromParent();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final shopData = await LocalDataManager().getValue<String>(key: "shopData");
+      List list = json.decode(shopData).cast<Map<String,dynamic>>().toList();
+      Map<String, dynamic> _map = list.firstWhere((element) => element["name_en"] == "marimofood");
+      if(_map["su"]>0){
+        _map["su"] = _map["su"]-1;
+      }
+      int index =  list.indexWhere((element) =>  element["name_en"] == "marimofood");
+      list[index] = _map;
+      await prefs.setString("shopData", jsonEncode(list));
+     print("  _map -> ${  _map["su"]}");
+      game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
+      game.soundBloc.effectSoundPlay('/music/food.mp3'); //소리 바꾸기
     }
   }
 
