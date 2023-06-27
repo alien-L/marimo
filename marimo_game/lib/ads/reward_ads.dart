@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:marimo_game/components/alert/game_alert.dart';
 import 'package:marimo_game/style/font.dart';
-
-import '../const/constant.dart';
 import '../marimo_game_world.dart';
 import '../style/color.dart';
 import 'ad_helper.dart';

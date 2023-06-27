@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 //import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/marimo_game_world.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../ads/banner_ads.dart';
 import '../../ads/reward_ads.dart';
 import '../../app_manage/language.dart';
 import '../../const/constant.dart';
 import '../../main.dart';
+import '../../model/game_data_info.dart';
 import '../../page/shop_page.dart';
 import '../../style/color.dart';
 import '../button/common_button.dart';
@@ -161,45 +166,48 @@ class GameAlert {
                     onTap: () async {
                       // 인스타그램이 설치되어 있지 않을 때 웹 링크
                       const INSTAGRAM_WEB_LINK =
-                          'https://www.instagram.com/my_marimo_world/';
+                          'https://www.instagram.com/marimo__official/';
                       const INSTAGRAM_LINK =
-                          'instagram://user?username=my_marimo_world';
+                          'instagram://user?username=marimo__official';
                       if (await canLaunchUrl(Uri.parse(INSTAGRAM_LINK))) {
+                        saveGameDataInfo(game);
                         await launchUrl(Uri.parse(INSTAGRAM_LINK));
                       } else {
+                        saveGameDataInfo(game);
                         await launchUrl(Uri.parse(INSTAGRAM_WEB_LINK));
                       }
                     }),
-                // buttonWidget(
-                //     title: '문의하기',
-                //     imageName: 'yes',
-                //     onTap: () async {
-                //       final Email email = Email(
-                //         body: '',
-                //         subject: '[마리모 게임 문의]',
-                //         recipients: ['marimo.ceo@gmail.com'],
-                //         isHTML: false,
-                //       );
-                //       try {
-                //         await FlutterEmailSender.send(email);
-                //       } catch (error) {
-                //         String message =
-                //             "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다. marimo.ceo@gmail.com로 직접 문의 바랍니다.";
-                //         showInfoDialog(
-                //             color: CommonColor.red,
-                //             title: "",
-                //             contents: message);
-                //       }
-                //     }),
+                buttonWidget(
+                    title: '문의하기',
+                    imageName: 'yes',
+                    onTap: () async {
+                      final Email email = Email(
+                        body: '',
+                        subject: '[마리모 게임 문의]',
+                        recipients: ['marimo.ceo@gmail.com'],
+                        isHTML: false,
+                      );
+                      try {
+                        saveGameDataInfo(game);
+                        await FlutterEmailSender.send(email);
+                      } catch (error) {
+                        String message =
+                            "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다. marimo.ceo@gmail.com로 직접 문의 바랍니다.";
+                        showInfoDialog(
+                            color: CommonColor.red,
+                            title: "",
+                            contents: message);
+                      }
+                    }),
                 buttonWidget(
                     title: '초기화',
                     imageName: 'ok',
                     onTap: () {
-                      showMiniDialog('초기화', '게임을 초기화 하겠습니까??\n앱이 자동으로 꺼집니다.',
+                      showMiniDialog('초기화', '게임을 초기화 하겠습니까??\n앱을 다시 실행해 주세요.',
                           () {
                         LocalDataManager().resetMyGameData();
-                        Navigator.pop(context);
-                        exit(0);
+                       Navigator.pop(context);
+                       // exit(0);
                       });
                     }),
                 // buttonWidget(
@@ -239,6 +247,7 @@ class GameAlert {
                     title: '게임종료',
                     imageName: 'exit',
                     onTap: () {
+                      saveGameDataInfo(game);
                       showMiniDialog('게임종료', '게임을 종료하겠습니까?', () {
                         exit(0);
                       });
@@ -250,6 +259,18 @@ class GameAlert {
         );
       },
     );
+  }
+
+  saveGameDataInfo(MarimoWorldGame game) async {
+    GameDataInfo gameDataInfo = GameDataInfo();
+    final prefs = await SharedPreferences.getInstance();
+    gameDataInfo.marimoAppearanceState = game.marimoBloc.state.marimoAppearanceState.name;
+    gameDataInfo.marimoLevel = game.marimoLevelBloc.state;
+    gameDataInfo.marimoExp = game.marimoExpBloc.state;
+    gameDataInfo.language = game.languageManageBloc.state.name;
+    gameDataInfo.background = game.backgroundBloc.state.name;
+    gameDataInfo.coin = game.coinBloc.state;
+    prefs.setString("gameDataInfo", json.encode(gameDataInfo));
   }
 
   Future<void> showMiniDialog(

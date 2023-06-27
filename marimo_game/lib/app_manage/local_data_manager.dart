@@ -106,5 +106,6 @@ class LocalDataManager {
   Future<void> resetMyGameData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
+    SharedPreferences.setMockInitialValues({});
   }
 }
