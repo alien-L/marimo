@@ -6,12 +6,6 @@ import '../model/marimo_shop.dart';
 
 class LocalDataManager {
 
-  // return data;
-// }else{
-// print("${prefs.getString("shopData")}");
-// return   prefs.getString("shopData");
-// }
-
   //get)  초기 데이터 가져오기
   Future<dynamic> getLocalGameData({required String key,required bool isFirstInstall}) async {
 
@@ -34,35 +28,10 @@ class LocalDataManager {
         gameDataInfoMap = jsonDecode(gameDataInfoStr) as Map<String, dynamic>;
       }
 
-      final gameDataInfo = GameDataInfo.fromJson(gameDataInfoMap);
-      //  print(gameDataInfo);
-      // final data = await json.decode(gameDataInfo);
       return gameDataInfoMap;
     }
   }
 
-  // set ) 로컬에 데이터 저장하기
-  // Future<void> saveLocalData({dynamic data, required String key}) async {
-  //   final modelData = GameDataInfo.fromJson(data);
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString(key, jsonEncode(modelData));
-  // }
-
-  //get ) 로컬에 저장된 데이터 가져오기
-  // Future<dynamic> getLocalData({required String key}) async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //
-  //   Map<String, dynamic> gameDataInfoMap = {};
-  //   final String? gameDataInfoStr = prefs.getString(key);
-  //   if (gameDataInfoStr != null) {
-  //     gameDataInfoMap = jsonDecode(gameDataInfoStr) as Map<String, dynamic>;
-  //   }
-  //
-  //   final gameDataInfo = GameDataInfo.fromJson(gameDataInfoMap);
-  //   //  print(gameDataInfo);
-  //   // final data = await json.decode(gameDataInfo);
-  //   return gameDataInfoMap;
-  // }
 
   getValue<T>({required String key}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -112,10 +81,8 @@ class LocalDataManager {
       });
 
       await prefs.setString("shopData", jsonEncode(shopData));
-      print("dynamicButtonList ${jsonEncode(shopData)}");
     return data;
     }else{
-      print("${prefs.getString("shopData")}");
       return   prefs.getString("shopData");
     }
   }

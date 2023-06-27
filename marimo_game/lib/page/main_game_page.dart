@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,59 +28,10 @@ class MainGamePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     void onJoypadDirectionChanged(Direction direction) {
       game.onJoypadDirectionChanged(direction);
       game.soundBloc.effectSoundPlay('/music/bubble.mp3');
     }
-
-    Widget developerManagerWidget() => Column(
-          children: [
-            Row(
-              children: [
-                TextButton(
-                    onPressed: () async {
-                      await  LocalDataManager().setValue<int>(
-                          key: "coin", value: 1000000);
-                      game.coinBloc.emit(1000000);
-                    },
-                    child: Container(
-                        height: 20,
-                        color: Colors.green,
-                        child: Text('코인 ++ '))),
-                TextButton(
-                    onPressed: () {
-                      LocalDataManager().resetMyGameData();
-                    },
-                    child: Container(
-                        height: 20, color: Colors.green, child: Text('reset'))),
-              ],
-            ),
-            Row(
-              children: [
-                TextButton(
-                    onPressed: () async {
-                    //  game.environmentTemperatureBloc.updateState(25);
-                    },
-                    child: Container(
-                        height: 20,
-                        color: Colors.green,
-                        child: Text('온도 올라감'))),
-                TextButton(
-                    onPressed: () async {
-                      // String userJson =
-                      //     json.encode("assets/local_game_info.json");
-                      game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 100);
-                      //  game.environmentTrashBloc.updateState(false);
-                    },
-                    child: Container(
-                        height: 20,
-                        color: Colors.green,
-                        child: Text('경험치 테스 '))),
-              ],
-            ),
-          ],
-        );
 
     Widget topButtonWidget(String route, String imagePath, double height,
             GestureTapCallback onTap) =>
@@ -111,7 +61,6 @@ class MainGamePage extends StatelessWidget {
                   child: Joypad(onDirectionChanged: onJoypadDirectionChanged),
                 ),
               ),
-              Positioned(bottom: 30, left: 0, child: developerManagerWidget()),
               Positioned(
                 top: 0,
                 child: Padding(
@@ -180,7 +129,6 @@ class MainGamePage extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 3.0),
                   child: topButtonWidget("/game_setting",
                       "${CommonConstant.assetsImageMain}setting.png", 20, () {
-                    //game.paused = true;
                     GameAlert().showSettingsDialog(game);
                   }),
                 ),
@@ -192,3 +140,4 @@ class MainGamePage extends StatelessWidget {
     );
   }
 }
+

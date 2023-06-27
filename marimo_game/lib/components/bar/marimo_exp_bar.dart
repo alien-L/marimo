@@ -33,7 +33,6 @@ class MarimoExpBar extends SpriteComponent
   Future<void>? onLoad() async {
     final name = '${CommonConstant.assetsImageBar}exp_bar_${game.marimoExpBloc.changeLifeCycleToExp(game.marimoLevelBloc.state).name}.png';
     final lifeBarSprite = await game.images.load(name);
-     //   print("name => $name");
     sprite = Sprite(
       lifeBarSprite,
     );
@@ -69,10 +68,10 @@ class ExpController extends Component
 
       if(game.marimoLevelBloc.state == 21){
         levelUpMarimo();
-        // 테스트 필요
       }else{
         int previousLevel = game.marimoLevelBloc.state -1;
         int newLevel = game.marimoLevelBloc.state;
+
         GameAlert()
             .showInfoDialog(color: Colors.indigoAccent, title: "마리모 레벨 [$previousLevel -> $newLevel]", contents: "얏호 >_< ! 마리모 level up!!");
       }
@@ -99,23 +98,17 @@ class ExpController extends Component
 
     game.marimoExpBloc.initState();
 
-    //  switch (marimoLevel) {
-    //  case 21: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
-    game.marimoBloc
-        .add(const MarimoAppearanceStateChanged(MarimoAppearanceState.child));
-    //     break;
-    //  }
+    game.marimoBloc.add(const MarimoAppearanceStateChanged(MarimoAppearanceState.child));
   }
 
   @override
   void onNewState(int state) {
+
     parent?.add(gameRef.expEffectComponent = ExpEffectComponent(
       imageName: name,
       componentSize: Vector2.all(16),
       componentPosition: Vector2(game.size.x - 110, 25),
       movePostion: Vector2(game.size.x - 110, 15),
-      // componentPosition: Vector2(game.size.x - 190, 25),
-      // movePostion: Vector2(game.size.x - 190, 15),
     ));
   }
 }

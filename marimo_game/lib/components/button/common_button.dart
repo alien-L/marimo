@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/sound_bloc.dart';
 
-import '../../const/constant.dart';
-
 class CommonButton extends StatelessWidget {
   CommonButton(
       {Key? key,
@@ -28,7 +26,6 @@ class CommonButton extends StatelessWidget {
   final String? buttonName;
   final TextStyle? textStyle;
 
-//assets/images/buttons/
   Widget buttonWidget() {
     return StreamBuilder<bool>(
         stream: controller.stream,

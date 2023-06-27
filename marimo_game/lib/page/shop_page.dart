@@ -27,7 +27,6 @@ class ShopPage extends StatelessWidget {
       list.sort((a,b)=>a["price"].compareTo(b["price"]));
       result = list.where((element) => element["category"] == categoryName);
     } catch (e) {
-      log(e.toString());
     }
     return result.toList();
   }

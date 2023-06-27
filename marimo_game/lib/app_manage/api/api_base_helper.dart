@@ -49,8 +49,6 @@ class ApiBaseHelper {
   }
 
   dynamic _returnResponse(http.Response response) {
-    //log("response status code : ${response.statusCode}, body : ${response.body.toString()}");
-
     switch (response.statusCode) {
       case 200:
         var responseJson = json.decode(utf8.decode(response.bodyBytes));

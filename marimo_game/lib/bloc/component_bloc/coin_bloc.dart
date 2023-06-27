@@ -1,8 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../app_manage/local_data_manager.dart';
-
-
 class CoinBloc extends Cubit<int>{
   CoinBloc(super.initialState);
 
@@ -17,8 +14,8 @@ class CoinBloc extends Cubit<int>{
   }
 
   // 코인 더하기
-  void addCoin(){
-    emit(state+1);
+  void addCoin(int coin){
+    emit(state+coin);
   }
 
   // 코인 빼기

@@ -1,28 +1,21 @@
 import 'dart:convert';
-import 'dart:math';
-import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:marimo_game/app_manage/environment/environment.dart';
-import 'package:marimo_game/bloc/marimo_bloc/marimo_exp_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app_manage/local_data_manager.dart';
 import '../bloc/marimo_bloc/marimo_bloc.dart';
 import '../helpers/direction.dart';
 import '../marimo_game_world.dart';
 import 'coin.dart';
-import 'alert/game_alert.dart';
 import 'food.dart';
 
 class MarimoController extends Component
     with
         HasGameRef<MarimoWorldGame>,
         FlameBlocListenable<MarimoBloc, MarimoState>{
-
-  MarimoController();
 
   @override
   bool listenWhen(MarimoState previousState, MarimoState newState) {
@@ -137,7 +130,7 @@ class Marimo extends SpriteAnimationComponent
 
   getCoin() async {
     game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
-    game.coinBloc.addCoin();
+    game.coinBloc.addCoin(1);
     game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
   }
 
@@ -160,7 +153,6 @@ class Marimo extends SpriteAnimationComponent
       int index =  list.indexWhere((element) =>  element["name_en"] == "marimofood");
       list[index] = _map;
       await prefs.setString("shopData", jsonEncode(list));
-     print("  _map -> ${  _map["su"]}");
       game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
       game.soundBloc.effectSoundPlay('/music/food.mp3'); //소리 바꾸기
     }
@@ -247,23 +239,3 @@ class Marimo extends SpriteAnimationComponent
     position.add(Vector2(delta * _playerSpeed, 0));
   }
 }
-
-// levelUpMarimo(MarimoWorldGame game,int level) async {
-//
-//     game.soundBloc.effectSoundPlay('/music/popup.mp3');
-//     GameAlert().showInfoDialog(
-//       title: "마리모가 어린이 마리모로 성장했어요 ㅎㅎ",
-//       contents: Environment().config.constant.levelUpMsg,
-//       assetsName: 'assets/images/one_marimo.png',
-//       color: Color.fromRGBO(200, 139, 251, 1),
-//     );
-//
-//     game.marimoExpBloc.initState();
-//
-//     switch (level) {
-//       case 21: // 경험치로 변경하기 , 어린이 마리모 레벨 체크하기 초기값
-//         game.marimoBloc.add(const MarimoAppearanceStateChanged(MarimoAppearanceState.child));
-//         break;
-//   }
-//
-// }

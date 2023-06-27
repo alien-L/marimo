@@ -1,17 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/marimo_game_world.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../ads/ad_helper.dart';
 import '../../ads/banner_ads.dart';
 import '../../ads/reward_ads.dart';
 import '../../app_manage/language.dart';
 import '../../const/constant.dart';
-import '../../in_app_purchase/in_app_purchase.dart';
 import '../../main.dart';
 import '../../page/shop_page.dart';
 import '../../style/color.dart';
@@ -19,63 +16,6 @@ import '../button/common_button.dart';
 
 class GameAlert {
   GameAlert();
-
-  // Future<void> showMyDialog({
-  //   required String text,
-  //   required String assetsName,
-  //   required String dialogNumber,
-  // }) async {
-  //   return showDialog<void>(
-  //     context: navigatorKey.currentContext!,
-  //     barrierDismissible: false, // user must tap button!
-  //     builder: (BuildContext context) {
-  //       return GestureDetector(
-  //         onTap: () {
-  //           Navigator.of(context).pop();
-  //         },
-  //         child: AlertDialog(
-  //           backgroundColor: Colors.transparent,
-  //           titlePadding: EdgeInsets.zero,
-  //           contentPadding: EdgeInsets.zero,
-  //           iconPadding: EdgeInsets.zero,
-  //           insetPadding: EdgeInsets.zero,
-  //           actionsPadding: EdgeInsets.zero,
-  //           buttonPadding: EdgeInsets.zero,
-  //           content: Stack(
-  //             children: [
-  //               Align(
-  //                   alignment: Alignment.center,
-  //                   child: Padding(
-  //                     padding: const EdgeInsets.all(8.0),
-  //                     child: Image.asset(
-  //                         "${CommonConstant.assetsImageDialog}dialog_$dialogNumber.png"),
-  //                   )),
-  //               Align(
-  //                 alignment: Alignment.center,
-  //                 child: SizedBox(
-  //                     width: 80,
-  //                     height: 80,
-  //                     child: assetsName != "" ? Image.asset(assetsName) : null),
-  //               ),
-  //               Align(
-  //                 alignment: Alignment.center,
-  //                 child: Padding(
-  //                   padding: EdgeInsets.only(
-  //                     top: MediaQuery.of(context).size.height / 2 - 300,
-  //                   ),
-  //                   child: Text(
-  //                     text,
-  //                     style: const TextStyle(color: Colors.black),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   Widget dropDownButton() => DropdownButtonFormField<Language>(
         decoration: const InputDecoration(
@@ -181,7 +121,6 @@ class GameAlert {
                           imageName: 'x',
                           height: 20,
                           onTap: () {
-                            //     game.paused = false;
                             Navigator.of(context).pop();
                           },
                         ),
@@ -200,7 +139,6 @@ class GameAlert {
                   title: '사운드 재생',
                   imageName: "music",
                   onTap: () {
-                    print("${game.soundBloc.state}");
                     bool isSwitched = !game.soundBloc.state;
                     String soundImageName =
                         game.soundBloc.state ? "music" : "stop";
@@ -232,47 +170,27 @@ class GameAlert {
                         await launchUrl(Uri.parse(INSTAGRAM_WEB_LINK));
                       }
                     }),
-                buttonWidget(
-                    title: '문의하기',
-                    imageName: 'yes',
-                    onTap: () async {
-                      final Email email = Email(
-                        body: '',
-                        subject: '[마리모 게임 문의]',
-                        recipients: ['marimo.ceo@gmail.com'],
-                        isHTML: false,
-                      );
-                      try {
-                        await FlutterEmailSender.send(email);
-                      } catch (error) {
-                        String message =
-                            "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다. marimo.ceo@gmail.com로 직접 문의 바랍니다.";
-                        showInfoDialog(
-                            color: CommonColor.red,
-                            title: "",
-                            contents: message);
-                      }
-
-                      // showInfoDialog(
-                      //   title: '',
-                      //   contents: '문의하기',
-                      //   color: Color.fromRGBO(200, 139, 251, 1),
-                      //   onTap: () async {
-                      //     final Email email = Email(
-                      //       body: '',
-                      //       subject: '[마리모 게임 문의]',
-                      //       recipients: ['marimo.ceo@gmail.com'],
-                      //       isHTML: false,
-                      //     );
-                      //     try {
-                      //       await FlutterEmailSender.send(email);
-                      //     } catch (error) {
-                      //       String message = "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다. marimo.ceo@gmail.com로 직접 문의 바랍니다.";
-                      //       showInfoDialog(color: CommonColor.red,title: "",contents: message );
-                      //     }
-                      //   }
-                      // );
-                    }),
+                // buttonWidget(
+                //     title: '문의하기',
+                //     imageName: 'yes',
+                //     onTap: () async {
+                //       final Email email = Email(
+                //         body: '',
+                //         subject: '[마리모 게임 문의]',
+                //         recipients: ['marimo.ceo@gmail.com'],
+                //         isHTML: false,
+                //       );
+                //       try {
+                //         await FlutterEmailSender.send(email);
+                //       } catch (error) {
+                //         String message =
+                //             "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다. marimo.ceo@gmail.com로 직접 문의 바랍니다.";
+                //         showInfoDialog(
+                //             color: CommonColor.red,
+                //             title: "",
+                //             contents: message);
+                //       }
+                //     }),
                 buttonWidget(
                     title: '초기화',
                     imageName: 'ok',
@@ -290,16 +208,16 @@ class GameAlert {
                 //     onTap: () async {
                 //       // 구글 플레이 스토어 링크
                 //       const GOOGLE_PLAY_STORE_LINK =
-                //           'market://details?id=io.github.Antodo';
+                //           'market://details?id=com.alien-L.marimoGame';
                 //       // 구글 플레이 스토어가 설치되어 있지 않을 때 웹 링크
                 //       const GOOGLE_PLAY_STORE_WEB_LINK =
-                //           'https://play.google.com/store/apps/details?id=io.github.Antodo';
+                //           'https://play.google.com/store/apps/details?id=com.alien-L.marimoGame';
                 //       // 애플 앱 스토어 링크
                 //       const APPLE_APP_STORE_LINK =
-                //           'itms-apps://itunes.apple.com/us/app/id1553604322?mt=8';
+                //           'itms-apps://itunes.apple.com/us/app/?mt=8';
                 //       // 애플 앱 스토어가 설치되어 있지 않을 때 웹 링크
                 //       const APPLE_APP_STORE_WEB_LINK =
-                //           'https://apps.apple.com/us/app/antodo-%EC%8B%AC%ED%94%8C%ED%95%9C-%EC%86%90%EA%B8%80%EC%94%A8-%ED%95%A0%EC%9D%BC-%EA%B3%84%ED%9A%8D-%EB%A9%94%EB%AA%A8/id1553604322';
+                //           'https://apps.apple.com/us/app/antodo-%EC%8B%AC%ED%94%8C%ED%95%9C-%EC%86%90%EA%B8%80%EC%94%A8-%ED%95%A0%EC%9D%BC-%EA%B3%84%ED%9A%8D-%EB%A9%94%EB%AA%A8/';
                 //       if (Platform.isIOS) {
                 //         if (await canLaunchUrl(
                 //             Uri.parse(APPLE_APP_STORE_LINK))) {
@@ -457,42 +375,11 @@ class GameAlert {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         final categorySc = StreamController<String>.broadcast();
-        final adsSc = StreamController<Page>.broadcast();
+        final adsSc = StreamController<bool>.broadcast();
 
-        getShopCategory(
-          String categoryName,
-        ) {
-          adsSc.add(Page.shop);
+        getShopCategory(String categoryName) {
           categorySc.add(categoryName);
-        }
-
-        Widget pageWidget(Page page, String _categoryName) {
-          if (page == Page.ads) {
-            return const SizedBox(
-              width: 345,
-              height: 280,
-              child: InAppPurchasePage(),
-            );
-          } else if (page == Page.inAppPurchase) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 30.0),
-              child: SizedBox(
-                  width: 200,
-                  height: 50,
-                  child: RewardAds(
-                    game: game,
-                  )),
-            );
-          } else {
-            return SizedBox(
-              width: 345,
-              height: 280,
-              child: ShopPage(
-                game: game,
-                categoryName: _categoryName,
-              ),
-            );
-          }
+          adsSc.add(false);
         }
 
         return AlertDialog(
@@ -511,150 +398,140 @@ class GameAlert {
                 if (!snapshot.hasData || snapshot.hasError) {
                   return Container();
                 } else {
-                  return StreamBuilder<Page>(
-                      stream: adsSc.stream,
-                      initialData: Page.shop,
-                      builder: (context, pageSnapshot) {
-                        if (!snapshot.hasData || snapshot.hasError) {
-                          return Container();
-                        } else {
-                          return Container(
-                              width: 350,
-                              height: 500,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Positioned(
-                                    top: 5,
-                                    right: 0,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 5.0),
-                                      child: Container(
-                                        alignment: Alignment.topLeft,
-                                        child: CommonButton(
-                                          imageName: 'x',
-                                          height: 20,
-                                          onTap: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
+                  return StreamBuilder<bool>(
+                    stream: adsSc.stream,
+                    initialData: false,
+                    builder: (context, adsSnapshot) {
+                      if (!snapshot.hasData || snapshot.hasError) {
+                        return Container();
+                      }else{
+                        return Container(
+                            width: 350,
+                            height: 500,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Positioned(
+                                  top: 5,
+                                  right: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 5.0),
+                                    child: Container(
+                                      alignment: Alignment.topLeft,
+                                      child: CommonButton(
+                                        imageName: 'x',
+                                        height: 20,
+                                        onTap: () {
+                                          Navigator.of(context).pop();
+                                        },
                                       ),
                                     ),
                                   ),
-                                  Positioned(
-                                    top: 30,
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                            width: 110,
-                                            height: 50,
-                                            child: CommonButton(
-                                              imageName: 'pupple',
-                                              haveMessage: true,
-                                              buttonName: "마리모 용품",
-                                              onTap: () =>
-                                                  getShopCategory("marimo"),
-                                              textStyle:
-                                                  TextStyle(fontSize: 14),
-                                            )),
-                                        SizedBox(
-                                            width: 110,
-                                            height: 50,
-                                            child: CommonButton(
-                                              imageName: 'pupple',
-                                              haveMessage: true,
-                                              buttonName: "수질 관리",
-                                              onTap: () => getShopCategory(
-                                                  "environment"),
-                                              textStyle:
-                                                  TextStyle(fontSize: 14),
-                                            )),
-                                        SizedBox(
-                                            width: 110,
-                                            height: 50,
-                                            child: CommonButton(
-                                              imageName: 'pupple',
-                                              haveMessage: true,
-                                              buttonName: "어항 꾸미기",
-                                              onTap: () =>
-                                                  getShopCategory("deco"),
-                                              textStyle:
-                                                  TextStyle(fontSize: 14),
-                                            )),
-                                      ],
+                                ),
+                                Positioned(
+                                  top: 30,
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                          width: 110,
+                                          height: 50,
+                                          child:
+                                          CommonButton(
+                                            imageName: 'pupple',
+                                            haveMessage: true,
+                                            buttonName: "마리모 용품",
+                                            onTap: () => getShopCategory("marimo"),
+                                            textStyle: TextStyle(fontSize: 14),
+                                          )),
+                                      SizedBox(
+                                          width: 110,
+                                          height: 50,
+                                          child: CommonButton(
+                                            imageName: 'pupple',
+                                            haveMessage: true,
+                                            buttonName: "수질 관리",
+                                            onTap: () =>
+                                                getShopCategory("environment"),
+                                            textStyle: TextStyle(fontSize: 14),
+                                          )),
+                                      SizedBox(
+                                          width: 110,
+                                          height: 50,
+                                          child: CommonButton(
+                                            imageName: 'pupple',
+                                            haveMessage: true,
+                                            buttonName: "어항 꾸미기",
+                                            onTap: () => getShopCategory("deco"),
+                                            textStyle: TextStyle(fontSize: 14),
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 80,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        //   color: Colors.red,
+                                          width: 110,
+                                          height: 50,
+                                          child: CommonButton(
+                                            imageName: 'pupple',
+                                            haveMessage: true,
+                                            buttonName: "잡화점",
+                                            onTap: () => getShopCategory("grocery"),
+                                            textStyle: TextStyle(fontSize: 14),
+                                          )),
+                                      Container(
+                                        //   color: Colors.black,
+                                        width: 110,
+                                        height: 50,
+                                        child:
+                                        CommonButton(
+                                          imageName: 'pupple',
+                                          haveMessage: true,
+                                          buttonName: "코인 얻기",
+                                          onTap: () => adsSc.add(true),
+                                          textStyle: const TextStyle(fontSize: 14),
+                                        )
+                                      ),
+                                      Container(
+                                          width: 110,
+                                          height: 50,),
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 130,
+                                  child: SizedBox(
+                                    width: 345,
+                                    height: 280,
+                                    child: adsSnapshot.requireData?RewardAds(game: game,):ShopPage(
+                                      game: game,
+                                      categoryName: snapshot.requireData,
                                     ),
                                   ),
-                                  Positioned(
-                                    top: 80,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                            //   color: Colors.black,
-                                            width: 110,
-                                            height: 50,
-                                            child: CommonButton(
-                                              imageName: 'pupple',
-                                              haveMessage: true,
-                                              buttonName: "코인 구매",
-                                              onTap: () =>
-                                                  adsSc.add(Page.inAppPurchase),
-                                              textStyle:
-                                                  TextStyle(fontSize: 14),
-                                            )),
-                                        Container(
-                                            //   color: Colors.red,
-                                            width: 110,
-                                            height: 50,
-                                            child: CommonButton(
-                                              imageName: 'pupple',
-                                              haveMessage: true,
-                                              buttonName: "잡화점",
-                                              onTap: () =>
-                                                  getShopCategory("grocery"),
-                                              textStyle:
-                                                  TextStyle(fontSize: 14),
-                                            )),
-                                        GestureDetector(
-                                          onTap: () {
-                                            adsSc.add(Page.ads);
-                                          },
-                                          child: Container(
-                                              //     color: Colors.blue,
-                                              width: 110,
-                                              height: 60,
-                                              child: Image.asset(
-                                                "${CommonConstant.assetsImageShop}add_coin.png",
-                                                height: 60,
-                                              )),
-                                        ),
-                                      ],
-                                    ),
+                                ),
+                                Positioned(
+                                  top: 420,
+                                  child: Container(
+                                    color: Colors.indigo,
+                                    width: 350,
+                                    height: 50,
+                                    child: const BannerAds(),
                                   ),
-                                  Positioned(
-                                    top: 130,
-                                    child: pageWidget(pageSnapshot.requireData,snapshot.requireData),
-                                  ),
-                                  Positioned(
-                                    top: 420,
-                                    child: Container(
-                                      width: 350,
-                                      height: 50,
-                                      child: const BannerAds(),
-                                    ),
-                                  ),
-                                ],
-                              ));
-                        }
-                      });
+                                ),
+                              ],
+                            ));
+                      }
+                    }
+                  );
                 }
               }),
         );
@@ -662,5 +539,3 @@ class GameAlert {
     );
   }
 }
-
-enum Page { shop, inAppPurchase, ads }

@@ -1,12 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../app_manage/local_data_manager.dart';
 enum MarimoAppearanceState { zero, baby, child, }
 //child2, teenager, adult, oldMan
 enum MarimoEmotion { normal, cry }
-
-//enum EnemyLevel { cat, shrimp, snail, dog, shark, marooMarimo }
 
 class MarimoBloc extends Bloc<MarimoEvent, MarimoState> {
   MarimoBloc(super.initialState) {

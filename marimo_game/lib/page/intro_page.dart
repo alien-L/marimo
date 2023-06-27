@@ -25,12 +25,8 @@ class _IntroPageState extends State<IntroPage> {
                     (widget.videoController.value.duration ==
                         widget.videoController.value.position)) {
                   setState(() {
-               //    widget.videoController.removeListener(() {
-                     print("여기여기여기기ㅕㅣ");
                      Navigator.pushNamed(context, "/init_setting");
                      widget.videoController.pause();
-                  //   widget.videoController.dispose();
-             //      });
                   });
                 }
               });
@@ -60,8 +56,6 @@ class _IntroPageState extends State<IntroPage> {
           onTap: () {
             Navigator.pushNamed(context, "/init_setting");
              widget.videoController.pause();
-         //     widget.videoController.dispose();
-
              }
           ),
         ),
@@ -73,7 +67,6 @@ class _IntroPageState extends State<IntroPage> {
   void dispose() {
     super.dispose();
     widget.videoController.pause();
-   widget.videoController.dispose();
-    print("dispose@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+     widget.videoController.dispose();
   }
 }

@@ -1,6 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../app_manage/local_data_manager.dart';
-import 'marimo_bloc.dart';
 
 enum MarimoExpState{exp1,exp2,exp3,exp4,exp5}
 

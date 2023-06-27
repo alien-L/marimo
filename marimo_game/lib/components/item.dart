@@ -17,7 +17,6 @@ class ItemController extends Component
 
   @override
   bool listenWhen(ItemState previousState, ItemState newState) {
-    print("${previousState != newState}");
     return previousState != newState;
   }
 

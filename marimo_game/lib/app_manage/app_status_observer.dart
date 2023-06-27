@@ -1,24 +1,18 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marimo_game/app_manage/language.dart';
-import 'package:marimo_game/bloc/component_bloc/time_check_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../bloc/component_bloc/background_bloc.dart';
 import '../bloc/component_bloc/coin_bloc.dart';
 import '../bloc/component_bloc/language_manage_bloc.dart';
 import '../bloc/component_bloc/sound_bloc.dart';
-import '../bloc/environment_bloc/environment_humity_bloc.dart';
-import '../bloc/environment_bloc/environment_temperature_bloc.dart';
 import '../bloc/marimo_bloc/marimo_bloc.dart';
 import '../bloc/marimo_bloc/marimo_exp_bloc.dart';
 import '../bloc/marimo_bloc/marimo_level_bloc.dart';
 import '../bloc/shop_bloc.dart';
 import '../model/game_data_info.dart';
 import '../model/marimo_shop.dart';
-import 'local_data_manager.dart';
 
 ///
 /// Created by ahhyun [ah2yun@gmail.com] on 2023. 03. 30
@@ -27,17 +21,12 @@ import 'local_data_manager.dart';
 // 앱 상태 체크 옵저버 클래스
 class AppStatusObserver extends StatefulWidget {
   final Widget child;
-  final TimeCheckBloc timeCheckBloc;
+
   final MarimoBloc marimoBloc;
   final MarimoLevelBloc marimoLevelBloc;
   final MarimoExpBloc marimoExpBloc;
 
   final LanguageManageBloc languageManageBloc;
-  //final EnvironmentHumidityBloc environmentHumidityBloc;
- // final EnvironmentTemperatureBloc environmentTemperatureBloc;
-
-  // final EnvironmentTrashBloc environmentTrashBloc;
-
   final BackgroundBloc backgroundBloc;
 
   final SoundBloc soundBloc;
@@ -47,13 +36,10 @@ class AppStatusObserver extends StatefulWidget {
   const AppStatusObserver({
     required this.child,
     Key? key,
-    required this.timeCheckBloc,
     required this.marimoBloc,
     required this.marimoLevelBloc,
     required this.marimoExpBloc,
     required this.languageManageBloc,
- //   required this.environmentHumidityBloc,
- //   required this.environmentTemperatureBloc,
     required this.backgroundBloc,
     required this.soundBloc,
     required this.coinBloc,
@@ -69,7 +55,6 @@ class _AppStatusObserverState extends State<AppStatusObserver>
   @override
   void initState() {
     super.initState();
-    widget.timeCheckBloc.checkForTomorrow();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -80,29 +65,16 @@ class _AppStatusObserverState extends State<AppStatusObserver>
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
       case AppLifecycleState.paused:
-        print("paused 상태 앱 종료 ");
-        widget.timeCheckBloc.updateLocalLastTime(DateTime.now());
         saveGameDataInfo();
-        // 종료했을때 시간체크 close time
         break;
       case AppLifecycleState.resumed:
-        print("resumed 포그라운드  상태 ");
-        widget.timeCheckBloc.checkForTomorrow();
         saveGameDataInfo();
-        // 시작 했을때 시간체크 start time current time
         break;
       case AppLifecycleState.detached:
-        // 종료했을때 시간체크 close time
-        widget.timeCheckBloc.updateLocalLastTime(DateTime.now());
         saveGameDataInfo();
-        print("detached 상태 앱 종료 ");
-        // 앱 종료 상태
         break;
       case AppLifecycleState.inactive:
-        // 종료했을때 시간체크 close time
-        widget.timeCheckBloc.updateLocalLastTime(DateTime.now());
         saveGameDataInfo();
-        print("inactive 백그라운드 상태 ");
         break;
     }
   }
@@ -122,13 +94,6 @@ class _AppStatusObserverState extends State<AppStatusObserver>
   Widget build(BuildContext context) {
     Widget result() => MultiBlocListener(
           listeners: [
-            BlocListener<TimeCheckBloc, bool>(
-              listener: (context, state) async {
-                setState(() {
-                  gameDataInfo.isToday = state;
-                });
-              },
-            ),
             BlocListener<MarimoBloc, MarimoState>(
               listener: (context, state) {
                 setState(() {
@@ -162,13 +127,6 @@ class _AppStatusObserverState extends State<AppStatusObserver>
               listener: (context, state) {
                 setState(() {
                   gameDataInfo.background = state.name;
-                });
-              },
-            ),
-            BlocListener<SoundBloc, bool>(
-              listener: (context, state) {
-                setState(() {
-           //       gameDataInfo.isCheckedOnOffSound = state;
                 });
               },
             ),

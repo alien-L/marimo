@@ -7,20 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:marimo_game/components/effects/effects.dart';
 
 import '../../marimo_game_world.dart';
-// class HpEffectComponent extends EffectComponent {
-//   HpEffectComponent(
-//       {required super.componentSize,
-//         required super.componentPosition,
-//         required super.movePostion,
-//         required super.imageName});
-//
-//   @override
-//   void update(double dt) {
-//     if (y < 21) {
-//       game.coinEffectComponent.removeFromParent();
-//     }
-//   }
-// }
 
 class ExpEffectComponent extends EffectComponent {
   ExpEffectComponent(

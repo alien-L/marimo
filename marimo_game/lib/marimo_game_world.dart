@@ -7,10 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:marimo_game/app_manage/language.dart';
 import 'package:marimo_game/bloc/component_bloc/background_bloc.dart';
 import 'package:marimo_game/bloc/component_bloc/coin_bloc.dart';
-import 'package:marimo_game/bloc/component_bloc/time_check_bloc.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/components/bar/marimo_exp_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'app_manage/local_data_manager.dart';
 import 'bloc/component_bloc/language_manage_bloc.dart';
 import 'bloc/marimo_bloc/marimo_exp_bloc.dart';
@@ -50,7 +48,7 @@ class MarimoWorldGame extends FlameGame
 
   final SoundBloc soundBloc;
   final CoinBloc coinBloc;
-  final TimeCheckBloc timeCheckBloc;
+  //final TimeCheckBloc timeCheckBloc;
 
   //final EnemyBloc enemyBloc;
 
@@ -76,7 +74,7 @@ class MarimoWorldGame extends FlameGame
     required this.soundBloc,
     required this.coinBloc,
     required this.backgroundBloc,
-    required this.timeCheckBloc,
+ //   required this.timeCheckBloc,
     //  required this.enemyBloc,
   });
 
@@ -119,7 +117,7 @@ class MarimoWorldGame extends FlameGame
           ),
           FlameBlocProvider<SoundBloc, bool>.value(value: soundBloc),
           FlameBlocProvider<CoinBloc, int>.value(value: coinBloc),
-          FlameBlocProvider<TimeCheckBloc, bool>.value(value: timeCheckBloc),
+          //FlameBlocProvider<TimeCheckBloc, bool>.value(value: timeCheckBloc),
         ],
         children: [
           shopComponent = Item(),
@@ -189,7 +187,6 @@ class MarimoWorldGame extends FlameGame
               if(item["su"] < 0){
                 return;
               }else{
-                print("su   === ${item["su"]}");
                 add(food = Food(size, key: UniqueKey(),));
               }
             }else{
