@@ -29,7 +29,6 @@ dependencies:
   google_mobile_ads: 1.2.0
   in_app_purchase: 3.1.7
   flame_splash_screen: 0.1.0
-  flutter_email_sender: 6.0.0
 
 
 dev_dependencies:

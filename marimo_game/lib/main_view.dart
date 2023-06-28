@@ -19,7 +19,7 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   late PermissionStatus statusTest;
 
-  void _permissionStorage(Permission permission) async {
+  void _getPermission(Permission permission) async {
     var requestStatus = await permission.request();
 
     var status = await permission.status;
@@ -42,9 +42,11 @@ class _MainViewState extends State<MainView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (Platform.isIOS) {
-        _permissionStorage(Permission.appTrackingTransparency);
+        _getPermission(Permission.appTrackingTransparency); // 앱 추적
+        // 네트워크및 인터넷 사용
       } else {
-        _permissionStorage(Permission.storage);
+        _getPermission(Permission.storage); // 저장소 동의
+        // 네트워크및 인터넷 사용
       }
     });
   }

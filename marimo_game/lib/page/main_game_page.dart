@@ -121,7 +121,7 @@ class MainGamePage extends StatelessWidget {
                   }),
                 ),
               ),
-            //  Positioned(bottom:50,child: developerManagerWidget()),
+             // Positioned(bottom:50,child: developerManagerWidget()),
               Positioned(
                 top: 50,
                 left: 10,

@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-//import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/marimo_game_world.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -165,40 +163,48 @@ class GameAlert {
                     imageName: 'go',
                     onTap: () async {
                       // 인스타그램이 설치되어 있지 않을 때 웹 링크
-                      const INSTAGRAM_WEB_LINK =
-                          'https://www.instagram.com/marimo__official/';
+                      // const INSTAGRAM_WEB_LINK =
+                      //     'https://www.instagram.com/marimo__official/';
                       const INSTAGRAM_LINK =
                           'instagram://user?username=marimo__official';
                       if (await canLaunchUrl(Uri.parse(INSTAGRAM_LINK))) {
                         saveGameDataInfo(game);
                         await launchUrl(Uri.parse(INSTAGRAM_LINK));
                       } else {
-                        saveGameDataInfo(game);
-                        await launchUrl(Uri.parse(INSTAGRAM_WEB_LINK));
-                      }
-                    }),
-                buttonWidget(
-                    title: '문의하기',
-                    imageName: 'yes',
-                    onTap: () async {
-                      final Email email = Email(
-                        body: '',
-                        subject: '[마리모 게임 문의]',
-                        recipients: ['marimo.ceo@gmail.com'],
-                        isHTML: false,
-                      );
-                      try {
-                        saveGameDataInfo(game);
-                        await FlutterEmailSender.send(email);
-                      } catch (error) {
-                        String message =
-                            "기본 메일 앱을 사용할 수 없기 때문에 앱에서 바로 문의를 전송하기 어려운 상황입니다. marimo.ceo@gmail.com로 직접 문의 바랍니다.";
                         showInfoDialog(
                             color: CommonColor.red,
                             title: "",
-                            contents: message);
+                            contents: "인스타그램이 설치되어 있지 않습니다.");
+                   //     saveGameDataInfo(game);
+                  //      await launchUrl(Uri.parse(INSTAGRAM_WEB_LINK));
                       }
                     }),
+                // buttonWidget(
+                //     title: '문의하기',
+                //     imageName: 'yes',
+                //     onTap: () async {
+                //       String message =
+                //           "marimo.ceo@gmail.com로  문의 바랍니다.";
+                //       try {
+                //         final Uri emailLaunchUri = Uri(
+                //           scheme: 'mailto',
+                //           path: 'marimo.ceo@gmail.com',
+                //         );
+                //         if(await canLaunchUrl(emailLaunchUri)){
+                //           await  launchUrl(emailLaunchUri);
+                //         }else{
+                //           showInfoDialog(
+                //               color: CommonColor.red,
+                //               title: "",
+                //               contents: message);
+                //         }
+                //       } catch (error) {
+                //         showInfoDialog(
+                //             color: CommonColor.red,
+                //             title: "",
+                //             contents: message);
+                //       }
+                //     }),
                 buttonWidget(
                     title: '초기화',
                     imageName: 'ok',
@@ -542,7 +548,6 @@ class GameAlert {
                                 Positioned(
                                   top: 420,
                                   child: Container(
-                                    color: Colors.indigo,
                                     width: 350,
                                     height: 50,
                                     child: const BannerAds(),
