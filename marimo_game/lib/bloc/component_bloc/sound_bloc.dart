@@ -10,7 +10,7 @@ class SoundBloc extends Cubit<bool> {
     if(!state){
       var list = ['1','2','3'];
       var randomItem = (list..shuffle()).first;
-      FlameAudio.bgm.play('/music/bg_$randomItem.mp3',);
+      FlameAudio.bgm.play('music/bg_$randomItem.mp3',);
     }
   }
 

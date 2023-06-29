@@ -71,15 +71,15 @@ class ShopPage extends StatelessWidget {
                         color: CommonColor.violet,
                       );
                     } else {
-                      game.soundBloc.effectSoundPlay('/music/click.mp3');
+                      game.soundBloc.effectSoundPlay('music/click.mp3');
                       game.coinBloc.subtractCoin(price); // 코인 감소
                       game.marimoExpBloc.addScore(game.marimoLevelBloc.state, expScore); // 경험치 증가
                       game.shopBloc.add(BuyEvent(name: name, isCheckedMoving: isCheckedMoving, buyItem:  true, key: UniqueKey() ));  //이벤트 발생
-                      game.soundBloc.effectSoundPlay('/music/popup.mp3');
+                      game.soundBloc.effectSoundPlay('music/popup.mp3');
                       GameAlert().showInfoDialog(
                         title: "아이템 구매",
                         contents: name + Environment().config.constant.getItemMsg,
-                        assetsName: "${CommonConstant.assetsImageShop}/$image_name",
+                        assetsName: "${CommonConstant.assetsImageShop}$image_name",
                         color: const Color.fromRGBO(200, 139, 251, 1),
                       );
                     }

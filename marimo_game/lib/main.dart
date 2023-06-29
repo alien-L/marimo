@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:marimo_game/app_manage/local_data_manager.dart';
 import 'package:marimo_game/bloc/shop_bloc.dart';
 import 'package:marimo_game/page/init_setting_page.dart';
@@ -24,14 +24,14 @@ import 'main_view.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-Future<InitializationStatus> _initGoogleMobileAds() {
-  // TODO: Initialize Google Mobile Ads SDK
-  return MobileAds.instance.initialize();
-}
+// Future<InitializationStatus> _initGoogleMobileAds() {
+//   // TODO: Initialize Google Mobile Ads SDK
+//   return MobileAds.instance.initialize();
+// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  _initGoogleMobileAds();
+  //_initGoogleMobileAds();
   late dynamic gameDataInfoMap;
   late dynamic shopDataMap;
   late String initRoute;
@@ -63,6 +63,8 @@ Future<void> main() async {
       orElse: () => MarimoEmotion.normal);
 
   Environment().initConfig(languageManageValue); // 언어 환경 세팅
+
+
   runApp(MultiBlocProvider(
       providers: [
         BlocProvider<ShopBloc>(create: (_) => ShopBloc(const ItemState())),
@@ -84,7 +86,7 @@ Future<void> main() async {
         //ok
         BlocProvider<SoundBloc>(create: (_) => SoundBloc(false)), //에러
       ],
-      child: RestartWidget(
+      child: backButtonWidget(
         child: App(
           shopData: shopDataMap,
           initRoute: initRoute,
@@ -135,7 +137,7 @@ class App extends StatelessWidget {
     final VideoPlayerController controller =
         VideoPlayerController.asset('assets/videos/intro.mp4');
 
-    return initWidget(
+    return backButtonWidget(child:initWidget(
       MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'RayWorld',
@@ -161,7 +163,7 @@ class App extends StatelessWidget {
         ),
         navigatorKey: navigatorKey,
       ),
-    );
+    ));
   }
 }
 
@@ -174,4 +176,15 @@ class MyHttpOverrides extends HttpOverrides {
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
   }
+}
+
+Widget backButtonWidget({required Widget child}) {
+
+  return WillPopScope(
+    onWillPop: () {
+      print("백버튼 막음 ");
+      return Future(() => false);
+    },
+    child: child,
+  );
 }

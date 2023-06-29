@@ -131,7 +131,7 @@ class Marimo extends SpriteAnimationComponent
   getCoin() async {
     game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
     game.coinBloc.addCoin(1);
-    game.soundBloc.effectSoundPlay('/music/coin_1.mp3');
+    game.soundBloc.effectSoundPlay('music/coin_1.mp3');
   }
 
 
@@ -154,7 +154,7 @@ class Marimo extends SpriteAnimationComponent
       list[index] = _map;
       await prefs.setString("shopData", jsonEncode(list));
       game.marimoExpBloc.addScore(game.marimoLevelBloc.state, 10);
-      game.soundBloc.effectSoundPlay('/music/food.mp3'); //소리 바꾸기
+      game.soundBloc.effectSoundPlay('music/food.mp3'); //소리 바꾸기
     }
   }
 

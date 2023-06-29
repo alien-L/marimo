@@ -164,7 +164,7 @@ class GameAlert {
                     onTap: () async {
                       // 인스타그램이 설치되어 있지 않을 때 웹 링크
                       // const INSTAGRAM_WEB_LINK =
-                      //     'https://www.instagram.com/marimo__official/';
+                      //     'https://www.instagram.com/marimo__official/타';
                       const INSTAGRAM_LINK =
                           'instagram://user?username=marimo__official';
                       if (await canLaunchUrl(Uri.parse(INSTAGRAM_LINK))) {
@@ -474,17 +474,17 @@ class GameAlert {
                                             onTap: () => getShopCategory("marimo"),
                                             textStyle: TextStyle(fontSize: 14),
                                           )),
-                                      SizedBox(
-                                          width: 110,
-                                          height: 50,
-                                          child: CommonButton(
-                                            imageName: 'pupple',
-                                            haveMessage: true,
-                                            buttonName: "수질 관리",
-                                            onTap: () =>
-                                                getShopCategory("environment"),
-                                            textStyle: TextStyle(fontSize: 14),
-                                          )),
+                                      // SizedBox(
+                                      //     width: 110,
+                                      //     height: 50,
+                                      //     child: CommonButton(
+                                      //       imageName: 'pupple',
+                                      //       haveMessage: true,
+                                      //       buttonName: "수질 관리",
+                                      //       onTap: () =>
+                                      //           getShopCategory("environment"),
+                                      //       textStyle: TextStyle(fontSize: 14),
+                                      //     )),
                                       SizedBox(
                                           width: 110,
                                           height: 50,
@@ -495,6 +495,9 @@ class GameAlert {
                                             onTap: () => getShopCategory("deco"),
                                             textStyle: TextStyle(fontSize: 14),
                                           )),
+                                      Container(
+                                        width: 110,
+                                        height: 50,),
                                     ],
                                   ),
                                 ),
@@ -504,30 +507,34 @@ class GameAlert {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
+
+                                      // Container(
+                                      //   //   color: Colors.red,
+                                      //     width: 110,
+                                      //     height: 50,
+                                      //     child: CommonButton(
+                                      //       imageName: 'pupple',
+                                      //       haveMessage: true,
+                                      //       buttonName: "잡화점",
+                                      //       onTap: () => getShopCategory("grocery"),
+                                      //       textStyle: TextStyle(fontSize: 14),
+                                      //     )),
+                                      // Container(
+                                      //   //   color: Colors.black,
+                                      //   width: 110,
+                                      //   height: 50,
+                                      //   child:
+                                      //   CommonButton(
+                                      //     imageName: 'pupple',
+                                      //     haveMessage: true,
+                                      //     buttonName: "코인 얻기",
+                                      //     onTap: () => adsSc.add(true),
+                                      //     textStyle: const TextStyle(fontSize: 14),
+                                      //   )
+                                      // ),
                                       Container(
-                                        //   color: Colors.red,
-                                          width: 110,
-                                          height: 50,
-                                          child: CommonButton(
-                                            imageName: 'pupple',
-                                            haveMessage: true,
-                                            buttonName: "잡화점",
-                                            onTap: () => getShopCategory("grocery"),
-                                            textStyle: TextStyle(fontSize: 14),
-                                          )),
-                                      Container(
-                                        //   color: Colors.black,
                                         width: 110,
-                                        height: 50,
-                                        child:
-                                        CommonButton(
-                                          imageName: 'pupple',
-                                          haveMessage: true,
-                                          buttonName: "코인 얻기",
-                                          onTap: () => adsSc.add(true),
-                                          textStyle: const TextStyle(fontSize: 14),
-                                        )
-                                      ),
+                                        height: 50,),
                                       Container(
                                           width: 110,
                                           height: 50,),
@@ -539,20 +546,21 @@ class GameAlert {
                                   child: SizedBox(
                                     width: 345,
                                     height: 280,
-                                    child: adsSnapshot.requireData?RewardAds(game: game,):ShopPage(
+                                    child: //adsSnapshot.requireData?RewardAds(game: game,):
+                                    ShopPage(
                                       game: game,
                                       categoryName: snapshot.requireData,
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  top: 420,
-                                  child: Container(
-                                    width: 350,
-                                    height: 50,
-                                    child: const BannerAds(),
-                                  ),
-                                ),
+                            // Positioned(
+                            //       top: 420,
+                            //       child: Container(
+                            //         width: 350,
+                            //         height: 50,
+                            //         child: Platform.isIOS?const BannerAds():null,
+                            //       ),
+                            //     ),
                               ],
                             ));
                       }

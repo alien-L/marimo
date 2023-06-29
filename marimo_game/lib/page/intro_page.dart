@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import '../components/button/common_button.dart';
+import '../main.dart';
 class IntroPage extends StatefulWidget {
   final VideoPlayerController videoController;
   IntroPage({super.key, required this.videoController}){
@@ -36,7 +37,7 @@ class _IntroPageState extends State<IntroPage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Stack(
+    return  backButtonWidget(child:Stack(
       children:[
         SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -48,7 +49,7 @@ class _IntroPageState extends State<IntroPage> {
           ),
         ),
         Positioned(
-          bottom: 30,
+          bottom: 100,
           right: 25,
           child: CommonButton(
           width: 70,
@@ -60,7 +61,7 @@ class _IntroPageState extends State<IntroPage> {
           ),
         ),
       ]
-    );
+    ));
   }
 
   @override

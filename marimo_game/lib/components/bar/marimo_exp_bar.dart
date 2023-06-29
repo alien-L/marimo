@@ -88,7 +88,7 @@ class ExpController extends Component
   }
 
  Future<void> levelUpMarimo() async {
-    game.soundBloc.effectSoundPlay('/music/popup.mp3');
+    game.soundBloc.effectSoundPlay('music/popup.mp3');
     GameAlert().showInfoDialog(
       title: "마리모 성장",
       contents: Environment().config.constant.levelUpMsg,

@@ -45,26 +45,37 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.alien-L.marimo_game"
+        applicationId "com.alienL.marimo_game"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 32
+        minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            storeFile file("src/keystore/Untitled")
+            storePassword "102938"
+            keyAlias "lee"
+            keyPassword "102938"
+        }
+    }
+
     buildTypes {
-        buildTypes {
-            release {
-                signingConfig signingConfigs.release
-
-                minifyEnabled true
-                useProguard true
-
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -75,5 +86,6 @@ flutter {
 
 dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.0-alpha01'
+  //  implementation 'com.google.android.gms:play-services-ads:22.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

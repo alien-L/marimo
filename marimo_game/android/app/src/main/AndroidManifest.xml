@@ -1,17 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.alien-L.marimo_game">
+    package="com.alienL.marimo_game">
 
     <!-- 내부저장소 퍼미션 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WHITE_EXTERNAL_STORAGE"/>
 
     <queries>
-        <intent>
-            <action android:name="android.intent.action.SENDTO" />
-            <data android:scheme="mailto" />
-        </intent>
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.SENDTO" />-->
+<!--            <data android:scheme="mailto" />-->
+<!--        </intent>-->
         <package android:name="com.instagram.android" />
     </queries>
+
 
    <application
         android:label="marimo_game"
@@ -34,9 +35,9 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/LaunchTheme"
               />
-            <meta-data
-                    android:name="com.google.android.gms.ads.APPLICATION_ID"
-                    android:value="ca-app-pub-7908404119066522~4611952130"/>
+<!--            <meta-data-->
+<!--                    android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--                    android:value="ca-app-pub-7908404119066522~4611952130"/>-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

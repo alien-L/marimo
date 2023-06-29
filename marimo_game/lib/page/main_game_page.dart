@@ -8,6 +8,7 @@ import 'package:marimo_game/style/color.dart';
 import '../const/constant.dart';
 import '../helpers/direction.dart';
 import '../helpers/joypad.dart';
+import '../main.dart';
 import '../marimo_game_world.dart';
 
 class MainGamePage extends StatelessWidget {
@@ -30,9 +31,9 @@ class MainGamePage extends StatelessWidget {
 
     void onJoypadDirectionChanged(Direction direction) {
       game.onJoypadDirectionChanged(direction);
-      game.soundBloc.effectSoundPlay('/music/bubble.mp3');
+      game.soundBloc.effectSoundPlay('music/bubble.mp3');
     }
-    //
+
     // Widget developerManagerWidget() => Column(
     //       children: [
     //         Row(
@@ -92,7 +93,7 @@ class MainGamePage extends StatelessWidget {
           ),
         );
 
-    return Material(
+    return backButtonWidget(child:Material(
       child: SafeArea(
         top: true,
         bottom: false,
@@ -105,7 +106,7 @@ class MainGamePage extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 50,right: 40),
+                  padding: const EdgeInsets.only(bottom: 80,right: 40),
                   child: Joypad(onDirectionChanged: onJoypadDirectionChanged),
                 ),
               ),
@@ -121,7 +122,7 @@ class MainGamePage extends StatelessWidget {
                   }),
                 ),
               ),
-             // Positioned(bottom:50,child: developerManagerWidget()),
+//          Positioned(bottom:50,child: developerManagerWidget()),
               Positioned(
                 top: 50,
                 left: 10,
@@ -186,7 +187,7 @@ class MainGamePage extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:video_player/video_player.dart';
 import '../app_manage/local_data_manager.dart';
 import '../components/button/common_button.dart';
 import '../components/alert/game_alert.dart';
+import '../main.dart';
 
 class InitSettingPage extends StatelessWidget {
   InitSettingPage({Key? key, required this.videoPlayerController}){
@@ -78,7 +79,7 @@ class InitSettingPage extends StatelessWidget {
           child: SizedBox(width: 300, height: 250, child: textFormField()),
         );
 
-    return Scaffold(
+    return backButtonWidget(child:Scaffold(
         backgroundColor: Colors.white,
         body: Center(
             child: Column(
@@ -92,6 +93,6 @@ class InitSettingPage extends StatelessWidget {
             ),
             initSettingWidget(),
           ],
-        )));
+        ))));
   }
 }

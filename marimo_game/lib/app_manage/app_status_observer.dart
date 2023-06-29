@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:marimo_game/app_manage/language.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../ads/ad_helper.dart';
@@ -54,48 +55,49 @@ class AppStatusObserver extends StatefulWidget {
 
 class _AppStatusObserverState extends State<AppStatusObserver>
     with WidgetsBindingObserver {
-  InterstitialAd? _interstitialAd;
+ // InterstitialAd? _interstitialAd;
   int maxFailedLoadAttempts = 3;
 
-  void _loadInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: AdHelper.interstitialAdUnitId,
-      request: AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {},
-          );
-
-          setState(() {
-            _interstitialAd = ad;
-          });
-        },
-        onAdFailedToLoad: (err) {},
-      ),
-    );
-  }
-
-  void _showInterstitialAd() {
-    if (_interstitialAd == null) {
-      _loadInterstitialAd();
-      print('Warning: attempt to show interstitial before loaded.');
-      return;
-    }
-    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        ad.dispose();
-      },
-    );
-    _interstitialAd!.show();
-    _interstitialAd = null;
-  }
+  // void _loadInterstitialAd() {
+  //   InterstitialAd.load(
+  //     adUnitId: AdHelper.interstitialAdUnitId,
+  //     request: AdRequest(),
+  //     adLoadCallback: InterstitialAdLoadCallback(
+  //       onAdLoaded: (ad) {
+  //         ad.fullScreenContentCallback = FullScreenContentCallback(
+  //           onAdDismissedFullScreenContent: (ad) {},
+  //         );
+  //
+  //         setState(() {
+  //           _interstitialAd = ad;
+  //         });
+  //       },
+  //       onAdFailedToLoad: (err) {},
+  //     ),
+  //   );
+  // }
+  //
+  // void _showInterstitialAd() {
+  //   if (_interstitialAd == null) {
+  //     _loadInterstitialAd();
+  //     return;
+  //   }
+  //   _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+  //     onAdDismissedFullScreenContent: (InterstitialAd ad) {
+  //       ad.dispose();
+  //     },
+  //   );
+  //   _interstitialAd!.show();
+  //   _interstitialAd = null;
+  // }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _loadInterstitialAd();
+  if(Platform.isIOS) {
+    //_loadInterstitialAd();
+  }
   }
 
   GameDataInfo gameDataInfo = GameDataInfo();
@@ -106,9 +108,13 @@ class _AppStatusObserverState extends State<AppStatusObserver>
     switch (state) {
       case AppLifecycleState.paused:
         saveGameDataInfo();
+     //   if(!widget.soundBloc.state){widget.soundBloc.offBgmSound();}
+        print("백");
         break;
       case AppLifecycleState.resumed:
-        _showInterstitialAd();
+       // if(widget.soundBloc.state){widget.soundBloc.onBgmSound();}
+        print("포");
+      // if(Platform.isIOS) { _showInterstitialAd();}
         saveGameDataInfo();
         break;
       case AppLifecycleState.detached:
@@ -123,7 +129,7 @@ class _AppStatusObserverState extends State<AppStatusObserver>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _interstitialAd?.dispose();
+  //  if(Platform.isIOS) {  _interstitialAd?.dispose();}
     super.dispose();
   }
 
